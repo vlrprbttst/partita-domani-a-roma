@@ -1,0 +1,23 @@
+{
+  "name": "grunt-boilerplate-v2",
+  "description": "grunt boilerplate for front end developers and webdesigners",
+  "main": "",
+  "authors": [
+    "Valerio <omegaiori@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/vlrprbttst/grunt-boilerplate-v2",
+  "moduleType": [
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "jquery": "~1.9.1"
+  }
+}
