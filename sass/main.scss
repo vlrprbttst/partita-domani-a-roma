@@ -17,20 +17,7 @@ body {
   height: 100%;
   font-family: $font;
   @include reset;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
   overflow: hidden;
-  &:after {
-    content: "";
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    background: rgba(0,0,0,.5);
-    z-index: 1;
-  }
 }
 .center {
   @include vertical-align;
@@ -47,7 +34,6 @@ h2 {
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-$bigness: 400px;
 h1 {
   @include reset;
   text-transform: uppercase;
@@ -56,7 +42,6 @@ h1 {
   text-shadow: 0 0 10px rgba(0,0,0,1);
   color: white;
   margin-bottom: 40px;
-
 }
 h3 {
   color: white;
@@ -76,7 +61,6 @@ p {
   letter-spacing: 1px;
   background: rgba(0,0,0,.4);
   padding: 20px;
-
   font-weight: normal;
   display: inline-block;
   max-width: 50%;
@@ -101,57 +85,77 @@ p {
   color: #FF8108;
 }
 @import "partials/_backgrounds.scss";
-
 .menu {
-  padding:10px 20px;
-  left:20px;
-  top:20px;
-  border-radius:5px;
-  border:1px solid white;
-  color:white;
-  background:rgba(0,0,0,.5);
-  position:absolute;
+  padding: 10px 20px;
+  left: 20px;
+  top: 20px;
+  border-radius: 5px;
+  border: 1px solid white;
+  color: white;
+  background: rgba(0,0,0,.5);
+  position: absolute;
   display: inline-block;
-  z-index:3;
-  cursor:pointer;
+  z-index: 3;
+  cursor: pointer;
 }
 .cont {
   height: 100%;
   transform: translateX(0px);
-  position:relative;
-  z-index:2;
-  transition:$transition;
+  position: relative;
+  z-index: 2;
+  transition: $transition;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  &:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 1;
+  }
   &.opened {
-    transform: translateX(300px);
-    transition:$transition;
+    transform: translateX($menu-offset);
+    transition: $transition;
   }
 }
 .menu-cont {
-  position:absolute;
+  position: absolute;
   left: 0;
   top: 0;
   height: 100%;
-  width:300px;
-  background:black;
-  color:white;
-  z-index:4;
-  transform: translateX(-300px);
-  transition:$transition;
+  width: $menu-offset;
+  background: black;
+  color: white;
+  z-index: 4;
+  transform: translateX(- $menu-offset);
+  transition: $transition;
   @include clearfix;
-  padding: 0 20px;
+  padding: 0 40px;
   &.opened {
     transform: translateX(0px);
-    transition:$transition;
+    transition: $transition;
   }
 }
-
 .close {
   text-align: right;
-  font-size:36px;
-  cursor:pointer;
+  font-size: 36px;
+  line-height: 36px;
+  cursor: pointer;
   float: right;
+  background: grey;
+  padding: 20px;
+  position: relative;
+  transition:$transition;
+  &:hover {
+    background: lightgrey;
+    transition:$transition;
+    color:black;
+  }
 }
-
 .menu-cont h1 {
   @include reset;
   text-transform: uppercase;
@@ -161,5 +165,35 @@ p {
   color: white;
   margin-bottom: 20px;
   clear: both;
-
 }
+.menu-cont p {
+  color: white;
+  font-size: 16px;
+  line-height: 24px;
+  text-shadow: none;
+  letter-spacing: 0;
+  background: none;
+  padding: 0;
+  font-weight: normal;
+  display: block;
+  max-width: 100%;
+  margin-top: 0;
+  font-family: $font2;
+  &:after,
+  &:before {
+    display: none;
+  }
+}
+
+.menu-cont a, a:visited, a:hover {
+  text-decoration: underline;
+  color:red;
+}
+
+//se è si
+html.si .cont h1:after {content:"si"}
+
+// se è no
+html.no .cont h1:after {content:"no"}
+html.no .cont h3 {display: none;}
+html.no .cont p {margin-top: 0;}

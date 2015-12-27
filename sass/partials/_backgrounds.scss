@@ -1,4 +1,4 @@
-html.si body {
+html.si .cont {
   &.si-1 {
     background-image: url(/images/si-sfondo1.jpg);
   }
@@ -28,5 +28,38 @@ html.si body {
   }
   &.si-10 {
     background-image: url(/images/si-sfondo10.jpg);
+  }
+}
+
+html.no .cont {
+  &.no-1 {
+    background-image: url(/images/no-sfondo1.jpg);
+  }
+  &.no-2 {
+    background-image: url(/images/no-sfondo2.jpg);
+  }
+  &.no-3 {
+    background-image: url(/images/no-sfondo3.jpg);
+  }
+  &.no-4 {
+    background-image: url(/images/no-sfondo4.jpg);
+  }
+  &.no-5 {
+    background-image: url(/images/no-sfondo5.jpg);
+  }
+  &.no-6 {
+    background-image: url(/images/no-sfondo6.jpg);
+  }
+  &.no-7 {
+    background-image: url(/images/no-sfondo7.jpg);
+  }
+  &.no-8 {
+    background-image: url(/images/no-sfondo8.jpg);
+  }
+  &.no-9 {
+    background-image: url(/images/no-sfondo9.jpg);
+  }
+  &.no-10 {
+    background-image: url(/images/no-sfondo10.jpg);
   }
 }
