@@ -14,6 +14,16 @@ $(document).ready(function() {
 
 });
 
-$(".menu,.close").click(function(){
+$(".menu,.close").click(function() {
   $(".menu-cont,.cont").toggleClass("opened");
 });
+/*
+$('.cont').imagesLoaded({
+  background: true
+}, function() {
+  $('body').removeClass('loading').addClass('loaded').one('transitionend webkitTransitionEnd oTransitionEnd otransitionend MSTransitionEnd',
+    function() {
+      $('.overlay').css("display", "none");
+
+    });
+});*/
