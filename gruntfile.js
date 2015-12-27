@@ -24,7 +24,7 @@ module.exports = function(grunt) {
             }, // watch images added to src
 
             deleting: {
-                files: ['images/**/*.{png,jpg,gif}'],
+                files: ['images/**/*.{png,jpg,gif,svg}'],
                 tasks: ['delete_sync']
             }, // end of delete sync
 
@@ -101,6 +101,7 @@ module.exports = function(grunt) {
             dist: {
                 src: [
                 'bower_components/jquery/jquery.js',
+                'bower_components/fittext/fittext.js',
                 'js/libs/*.js',
                 'js/custom/*.js'
                 ],
@@ -166,7 +167,7 @@ module.exports = function(grunt) {
                 },
                 src: '_site', //root
                 dest: '/www/test', //destination folder
-                exclusions: ['**/.DS_Store'], 
+                exclusions: ['**/.DS_Store'],
                 // keep : ['blog','cv','projects'], // SUPER IMPORTANT! check what resources should STAY on the server, for example your wordpress installation or other subfolders you use for other projects. else they'll get wiped out
                 simple: false,
                 useList: false
@@ -174,7 +175,7 @@ module.exports = function(grunt) {
         }
     });
 
-    
+
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
     grunt.loadNpmTasks('grunt-browser-sync');
