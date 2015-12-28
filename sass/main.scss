@@ -18,7 +18,7 @@ body {
   height: 100%;
   font-family: $font;
   @include reset;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 .center {
   @include vertical-align;
@@ -34,6 +34,14 @@ h2 {
   text-shadow: 0 0 4px rgba(0,0,0,.8);
   letter-spacing: 1px;
   text-transform: uppercase;
+  @include respond-to(412) {
+    font-size: 24px;
+    line-height: 30px;
+  }
+  @include respond-to(375) {
+    font-size: 20px;
+    line-height: 24px;
+  }
 }
 h1 {
   @include reset;
@@ -43,6 +51,16 @@ h1 {
   text-shadow: 0 0 10px rgba(0,0,0,1);
   color: white;
   margin-bottom: 40px;
+  @include respond-to(412) {
+    font-size: 184px;
+    line-height: 190px;
+    margin: 20px 0;
+  }
+  @include respond-to(375) {
+    font-size: 124px;
+    line-height: 130px;
+    margin: 20px 0;
+  }
 }
 h3 {
   color: white;
@@ -53,22 +71,39 @@ h3 {
   font-weight: bold;
   font-size: 32px;
   line-height: 40px;
+  @include respond-to(412) {
+    font-size: 20px;
+    line-height: 26px;
+  }
+  @include respond-to(375) {
+    font-size: 18px;
+    line-height: 24px;
+  }
 }
 p {
   color: white;
   font-size: 24px;
   line-height: 32px;
   text-shadow: 0 0 4px rgba(0,0,0,.8);
-  letter-spacing: 1px;
   background: rgba(0,0,0,.4);
   padding: 20px;
   font-weight: normal;
   display: inline-block;
-  max-width: 50%;
+  max-width: 75%;
   margin-top: 60px;
-  &:after,
-  &:before {
-    content: " '' ";
+  font-family: $font2;
+  @include respond-to(412) {
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 24px;
+    max-width:80%;
+  }
+  @include respond-to(375) {
+    margin-top: 20px;
+    padding: 10px;
+    font-size: 12px;
+    line-height: 16px;
   }
 }
 .lazio,
@@ -76,6 +111,9 @@ p {
   padding: 0 10px;
   text-shadow: none;
   border-radius: 2px;
+  @include respond-to(600) {
+    padding: 0 5px;
+  }
 }
 .lazio {
   background: #88D8F1;
@@ -87,17 +125,22 @@ p {
 }
 @import "partials/_backgrounds.scss";
 .menu {
-  padding: 10px 20px;
+  width: 50px;
+  height: 50px;
   left: 20px;
   top: 20px;
-  border-radius: 5px;
   border: 1px solid white;
   color: white;
-  background: rgba(0,0,0,.5);
+  background: url(../images/menu-ico.png) center center no-repeat rgba(0,0,0,.5);
   position: absolute;
   display: inline-block;
   z-index: 3;
   cursor: pointer;
+  background-size: 25px;
+  @include respond-to(375) {
+    left: 10px;
+    top: 10px;
+  }
 }
 .cont {
   height: 100%;
@@ -108,6 +151,7 @@ p {
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+  overflow: hidden;
   &:after {
     content: "";
     width: 100%;
@@ -121,6 +165,9 @@ p {
   &.opened {
     transform: translateX($menu-offset);
     transition: $transition;
+    @include respond-to(412) {
+      transform: translateX(320px);
+    }
   }
 }
 .menu-cont {
@@ -136,6 +183,13 @@ p {
   transition: $transition;
   @include clearfix;
   padding: 0 40px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  @include respond-to(412) {
+    width: 320px;
+    transform: translateX(- 320px);
+    padding: 0 20px;
+  }
   &.opened {
     transform: translateX(0px);
     transition: $transition;
@@ -150,11 +204,11 @@ p {
   background: grey;
   padding: 20px;
   position: relative;
-  transition:$transition;
+  transition: $transition;
   &:hover {
     background: lightgrey;
-    transition:$transition;
-    color:black;
+    transition: $transition;
+    color: black;
   }
 }
 .menu-cont h1 {
@@ -185,16 +239,39 @@ p {
     display: none;
   }
 }
-
-.menu-cont a, a:visited, a:hover {
+.menu-cont a,
+a:visited,
+a:hover {
   text-decoration: underline;
-  color:red;
+  color: red;
 }
-
 //se è si
-html.si .cont h1:after {content:"si"}
-
+html.si .cont h1:after {
+  content: "si";
+}
 // se è no
-html.no .cont h1:after {content:"no"}
-html.no .cont h3 {display: none;}
-html.no .cont p {margin-top: 0;}
+html.no .cont h1:after {
+  content: "no";
+}
+html.no .cont h3 {
+  display: none;
+}
+html.no .cont p {
+  margin-top: 0;
+}
+.rotate-device {
+  display: none;
+}
+html.isMobile {
+  @media (orientation:landscape) {
+    .rotate-device {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      z-index: 1001;
+      background: url(../images/rotate.png) center center no-repeat #333;
+      display: block;
+      background-size: auto 89px;
+    }
+  }
+}
