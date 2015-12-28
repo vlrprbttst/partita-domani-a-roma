@@ -97,7 +97,7 @@ p {
     padding: 10px;
     font-size: 16px;
     line-height: 24px;
-    max-width:80%;
+    max-width: 80%;
   }
   @include respond-to(375) {
     margin-top: 20px;
@@ -182,34 +182,34 @@ p {
   transform: translateX(- $menu-offset);
   transition: $transition;
   @include clearfix;
-  padding: 0 40px;
+  padding: 40px 40px 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   @include respond-to(412) {
     width: 320px;
     transform: translateX(- 320px);
-    padding: 0 20px;
+    padding: 40px 20px 0;
   }
   &.opened {
     transform: translateX(0px);
     transition: $transition;
   }
+
+  a,
+  a:visited,
+  a:hover {
+    color:grey;
+  }
 }
 .close {
-  text-align: right;
-  font-size: 36px;
-  line-height: 36px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 50px;
+  height: 50px;
+  background: url(../images/close-ico.png) center center no-repeat;
+  background-size: 40px;
   cursor: pointer;
-  float: right;
-  background: grey;
-  padding: 20px;
-  position: relative;
-  transition: $transition;
-  &:hover {
-    background: lightgrey;
-    transition: $transition;
-    color: black;
-  }
 }
 .menu-cont h1 {
   @include reset;
@@ -238,12 +238,6 @@ p {
   &:before {
     display: none;
   }
-}
-.menu-cont a,
-a:visited,
-a:hover {
-  text-decoration: underline;
-  color: red;
 }
 //se è si
 html.si .cont h1:after {

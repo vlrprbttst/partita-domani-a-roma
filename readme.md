@@ -1,11 +1,11 @@
 # C'è la partita domani a Roma?
 
-#Note per Patrizio:
+##Note:
 
-1) vedere se c'è la partita, se c'è html.si, senno html.no
-2) vedere chi gioca e mettere il nome della squadra in span.lazio o span.roma
-3) vedere a che ora è la partita e mettere il risultato in span.orario
-4) prevedere un set di frasi personalizzate (in fondo) a secondo che sia "SI" o "NO"
+1) vedere se c'è la partita, se c'è html.si, senno html.no<br>
+2) vedere chi gioca e mettere il nome della squadra in span.lazio o span.roma<br>
+3) vedere a che ora è la partita e mettere il risultato in span.orario<br>
+4) prevedere un set di frasi personalizzate (in fondo) a secondo che sia "SI" o "NO"<br>
 
 ## Requirements
 You'll need to have the following items installed before continuing.
