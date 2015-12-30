@@ -251,14 +251,7 @@ p {
   display: block;
   z-index: 3;
 }
-//se è si
-html.si .cont h1:after {
-  content: "si";
-}
-// se è no
-html.no .cont h1:after {
-  content: "no";
-}
+
 html.no .cont h3 {
   display: none;
 }
