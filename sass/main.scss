@@ -43,6 +43,7 @@ h2 {
     line-height: 24px;
   }
 }
+
 h1 {
   @include reset;
   text-transform: uppercase;
@@ -195,11 +196,10 @@ p {
     transform: translateX(0px);
     transition: $transition;
   }
-
   a,
   a:visited,
   a:hover {
-    color:grey;
+    color: grey;
   }
 }
 .close {
@@ -240,17 +240,16 @@ p {
     display: none;
   }
 }
-
 .github {
-  position:absolute;
-  bottom:10px;
-  right:10px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
   width: 50px;
   height: 50px;
-  background:url(../images/github.png) center center no-repeat;
-  background-size:75%;
+  background: url(../images/github.png) center center no-repeat;
+  background-size: 75%;
   display: block;
-  z-index:3;
+  z-index: 3;
 }
 //se è si
 html.si .cont h1:after {
