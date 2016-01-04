@@ -21,7 +21,7 @@ The gems used in this project are Sass and Compass, type these in the terminal a
 
 `gem install compass`  
 
-Open the terminal in the root of the project and type `npm install`. Once finished, type `bower install` for the bower dependencies. then run ```npm install grunt-postcss autoprefixer cssnano```.
+Open the terminal in the root of the project and type `npm install`. Once finished, type `bower install` for the bower dependencies. 
 
 Once done, type `grunt rebuild`, wait for it to end and then type `grunt`, a browser window will open with your website running and will watch for changes and live reload accordingly.
 
