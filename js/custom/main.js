@@ -29,7 +29,7 @@ function getMobileOperatingSystem() {
 }
 getMobileOperatingSystem();
 
-/*
+
 $('.cont').imagesLoaded({
   background: true
 }, function() {
@@ -38,4 +38,4 @@ $('.cont').imagesLoaded({
       $('.overlay').css("display", "none");
 
     });
-});*/
+});
