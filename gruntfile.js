@@ -1,5 +1,7 @@
 module.exports = function(grunt) {
 
+    require('load-grunt-tasks')(grunt);
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
 
@@ -15,7 +17,7 @@ module.exports = function(grunt) {
 
         watch: {
             content: {
-                files: ['*.html'],
+                files: ['*.html','views/*.html'],
                 tasks: ['newer:htmlmin']
             },
             images: {
@@ -29,8 +31,9 @@ module.exports = function(grunt) {
             }, // end of delete sync
 
             scripts: {
-                files: ['js/libs/*.js', 'js/custom/*.js'],
-                tasks: ['concat', 'uglify'],
+                files: ['js/libs/*.js', 'js/custom/**/*.js'],
+                /*tasks: ['concat', 'uglify'],*/
+                tasks: ['copy:build'],
                 options: {
                     spawn: false,
                 }
@@ -72,6 +75,13 @@ module.exports = function(grunt) {
                     cwd: './', // Src matches are relative to this path.
                     src: ['*.html'], // Actual pattern(s) to match.
                     dest: '_site', // Destination path prefix.
+                    ext: '.html', // Dest filepaths will have this extension.
+                    extDot: 'first' // Extensions in filenames begin after the first dot
+                }, {
+                    expand: true, // Enable dynamic expansion.
+                    cwd: './views/', // Src matches are relative to this path.
+                    src: ['*.html'], // Actual pattern(s) to match.
+                    dest: '_site/views', // Destination path prefix.
                     ext: '.html', // Dest filepaths will have this extension.
                     extDot: 'first' // Extensions in filenames begin after the first dot
                 }]
@@ -156,12 +166,80 @@ module.exports = function(grunt) {
                 },
                 options: {
                     server: {
-                        baseDir: "_site/"
+                        baseDir: "_site/",
+                        middleware: [
+                            function(req, res, next) {
+                                var fs = require("fs"),
+                                    path = require("path"),
+                                    url = require("url");
+                                var folder = "_site/";
+                                var fileName = url.parse(req.url);
+                                fileName = fileName.href.split(fileName.search).join("");
+                                var fileExists = fs.existsSync(folder + fileName);
+                                if (!fileExists && fileName.indexOf("browser-sync-client") < 0) {
+                                    req.url = "/index.html";
+                                }
+                                return next();
+                            }
+                        ]
                     },
                     ghostMode: false, // don't sync scrolling across devices
                     watchTask: true
                 }
             }
+        },
+
+        // r.js compile config
+        requirejs: {
+            dist: {
+                options: {
+                    dir: '_site/js/',
+                    modules: [{
+                        name: 'main'
+                    }],
+                    preserveLicenseComments: false, // remove all comments
+                    removeCombined: true,
+                    baseUrl: 'js/custom/',
+                    mainConfigFile: 'js/custom/main.js',
+                    optimize: 'uglify2',
+                    uglify2: {
+                        mangle: false
+                    }
+                }
+            }
+        },
+
+        copy: {
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '.',
+                    dest: '_site/js/',
+                    src: ['bower_components/requirejs/require.js'],
+                    flatten: true
+                }]
+            },
+            build: {
+                files: [{
+                    expand: true,
+                    cwd: '.',
+                    dest: '_site/js/',
+                    src: ['bower_components/requirejs/require.js'],
+                    flatten: true
+                }, {
+                    expand: true,
+                    cwd: './js/custom/',
+                    dest: '_site/js/',
+                    src: ['**/*.js'],
+                    flatten: false
+                }, {
+                    expand: true,
+                    cwd: './bower_components/',
+                    dest: '_site/bower_components/',
+                    src: ['**/*.js'],
+                    flatten: false
+                }]
+            },
         },
 
         ftpush: {
@@ -182,20 +260,10 @@ module.exports = function(grunt) {
     });
 
 
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-htmlmin');
-    grunt.loadNpmTasks('grunt-browser-sync');
-    grunt.loadNpmTasks('grunt-contrib-sass');
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-postcss');
-    grunt.loadNpmTasks('grunt-contrib-imagemin');
-    grunt.loadNpmTasks('grunt-newer');
-    grunt.loadNpmTasks('grunt-delete-sync');
-    grunt.loadNpmTasks('grunt-ftpush');
-
     // default for development: type grunt
-    grunt.registerTask('default', ['browserSync', 'watch']);
+    grunt.registerTask('default', ['htmlmin', 'sass', 'postcss', 'imagemin', 'delete_sync', 'copy:build', 'browserSync', 'watch']);
+    grunt.registerTask('dist', ["requirejs:dist", "copy:dist", "browserSync", "watch"]);
+
     // rebuild the _site folder: type grunt rebuild
     grunt.registerTask('rebuild', ['htmlmin', 'sass', 'concat', 'uglify', 'postcss', 'imagemin', 'delete_sync']);
 };

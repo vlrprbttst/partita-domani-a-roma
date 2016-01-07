@@ -5,7 +5,7 @@
 <!--[if lt IE 9]>
 <html lang="en" class="ie ie-legacy">
 <![endif]-->
-<html lang="it" class="si">
+<html lang="it">
 
 <head>
   <meta charset="utf-8">
@@ -31,52 +31,43 @@
   <meta name="twitter:image" content="url/to/the/pic.jpg">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <base href="/">
 </head>
 
-<body class="loading">
+<body class="" ng-app="partitaaroma">
   <div class="rotate-device">
 
   </div>
   
-  <div class="overlay">
+  <div class="overlay" ng-show="!loaded">
     <div class="message">
       <div class="spin"></div>
     </div>
   </div>
-  <div class="menu"></div>
-  <div class="menu-cont">
-    <div class="close"></div>
-    <h1>Perche?</h1>
-    <p>Questo servizio è dedicato a tutti i romani che non seguono il calcio, ma ne sono vittima ogni settimana: <b>traffico</b>, aree di parcheggio <b>transennate</b>, strade <b>chiuse con conseguente deviazione del traffico</b>.</p>
-    <p>Chi non segue il calcio spesso scopre troppo tardi lo svolgersi di una partita, e si trova a fronteggiare i disagi del caso senza potersi organizzare in anticipo.</p>
-    <br>
-    <h1>Consultazione veloce</h1>
-    <p>Accedete al sito da mobile e cercate fra le opzioni del browser del vostro cellulare il tasto "<b>Add to Homescreen / Aggiungi a Home</b>". Cliccate e l'icona del sito vi apparirà nella schermata Home fra le altre app del vostro cellulare, in questo
-      modo sarà più veloce consultare il sito.</p>
-    <h1>Credits</h1>
-    <p>- Idea, grafica e sviluppo front-end: <a href="http://valeriopierbattista.com" target="_blank">Valerio Pierbattista</a>
-      <br> - Implementazione javascript: <a href="https://twitter.com/patrizio_munzi" target="_blank">Patrizio Munzi</a>
-      <br> - Le immagini di sfondo sono prese da google</p>
+
+  <div class="page" ng-controller="PageCtrl" ng-cloak ng-class="deviceModel">
+
+    <div class="menu" ng-click="opened = !opened" ></div>
+    <div class="menu-cont" ng-class="{'opened' : opened}">
+      <div class="close" ng-click="opened = !opened" ></div>
+      <h1>Perche?</h1>
+      <p>Questo servizio è dedicato a tutti i romani che non seguono il calcio, ma ne sono vittima ogni settimana: <b>traffico</b>, aree di parcheggio <b>transennate</b>, strade <b>chiuse con conseguente deviazione del traffico</b>.</p>
+      <p>Chi non segue il calcio spesso scopre troppo tardi lo svolgersi di una partita, e si trova a fronteggiare i disagi del caso senza potersi organizzare in anticipo.</p>
+      <br>
+      <h1>Consultazione veloce</h1>
+      <p>Accedete al sito da mobile e cercate fra le opzioni del browser del vostro cellulare il tasto "<b>Add to Homescreen / Aggiungi a Home</b>". Cliccate e l'icona del sito vi apparirà nella schermata Home fra le altre app del vostro cellulare, in questo
+        modo sarà più veloce consultare il sito.</p>
+      <h1>Credits</h1>
+      <p>- Idea, grafica e sviluppo front-end: <a href="http://valeriopierbattista.com" target="_blank">Valerio Pierbattista</a>
+        <br> - Implementazione javascript: <a href="https://twitter.com/patrizio_munzi" target="_blank">Patrizio Munzi</a>
+        <br> - Le immagini di sfondo sono prese da google</p>
+
+    </div>
+    <div class="cont" ng-view ng-class="{'opened' : opened}"></div>
 
   </div>
-  <div class="cont">
-    <div class="center">
-      <h2>C'è la partita
-        <br>
-        domani a Roma?</h2>
-      <h1>si</h1>
-      <h3>Gioca la
-        <span class="roma">roma</span> alle
-        <span class="orario">20:00</span>
-      </h3>
-      <p>
-        <!-- eventuali frasi personalizzate -->
-      </p>
-    </div>
-    <a href="https://github.com/vlrprbttst/partita-domani-a-roma" target="_blank" class="github"></a>
-  </div>
   <!-- JS scripts -->
-  <script src="js/production.min.js"></script>
+  <script src="js/require.js" data-main="js/main.js"></script>
 </body>
 
 </html>
