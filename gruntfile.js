@@ -217,6 +217,13 @@ module.exports = function(grunt) {
                     dest: '_site/js/',
                     src: ['bower_components/requirejs/require.js'],
                     flatten: true
+                },
+                {
+                    expand: true,
+                    cwd: '.',
+                    dest: '_site/',
+                    src: ['.htaccess'],
+                    flatten: true
                 }]
             },
             build: {
@@ -256,14 +263,14 @@ module.exports = function(grunt) {
                 simple: false,
                 useList: false
             }
-        }
+        },
+
+        clean: ["_site"]
     });
 
 
     // default for development: type grunt
-    grunt.registerTask('default', ['htmlmin', 'sass', 'postcss', 'imagemin', 'delete_sync', 'copy:build', 'browserSync', 'watch']);
-    grunt.registerTask('dist', ["requirejs:dist", "copy:dist", "browserSync", "watch"]);
-
-    // rebuild the _site folder: type grunt rebuild
-    grunt.registerTask('rebuild', ['htmlmin', 'sass', 'concat', 'uglify', 'postcss', 'imagemin', 'delete_sync']);
+    grunt.registerTask('default', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', 'copy:build', 'browserSync', 'watch']);
+    grunt.registerTask('dist', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', "requirejs:dist", "copy:dist", "browserSync", "watch"]);
+    grunt.registerTask('ftp', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', "requirejs:dist", "copy:dist", 'ftpush']);
 };

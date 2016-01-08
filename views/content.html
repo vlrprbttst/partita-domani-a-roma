@@ -7,7 +7,7 @@
         <h1>{{::match ? 'Si' : "No"}}</h1>
         <h3 ng-if="match">Gioca la
           <span class="{{::match.homeTeamClass}}">{{::match.homeTeamName}}</span> alle
-          <span class="orario">{{::match.timestamp | date:'hh:mm'}}</span>
+          <span class="orario">{{::match.timestamp | date:'HH:mm'}}</span>
         </h3>
         <p>
             <!-- eventuali frasi personalizzate -->

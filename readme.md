@@ -23,7 +23,7 @@ The gems used in this project are Sass and Compass, type these in the terminal a
 
 Open the terminal in the root of the project and type `npm install`. Once finished, type `bower install` for the bower dependencies. 
 
-Once done, type `grunt rebuild`, wait for it to end and then type `grunt`, a browser window will open with your website running and will watch for changes and live reload accordingly.
+Once done, type `grunt` wait for it to end, a browser window will open with your website running and will watch for changes and live reload accordingly.
 
 ## Instructions
 

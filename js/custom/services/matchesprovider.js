@@ -26,7 +26,7 @@ define(['angular', 'services/match'], function(angular) {
                     days = [];
                     var romaFixtures = $http({
                         method: 'GET',
-                        url: 'http://api.football-data.org/v1/teams/100/fixtures?timeFrame=n14&venue=home',
+                        url: 'http://api.football-data.org/v1/teams/100/fixtures?timeFrame=n2&venue=home',
                         headers: {
                             'X-Auth-Token': 'c13bbe0b9fde41ed80f374eb6f105954'
                         },
@@ -34,7 +34,7 @@ define(['angular', 'services/match'], function(angular) {
                     });
                     var lazioFixtures = $http({
                         method: 'GET',
-                        url: 'http://api.football-data.org/v1/teams/110/fixtures?timeFrame=n21&venue=home',
+                        url: 'http://api.football-data.org/v1/teams/110/fixtures?timeFrame=n2&venue=home',
                         headers: {
                             'X-Auth-Token': 'c13bbe0b9fde41ed80f374eb6f105954'
                         },

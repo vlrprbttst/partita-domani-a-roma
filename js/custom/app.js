@@ -3,8 +3,9 @@ define([
         'angular',
         'controllers/page',
         'controllers/content',
-        'services/matchesprovider'
-   ],
+        'services/matchesprovider',
+        'services/match'
+    ],
     /*deps*/
     function(angular, PageCtrl, ContentCtrl) /*invoke*/ {
         'use strict';
@@ -22,17 +23,18 @@ define([
                 'partitaaroma.controllers.PageCtrl',
                 'partitaaroma.controllers.ContentCtrl',
                 'partitaaroma.services.MatchesProvider',
+                'partitaaroma.services.Match',
                 'ngCookies',
                 'ngResource',
                 'ngSanitize',
                 'ngRoute',
-//                'ngAnimate',
+                //                'ngAnimate',
                 'ngTouch'
             ])
             .config(function($routeProvider, $locationProvider) {
                 $locationProvider.html5Mode(true);
                 $routeProvider
-                    .when('/domani', {
+                    .when('/', {
                         templateUrl: 'views/content.html',
                         controller: 'ContentCtrl',
                         resolve: {
@@ -40,7 +42,7 @@ define([
                                 return MatchesProvider.getMatch(1);
                             }
                         }
-                    })                                    
+                    })
                     .when('/oggi', {
                         templateUrl: 'views/content.html',
                         controller: 'ContentCtrl',
@@ -50,8 +52,32 @@ define([
                             }
                         }
                     })
+                    .when('/si', {
+                        templateUrl: 'views/content.html',
+                        controller: 'ContentCtrl',
+                        resolve: {
+                            match: function($route, MatchesProvider, Match) {
+                                var json = {
+                                    timestamp: new Date().getTime(),
+                                    homeTeamName: "AS Pierba",
+                                    awayTeamName: "",
+                                };
+
+                                return new Match(json);
+                            }
+                        }
+                    })
+                    .when('/no', {
+                        templateUrl: 'views/content.html',
+                        controller: 'ContentCtrl',
+                        resolve: {
+                            match: function($route, MatchesProvider, Match) {
+                                return null;
+                            }
+                        }
+                    })
                     .otherwise({
-                        redirectTo: '/domani'
+                        redirectTo: '/'
                     });
             });
     });

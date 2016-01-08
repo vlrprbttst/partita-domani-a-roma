@@ -11,10 +11,10 @@ define(['angular', 'services/device'], function(angular) {
     angular.module('partitaaroma.controllers.ContentCtrl', ['partitaaroma.services.Device'])
         .controller('ContentCtrl', function($rootScope, $scope, $window,  $location, Device, match) {
             $scope.link = 'oggi';
-            $scope.date = 'oggi';
+            $scope.date = 'domani';
             if ($location.path().indexOf('oggi') != -1) {
                 $scope.link = 'domani';
-                $scope.date = 'domani';
+                $scope.date = 'oggi';
             }
 
             $scope.match = match;
