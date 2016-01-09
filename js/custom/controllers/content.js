@@ -10,6 +10,12 @@ define(['angular', 'services/device'], function(angular) {
      */
     angular.module('partitaaroma.controllers.ContentCtrl', ['partitaaroma.services.Device'])
         .controller('ContentCtrl', function($rootScope, $scope, $window,  $location, Device, match) {
+            $rootScope.$on('$routeChangeStart', function(next, last) {
+                $rootScope.loaded = false;
+            });
+
+            var maxImgIndex = 10;
+
             $scope.link = 'oggi';
             $scope.date = 'domani';
             if ($location.path().indexOf('oggi') != -1) {
@@ -18,9 +24,18 @@ define(['angular', 'services/device'], function(angular) {
             }
 
             $scope.match = match;
-            $scope.contentClass = ($scope.match ? 'si' : 'no') + '-' + Math.floor((Math.random() * 10) + 1);
 
-            $rootScope.loaded = true;
+            var imgIndex = Math.floor((Math.random() * maxImgIndex) + 1);
+            var imgType = ($scope.match ? 'si' : 'no');
+
+            var bgImg = new Image();
+            bgImg.onload = function() {
+                $scope.contentClass = imgType + '-' + imgIndex;
+                $rootScope.loaded = true;
+                $rootScope.$apply();
+            };
+            bgImg.src = '/images/' + imgType + '-sfondo' + imgIndex + '.jpg';
+
 
         });
 });
