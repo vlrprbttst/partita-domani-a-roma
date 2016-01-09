@@ -1,10 +1,6 @@
 # C'è la partita domani a Roma?
 
-##Note:
-
-1) vedere se c'è la partita, se c'è html.si, senno html.no<br>
-2) vedere chi gioca e mettere il nome della squadra in span.lazio o span.roma<br>
-3) vedere a che ora è la partita e mettere il risultato in span.orario
+www.partitadomaniaroma.com
 
 ## Requirements
 You'll need to have the following items installed before continuing.
@@ -21,7 +17,7 @@ The gems used in this project are Sass and Compass, type these in the terminal a
 
 `gem install compass`  
 
-Open the terminal in the root of the project and type `npm install`. Once finished, type `bower install` for the bower dependencies. 
+Open the terminal in the root of the project and type `npm install --save-dev`. Once finished, type `bower install` for the bower dependencies.
 
 Once done, type `grunt` wait for it to end, a browser window will open with your website running and will watch for changes and live reload accordingly.
 
