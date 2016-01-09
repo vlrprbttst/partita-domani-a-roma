@@ -155,10 +155,7 @@ p {
   position: relative;
   z-index: 2;
   transition: $transition;
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  overflow: hidden;
+
   &:after {
     content: "";
     width: 100%;
@@ -178,6 +175,10 @@ p {
   }
   .cont-inner {
     height: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    overflow: hidden;
   }
 }
 .menu-cont {
@@ -269,7 +270,7 @@ html.no .cont p {
 .rotate-device {
   display: none;
 }
-html.isMobile {
+.page.isMobile {
   @media (orientation:landscape) {
     .rotate-device {
       height: 100%;
