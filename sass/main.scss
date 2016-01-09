@@ -4,6 +4,7 @@
 @import "partials/_mixin.scss";
 @import "partials/_normalize.scss";
 @import "partials/_overlayer.scss";
+
 html {
   box-sizing: border-box;
   height: 100%;
@@ -34,7 +35,7 @@ h2 {
   text-shadow: 0 0 4px rgba(0,0,0,.8);
   letter-spacing: 1px;
   text-transform: uppercase;
-  @include respond-to(412) {
+  @include respond-to(414) {
     font-size: 24px;
     line-height: 30px;
   }
@@ -50,9 +51,9 @@ h1 {
   font-size: $bigness;
   line-height: $bigness;
   text-shadow: 0 0 10px rgba(0,0,0,1);
-  color: white;
+  color: #fcff00;
   margin-bottom: 40px;
-  @include respond-to(412) {
+  @include respond-to(414) {
     font-size: 184px;
     line-height: 190px;
     margin: 20px 0;
@@ -71,14 +72,14 @@ h3 {
   letter-spacing: 1px;
   font-weight: bold;
   font-size: 32px;
-  line-height: 40px;
-  @include respond-to(412) {
+  line-height: 44px;
+  @include respond-to(414) {
     font-size: 20px;
-    line-height: 26px;
+    line-height: 30px;
   }
   @include respond-to(375) {
     font-size: 18px;
-    line-height: 24px;
+    line-height: 28px;
   }
 }
 p {
@@ -94,7 +95,7 @@ p {
   margin-top: 60px;
   font-family: $font2;
   display: none;
-  @include respond-to(412) {
+  @include respond-to(414) {
     margin-top: 20px;
     padding: 10px;
     font-size: 16px;
@@ -169,7 +170,8 @@ p {
   &.opened {
     transform: translateX($menu-offset);
     transition: $transition;
-    @include respond-to(412) {
+
+    @include respond-to(414) {
       transform: translateX(320px);
     }
   }
@@ -193,22 +195,23 @@ p {
   transform: translateX(- $menu-offset);
   transition: $transition;
   @include clearfix;
-  padding: 40px 40px 0;
+  padding: 40px;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-  @include respond-to(412) {
+  @include respond-to(414) {
     width: 320px;
     transform: translateX(- 320px);
-    padding: 40px 20px 0;
+    padding: 40px 20px;
   }
   &.opened {
     transform: translateX(0px);
     transition: $transition;
+    box-shadow:20px 0px 30px rgba(0,0,0,.4);
   }
   a,
   a:visited,
   a:hover {
-    color: grey;
+    color: #fff;
   }
 }
 .close {
@@ -227,14 +230,18 @@ p {
   font-size: 24px;
   line-height: 32px;
   text-shadow: none;
-  color: white;
+  color: #fcff00;
   margin-bottom: 20px;
   clear: both;
+  display: inline-block;
+  border-bottom:3px solid #fcff00;
+  
+
 }
 .menu-cont p {
   color: white;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 22px;
   text-shadow: none;
   letter-spacing: 0;
   background: none;
@@ -248,6 +255,15 @@ p {
   &:before {
     display: none;
   }
+}
+
+ul {
+    @include reset;
+    li {
+        list-style-position: outside;
+
+        p {margin-bottom: 5px;}
+    }
 }
 .github {
     background: url(../images/github.png) 3px bottom no-repeat;
@@ -270,4 +286,26 @@ p {
       background-size: auto 89px;
     }
   }
+}
+$switch:#BDC3C7;
+.switch {
+    position:absolute;
+    bottom:20px;
+    left: 50%;
+    transform:translateX(-50%);
+    z-index:11;
+    text-decoration: none;
+    border:1px solid white;
+    color: #fff;
+    background:rgba(0,0,0,.5);
+    font-family: $font2;
+    display: inline-block;
+    border-radius:4px;
+    padding:10px 20px;
+    text-align: center;
+    letter-spacing: 1px;
+    min-width:120px;
+    font-size:16px;
+
+
 }

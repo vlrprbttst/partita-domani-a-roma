@@ -25,12 +25,12 @@ require.config({
 window.name = 'NG_DEFER_BOOTSTRAP!';
 
 require([
-  'angular', 
-  'app', 
-  'angular-route', 
-  'angular-cookies', 
-  'angular-sanitize', 
-  'angular-resource', 
+  'angular',
+  'app',
+  'angular-route',
+  'angular-cookies',
+  'angular-sanitize',
+  'angular-resource',
   'angular-touch'
   ], function(angular, app, ngRoute, ngCookies, ngSanitize, ngResource, ngTouch) {
     'use strict';
@@ -41,4 +41,3 @@ require([
         angular.resumeBootstrap([app.name]);
     });
 });
-
