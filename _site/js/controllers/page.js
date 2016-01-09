@@ -9,7 +9,7 @@ define(['angular', 'services/device'], function(angular) {
      * Controller of the wutsapp
      */
     angular.module('partitaaroma.controllers.PageCtrl', ['partitaaroma.services.Device'])
-        .controller('PageCtrl', function($scope, $window, Device) {
+        .controller('PageCtrl', function($rootScope, $scope, $window, Device) {
             $scope.deviceModel = Device.getModel();
         });
 });

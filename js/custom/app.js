@@ -28,7 +28,6 @@ define([
                 'ngResource',
                 'ngSanitize',
                 'ngRoute',
-                //                'ngAnimate',
                 'ngTouch'
             ])
             .config(function($routeProvider, $locationProvider) {
