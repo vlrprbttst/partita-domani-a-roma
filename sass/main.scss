@@ -266,7 +266,7 @@ p {
 ul {
     @include reset;
     li {
-        list-style-position: outside;
+        list-style-position: inside;
         p {
             margin-bottom: 5px;
         }
