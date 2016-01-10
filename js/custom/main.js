@@ -36,7 +36,7 @@ require([
     'use strict';
     /* jshint ignore:start */
     var $html = angular.element(document.getElementsByTagName('html')[0]);
-    /* jshint ignore:end */
+    /* jshint ignore:end - */
     angular.element().ready(function() {
         angular.resumeBootstrap([app.name]);
     });
