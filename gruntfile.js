@@ -197,7 +197,7 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: '.',
                     dest: '_site/',
-                    src: ['.htaccess'],
+                    src: ['.htaccess','*.png','*.ico','*.xml','manifest.json'],
                     flatten: true
                 }]
             },
