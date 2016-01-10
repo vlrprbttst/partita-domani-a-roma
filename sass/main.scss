@@ -4,308 +4,324 @@
 @import "partials/_mixin.scss";
 @import "partials/_normalize.scss";
 @import "partials/_overlayer.scss";
-
 html {
-  box-sizing: border-box;
-  height: 100%;
+    box-sizing: border-box;
+    height: 100%;
 }
 *,
 *:before,
 *:after {
-  box-sizing: inherit;
+    box-sizing: inherit;
 }
 body {
-  background: #fff;
-  height: 100%;
-  font-family: $font;
-  @include reset;
-  overflow-x: hidden;
+    background: #fff;
+    height: 100%;
+    font-family: $font;
+    @include reset;
+    overflow-x: hidden;
 }
 .center {
-  @include vertical-align;
-  text-align: center;
-  z-index: 2;
-  margin: 0 auto;
+    @include vertical-align;
+    text-align: center;
+    z-index: 2;
+    margin: 0 auto;
 }
 h2 {
-  @include reset;
-  color: white;
-  font-size: 62px;
-  line-height: 68px;
-  text-shadow: 0 0 4px rgba(0,0,0,.8);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  @include respond-to(414) {
-    font-size: 24px;
-    line-height: 30px;
-  }
-  @include respond-to(375) {
-    font-size: 20px;
-    line-height: 24px;
-  }
+    @include reset;
+    color: white;
+    font-size: 62px;
+    line-height: 68px;
+    text-shadow: 0 0 4px rgba(0,0,0,.8);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    @include respond-to(414) {
+        font-size: 24px;
+        line-height: 30px;
+    }
+    @include respond-to(375) {
+        font-size: 20px;
+        line-height: 24px;
+    }
 }
-
 h1 {
-  @include reset;
-  text-transform: uppercase;
-  font-size: $bigness;
-  line-height: $bigness;
-  text-shadow: 0 0 10px rgba(0,0,0,1);
-  color: #fcff00;
-  margin-bottom: 40px;
-  @include respond-to(414) {
-    font-size: 184px;
-    line-height: 190px;
-    margin: 20px 0;
-  }
-  @include respond-to(375) {
-    font-size: 124px;
-    line-height: 130px;
-    margin: 20px 0;
-  }
+    @include reset;
+    text-transform: uppercase;
+    font-size: $bigness;
+    line-height: $bigness;
+    text-shadow: 0 0 10px rgba(0,0,0,1);
+    color: #fcff00;
+    margin-bottom: 40px;
+    @include respond-to(414) {
+        font-size: 184px;
+        line-height: 190px;
+        margin: 20px 0;
+    }
+    @include respond-to(375) {
+        font-size: 124px;
+        line-height: 130px;
+        margin: 20px 0;
+    }
 }
 h3 {
-  color: white;
-  @include reset;
-  text-transform: uppercase;
-  text-shadow: 0 0 4px rgba(0,0,0,.8);
-  letter-spacing: 1px;
-  font-weight: bold;
-  font-size: 32px;
-  line-height: 44px;
-  @include respond-to(414) {
-    font-size: 20px;
-    line-height: 30px;
-  }
-  @include respond-to(375) {
-    font-size: 18px;
-    line-height: 28px;
-  }
+    color: white;
+    @include reset;
+    text-transform: uppercase;
+    text-shadow: 0 0 4px rgba(0,0,0,.8);
+    letter-spacing: 1px;
+    font-weight: bold;
+    font-size: 32px;
+    line-height: 44px;
+    @include respond-to(414) {
+        font-size: 20px;
+        line-height: 30px;
+    }
+    @include respond-to(375) {
+        font-size: 18px;
+        line-height: 28px;
+    }
 }
 p {
-  color: white;
-  font-size: 24px;
-  line-height: 32px;
-  text-shadow: 0 0 4px rgba(0,0,0,.8);
-  background: rgba(0,0,0,.4);
-  padding: 20px;
-  font-weight: normal;
-  display: inline-block;
-  max-width: 75%;
-  margin-top: 60px;
-  font-family: $font2;
-  display: none;
-  @include respond-to(414) {
-    margin-top: 20px;
-    padding: 10px;
-    font-size: 16px;
-    line-height: 24px;
-    max-width: 80%;
-  }
-  @include respond-to(375) {
-    margin-top: 20px;
-    padding: 10px;
-    font-size: 12px;
-    line-height: 16px;
-  }
+    color: white;
+    font-size: 24px;
+    line-height: 32px;
+    text-shadow: 0 0 4px rgba(0,0,0,.8);
+    background: rgba(0,0,0,.4);
+    padding: 20px;
+    font-weight: normal;
+    display: inline-block;
+    max-width: 75%;
+    margin-top: 60px;
+    font-family: $font2;
+    display: none;
+    @include respond-to(414) {
+        margin-top: 20px;
+        padding: 10px;
+        font-size: 16px;
+        line-height: 24px;
+        max-width: 80%;
+    }
+    @include respond-to(375) {
+        margin-top: 20px;
+        padding: 10px;
+        font-size: 12px;
+        line-height: 16px;
+    }
 }
 .ss-lazio,
 .as-roma {
-  padding: 0 10px;
-  text-shadow: none;
-  border-radius: 2px;
-  @include respond-to(600) {
-    padding: 0 5px;
-  }
+    padding: 0 10px;
+    text-shadow: none;
+    border-radius: 2px;
+    @include respond-to(600) {
+        padding: 0 5px;
+    }
 }
 .ss-lazio {
-  background: #88D8F1;
-  color: white;
+    background: #88D8F1;
+    color: white;
 }
 .as-roma {
-  background: #A12034;
-  color: #FF8108;
+    background: #A12034;
+    color: #FF8108;
 }
 @import "partials/_backgrounds.scss";
-
 .page {
-  height: 100%;
+    height: 100%;
+    overflow: hidden;
 }
-
 .menu {
-  width: 50px;
-  height: 50px;
-  left: 20px;
-  top: 20px;
-  border: 1px solid white;
-  color: white;
-  background: url(../images/menu-ico.png) center center no-repeat rgba(0,0,0,.5);
-  position: absolute;
-  display: inline-block;
-  z-index: 3;
-  cursor: pointer;
-  background-size: 25px;
-  @include respond-to(375) {
-    left: 10px;
-    top: 10px;
-  }
+    width: 50px;
+    height: 50px;
+    left: 20px;
+    top: 20px;
+    border: 1px solid white;
+    color: white;
+    background: url(../images/menu-ico.png) center center no-repeat rgba(0,0,0,.5);
+    position: absolute;
+    display: inline-block;
+    z-index: 3;
+    cursor: pointer;
+    background-size: 25px;
+    @include respond-to(375) {
+        left: 10px;
+        top: 10px;
+    }
 }
 .cont {
-  height: 100%;
-  transform: translateX(0px);
-  position: relative;
-  z-index: 2;
-  transition: $transition;
-
-  &:after {
-    content: "";
-    width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    background: rgba(0,0,0,.5);
-    z-index: 1;
-  }
-  &.opened {
-    transform: translateX($menu-offset);
+    transform: translateX(0px);
+    position: relative;
+    z-index: 2;
     transition: $transition;
-
-    @include respond-to(414) {
-      transform: translateX(320px);
+    &:after {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        background: rgba(0,0,0,.5);
+        z-index: 1;
     }
-  }
-  .cont-inner {
-    height: 100%;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    overflow: hidden;
-  }
+    &.opened {
+        transform: translateX($menu-offset);
+        transition: $transition;
+        @include respond-to(414) {
+            transform: translateX(320px);
+        }
+    }
+    .cont-inner {
+        height: 100%;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        overflow: hidden;
+    }
 }
 .menu-cont {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: $menu-offset;
-  background: black;
-  color: white;
-  z-index: 4;
-  transform: translateX(- $menu-offset);
-  transition: $transition;
-  @include clearfix;
-  padding: 40px;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  @include respond-to(414) {
-    width: 320px;
-    transform: translateX(- 320px);
-    padding: 40px 20px;
-  }
-  &.opened {
-    transform: translateX(0px);
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: $menu-offset;
+    background-color: #000;
+    color: white;
+    z-index: 4;
+    transform: translateX(- $menu-offset);
     transition: $transition;
-    box-shadow:20px 0px 30px rgba(0,0,0,.4);
-  }
-  a,
-  a:visited,
-  a:hover {
-    color: #fff;
-  }
+    @include clearfix;
+    padding: 40px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    .stripes-top {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        background-image: repeating-linear-gradient( -55deg, #fcff00, #fcff00 10px, #000 10px, #000 20px );
+        background-color: #000;
+        background-position: bottom left;
+        background-repeat: repeat-x;
+    }
+    .stripes-top {
+        top: 0;
+        background-size: 100% 10px;
+        height: 10px;
+    }
+    @include respond-to(414) {
+        width: 320px;
+        transform: translateX(- 320px);
+        padding: 40px 20px;
+    }
+    &.opened {
+        transform: translateX(0px);
+        transition: $transition;
+        box-shadow: 20px 0 30px rgba(0,0,0,.4);
+    }
+    a,
+    a:visited,
+    a:hover {
+        color: #fff;
+    }
 }
 .close {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  width: 50px;
-  height: 50px;
-  background: url(../images/close-ico.png) center center no-repeat;
-  background-size: 40px;
-  cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    width: 50px;
+    height: 50px;
+    background: url(../images/close-ico.png) center center no-repeat;
+    background-size: 40px;
+    cursor: pointer;
 }
 .menu-cont h1 {
-  @include reset;
-  text-transform: uppercase;
-  font-size: 24px;
-  line-height: 32px;
-  text-shadow: none;
-  color: #fcff00;
-  margin-bottom: 20px;
-  clear: both;
-  display: inline-block;
-  border-bottom:3px solid #fcff00;
-  
-
+    @include reset;
+    text-transform: uppercase;
+    font-size: 24px;
+    line-height: 32px;
+    text-shadow: none;
+    color: #fcff00;
+    margin-bottom: 20px;
+    clear: both;
+    display: inline-block;
+    border-bottom: 3px solid #fcff00;
 }
 .menu-cont p {
-  color: white;
-  font-size: 14px;
-  line-height: 22px;
-  text-shadow: none;
-  letter-spacing: 0;
-  background: none;
-  padding: 0;
-  font-weight: normal;
-  display: block;
-  max-width: 100%;
-  margin-top: 0;
-  font-family: $font2;
-  &:after,
-  &:before {
-    display: none;
-  }
+    color: white;
+    font-size: 14px;
+    line-height: 22px;
+    text-shadow: none;
+    letter-spacing: 0;
+    background: none;
+    padding: 0;
+    font-weight: normal;
+    display: block;
+    max-width: 100%;
+    margin-top: 0;
+    font-family: $font2;
+    &:after,
+    &:before {
+        display: none;
+    }
 }
-
 ul {
     @include reset;
     li {
         list-style-position: outside;
-
-        p {margin-bottom: 5px;}
+        p {
+            margin-bottom: 5px;
+        }
     }
 }
-.github {
-    background: url(../images/github.png) 3px bottom no-repeat;
-    background-size: 20px;
-    padding-left: 26px;
-}
-
 .rotate-device {
-  display: none;
+    display: none;
 }
 .page.isMobile {
-  @media (orientation:landscape) {
-    .rotate-device {
-      height: 100%;
-      width: 100%;
-      position: absolute;
-      z-index: 1001;
-      background: url(../images/rotate.png) center center no-repeat #333;
-      display: block;
-      background-size: auto 89px;
+    @media (orientation:landscape) {
+        .rotate-device {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: 1001;
+            background: url(../images/rotate.png) center center no-repeat #333;
+            display: block;
+            background-size: auto 89px;
+        }
     }
-  }
 }
-$switch:#BDC3C7;
+$switch: #BDC3C7;
 .switch {
-    position:absolute;
-    bottom:20px;
+    position: absolute;
+    bottom: 20px;
     left: 50%;
-    transform:translateX(-50%);
-    z-index:11;
+    transform: translateX(-50%);
+    z-index: 11;
     text-decoration: none;
-    border:1px solid white;
+    border: 1px solid white;
     color: #fff;
-    background:rgba(0,0,0,.5);
+    background: rgba(0,0,0,.5);
     font-family: $font2;
     display: inline-block;
-    border-radius:4px;
-    padding:10px 20px;
+    border-radius: 4px;
+    padding: 10px 20px;
     text-align: center;
     letter-spacing: 1px;
-    min-width:120px;
-    font-size:16px;
-
-
+    min-width: 120px;
+    font-size: 16px;
+}
+.add2home {
+    display: none;
+}
+.isMobile {
+    .add2home {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        width: 50px;
+        height: 50px;
+        background: url(../images/add-ico.png) center center no-repeat;
+        background-size: 50%;
+        cursor: pointer;
+        z-index: 11;
+        display: block;
+    }
 }

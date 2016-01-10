@@ -1,36 +1,31 @@
 @keyframes clockwise {
-  to {
-    transform: rotate(360deg) translatez(0);
-  }
+    to {
+        transform: rotate(360deg) translatez(0);
+    }
 }
-body.loaded {
-  .overlay {
-    opacity: 0;
-    transition: opacity 2s;
-  }
-}
+
 .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 1000;
-  background: black;
-  opacity: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    background: black;
+    opacity: 1;
 }
 .message {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 .spin {
-  background-color: transparent;
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  box-shadow: 12px -12px hsla(0, 0%, 100%, 0.125), 17px 0 hsla(0, 0%, 100%, 0.250), 12px 12px hsla(0, 0%, 100%, 0.375), 0 17px hsla(0, 0%, 100%, 0.500), -12px 12px hsla(0, 0%, 100%, 0.625), -17px 0 hsla(0, 0%, 100%, 0.750), -12px -12px hsla(0, 0%, 100%, 0.875), 0 -17px hsla(0, 0%, 100%, 1.000);
-  animation: clockwise 0.75s steps(8, end) infinite;
+    background-color: transparent;
+    margin: 0 auto;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    box-shadow: 12px -12px hsla(0, 0%, 100%, 0.125), 17px 0 hsla(0, 0%, 100%, 0.250), 12px 12px hsla(0, 0%, 100%, 0.375), 0 17px hsla(0, 0%, 100%, 0.500), -12px 12px hsla(0, 0%, 100%, 0.625), -17px 0 hsla(0, 0%, 100%, 0.750), -12px -12px hsla(0, 0%, 100%, 0.875), 0 -17px hsla(0, 0%, 100%, 1.000);
+    animation: clockwise 0.75s steps(8, end) infinite;
 }

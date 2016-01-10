@@ -3,10 +3,10 @@ define(['angular', 'services/device'], function(angular) {
 
     /**
      * @ngdoc function
-     * @name wutsapp.controller:HomeCtrl
+     * @name partitaaroma.controller:HomeCtrl
      * @description
      * # HomeCtrl
-     * Controller of the wutsapp
+     * Controller of the partitaaroma
      */
     angular.module('partitaaroma.controllers.ContentCtrl', ['partitaaroma.services.Device'])
         .controller('ContentCtrl', function($rootScope, $scope, $window,  $location, Device, match) {
