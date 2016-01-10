@@ -4,9 +4,9 @@ www.partitadomaniaroma.com
 
 ## To Do
 
-1) spostare tutte le favicon che sono nella root del source, anche nella root di `_site` (referenziate nell' `head` della index, comprende vari file fra cui svg xml ecc., occhio all'`htaccess`)
-2) snippet javascript per l'**add to home screen**. l'elemento da usare è `<a href="#" class="add2home"></a>`, compare solo se `isMobile` e andrebbe cambiato il js a seconda che sia android o iphone
-3) aggiungere una classe `menu-opened` al `body` quando il menu è aperto. toglierla quando viene chiuso.
+* spostare tutte le favicon che sono nella root del source, anche nella root di `_site` (referenziate nell' `head` della index, comprende vari file fra cui svg xml ecc., occhio all'`htaccess`)
+* snippet javascript per l'**add to home screen**. l'elemento da usare è `<a href="#" class="add2home"></a>`, compare solo se `isMobile` e andrebbe cambiato il js a seconda che sia android o iphone
+* aggiungere una classe `menu-opened` al `body` quando il menu è aperto. toglierla quando viene chiuso.
 
 
 ## Requirements
