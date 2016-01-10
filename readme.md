@@ -8,6 +8,8 @@ www.partitadomaniaroma.com
 * snippet javascript per l'**add to home screen**. l'elemento da usare è `<a href="#" class="add2home"></a>`, compare solo se `isMobile` e andrebbe cambiato il js a seconda che sia android o iphone, mettendo lo script appropriato.
 * aggiungere una classe `menu-opened` al `body` quando il menu è aperto. toglierla quando viene chiuso.
 * cambiare la frase oggi/domani in "e oggi/domani?"
+* google analytics
+* bottoni di share twitter e facebook
 
 
 ## Requirements
