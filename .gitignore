@@ -23,6 +23,7 @@ bower_components
 .grunt/ftpush
 .grunt
 .ftppass
+_site
 
 # =========================
 # Operating System Files
