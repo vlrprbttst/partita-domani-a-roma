@@ -239,7 +239,7 @@ module.exports = function(grunt) {
                     authKey: 'key1' //ftp login is in the .ftppass file, remember adding it to the exclusions in .gitignore if you are publishing the repo on github
                 },
                 src: '_site', //root
-                dest: '/www/projects/partita-domani-a-roma', //destination folder
+                dest: '/www/projects/partitadomaniaroma', //destination folder
                 exclusions: ['**/.DS_Store'],
                 // keep : ['blog','cv','projects'], // SUPER IMPORTANT! check what resources should STAY on the server, for example your wordpress installation or other subfolders you use for other projects. else they'll get wiped out
                 simple: false,

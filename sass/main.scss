@@ -307,20 +307,4 @@ $switch: #BDC3C7;
     min-width: 120px;
     font-size: 16px;
 }
-.add2home {
-    display: none;
-}
-.isMobile {
-    .add2home {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        width: 50px;
-        height: 50px;
-        background: url(../images/add-ico.png) center center no-repeat;
-        background-size: 50%;
-        cursor: pointer;
-        z-index: 11;
-        display: block;
-    }
-}
+

@@ -3,11 +3,7 @@
 www.partitadomaniaroma.com
 
 ## To Do
-* ~~capire perché ora su `_site` c'è `bower_components`~~
-* ~~spostare tutte le favicon che sono nella root del source, anche nella root di `_site` (referenziate nell' `head` della index, comprende vari file fra cui svg xml ecc., occhio all'`htaccess`)~~
-* snippet javascript per l'**add to home screen**. l'elemento da usare è `<a href="#" class="add2home"></a>`, compare solo se `isMobile` e andrebbe cambiato il js a seconda che sia android o iphone, mettendo lo script appropriato.
-* aggiungere una classe `menu-opened` al `body` quando il menu è aperto. toglierla quando viene chiuso.
-* cambiare la frase oggi/domani in "e oggi/domani?"
+
 * google analytics
 * bottoni di share twitter e facebook
 
