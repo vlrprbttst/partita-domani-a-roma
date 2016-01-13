@@ -308,3 +308,20 @@ $switch: #BDC3C7;
     font-size: 16px;
 }
 
+.sharingiscaring {
+    position: fixed;
+    top: 8px;
+    right: 20px;
+    z-index:11;
+}
+
+.the-fb,
+.the-twt {
+    display: inline-block;
+}
+
+.the-twt {
+    top: 5px;
+    left: 10px;
+    position: relative;
+}
