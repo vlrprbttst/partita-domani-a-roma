@@ -16,11 +16,9 @@ define(['angular', 'services/device'], function(angular) {
 
             var maxImgIndex = 10;
 
-            $scope.link = 'oggi';
-            $scope.date = 'domani';
-            if ($location.path().indexOf('oggi') != -1) {
-                $scope.link = 'domani';
-                $scope.date = 'oggi';
+            $scope.location = 'oggi';
+            if ($location.path().indexOf('oggi') == -1) {
+                $scope.location = 'domani';
             }
 
             $scope.match = match;

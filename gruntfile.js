@@ -220,6 +220,13 @@ module.exports = function(grunt) {
                     dest: '_site/bower_components/',
                     src: ['**/*.js'],
                     flatten: false
+                },
+                {
+                    expand: true,
+                    cwd: './icons/',
+                    dest: '_site/',
+                    src: ['*'],
+                    flatten: false
                 }]
             },
         },

@@ -3,13 +3,13 @@
 
         <h2>C'è la partita
         <br>
-        {{::date}} a Roma?</h2>
+        {{::location}} a Roma?</h2>
         <h1>{{::match ? 'Si' : "No"}}</h1>
         <h3 ng-if="match">Gioca la
           <span class="{{::match.homeTeamClass}}">{{::match.homeTeamName}}</span><br> alle
           <span class="orario">{{::match.timestamp | date:'HH:mm'}}</span>
         </h3>
     </div>
-    <a class="switch" ng-href="/{{::link}}">{{::link}}</a>
+    <a class="switch" ng-href='{{::location == "domani" ? "/oggi" : "/"}}'>{{::location == "domani" ? "e oggi?" : "e domani?"}}</a>
     <a href="#" class="add2home"></a>
 </div>
