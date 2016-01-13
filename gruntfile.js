@@ -199,6 +199,12 @@ module.exports = function(grunt) {
                     dest: '_site/',
                     src: ['.htaccess','*.png','*.ico','*.xml','manifest.json'],
                     flatten: true
+                },{
+                    expand: true,
+                    cwd: './icons/',
+                    dest: '_site/',
+                    src: ['*'],
+                    flatten: false
                 }]
             },
             build: {
@@ -220,8 +226,7 @@ module.exports = function(grunt) {
                     dest: '_site/bower_components/',
                     src: ['**/*.js'],
                     flatten: false
-                },
-                {
+                },{
                     expand: true,
                     cwd: './icons/',
                     dest: '_site/',
