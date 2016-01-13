@@ -4,7 +4,6 @@ www.partitadomaniaroma.com
 
 ## To Do
 
-* google analytics
 * bottoni di share twitter e facebook
 
 
