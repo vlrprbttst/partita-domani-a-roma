@@ -4,7 +4,9 @@ define([
         'controllers/page',
         'controllers/content',
         'services/matchesprovider',
-        'services/match'
+        'services/match',
+        'directives/stopscreenmove',
+        'directives/load-once-a-day'
     ],
     /*deps*/
     function(angular, PageCtrl, ContentCtrl) /*invoke*/ {
@@ -24,6 +26,8 @@ define([
                 'partitaaroma.controllers.ContentCtrl',
                 'partitaaroma.services.MatchesProvider',
                 'partitaaroma.services.Match',
+                'partitaaroma.directives.LoadOnceADay',
+                'partitaaroma.directives.StopScreenMove',
                 'ngCookies',
                 'ngResource',
                 'ngSanitize',
