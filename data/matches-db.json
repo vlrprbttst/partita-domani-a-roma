@@ -1,0 +1,24 @@
+{
+    "2016-01-09": {
+        "date": "2016-01-09T19:45:00Z",
+        "status": "TIMED",
+        "matchday": 19,
+        "homeTeamName": "AS Roma",
+        "awayTeamName": "AC Milan",
+        "result": {
+            "goalsHomeTeam": null,
+            "goalsAwayTeam": null
+        }
+    },
+    "2016-01-10": {
+        "date": "2016-01-17T14:00:00Z",
+        "status": "TIMED",
+        "matchday": 20,
+        "homeTeamName": "AS Roma",
+        "awayTeamName": "Hellas Verona FC",
+        "result": {
+            "goalsHomeTeam": null,
+            "goalsAwayTeam": null
+        }
+    }
+}
