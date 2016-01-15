@@ -11,17 +11,29 @@ define(['angular'], function(angular) {
      */
     angular.module('partitaaroma.services.Device', [])
         .service('Device', function($window) {
-
+            var isIOS = false;
+            var isAndroid = false;
             var userAgent = navigator.userAgent || navigator.vendor || window.opera;
             var model = '';
             if (userAgent.match(/iPad/i) || userAgent.match(/iPhone/i) || userAgent.match(/iPod/i)) {
                 model = 'isMobile iOS';
+                isIOS = true;
             } else if (userAgent.match(/Android/i)) {
                 model = 'isMobile android';
+                isAndroid = true;
             }
             
             this.getModel = function() {
                 return model;
             };
+
+            this.isIOS = function() {
+                return isIOS;
+            };
+
+            this.isAndroid = function() {
+                return isAndroid;
+            };
+
         });
 });
