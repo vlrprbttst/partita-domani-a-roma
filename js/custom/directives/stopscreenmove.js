@@ -7,7 +7,7 @@ define(['angular', 'services/device'], function(angular) {
                 restrict: 'A',
                 scope: true,
                 link: function(scope, element, attrs) {
-                	if(Device.isIOS()) {
+                	if(!Device.isIOS()) {
                 		return;
                 	}
                     element.on("touchmove", function(event) {
