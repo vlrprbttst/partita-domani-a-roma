@@ -1,0 +1,16 @@
+{
+    "2016-01-20": [{
+        "type": "TIM Cup",
+        "date": "2016-01-20T19:45:00Z",
+        "status": "TIMED",
+        "homeTeamName": "SS Lazio",
+        "awayTeamName": "Juventus FC"
+    }],
+    "2016-02-25": [{
+        "type": "UEFA Europa League",
+        "date": "2016-02-25T18:00:00Z",
+        "status": "TIMED",
+        "homeTeamName": "SS Lazio",
+        "awayTeamName": "Galatasaray"
+    }]
+}

@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 
         watch: {
             content: {
-                files: ['*.html','views/*.html'],
+                files: ['*.html', 'views/*.html'],
                 tasks: ['newer:htmlmin']
             },
             images: {
@@ -29,6 +29,15 @@ module.exports = function(grunt) {
                 files: ['images/**/*.{png,jpg,gif,svg}'],
                 tasks: ['delete_sync']
             }, // end of delete sync
+
+            data: {
+                files: ['data/*'],
+                /*tasks: ['concat', 'uglify'],*/
+                tasks: ['copy:common'],
+                options: {
+                    spawn: false,
+                }
+            },
 
             scripts: {
                 files: ['js/libs/*.js', 'js/custom/**/*.js'],
@@ -185,29 +194,7 @@ module.exports = function(grunt) {
         },
 
         copy: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '.',
-                    dest: '_site/js/',
-                    src: ['bower_components/requirejs/require.js'],
-                    flatten: true
-                },
-                {
-                    expand: true,
-                    cwd: '.',
-                    dest: '_site/',
-                    src: ['.htaccess','*.png','*.ico','*.xml','manifest.json'],
-                    flatten: true
-                },{
-                    expand: true,
-                    cwd: './icons/',
-                    dest: '_site/',
-                    src: ['*'],
-                    flatten: false
-                }]
-            },
-            build: {
+            common: {
                 files: [{
                     expand: true,
                     cwd: '.',
@@ -215,6 +202,30 @@ module.exports = function(grunt) {
                     src: ['bower_components/requirejs/require.js'],
                     flatten: true
                 }, {
+                    expand: true,
+                    cwd: './icons/',
+                    dest: '_site/',
+                    src: ['*'],
+                    flatten: false
+                }, {
+                    expand: true,
+                    cwd: './data/',
+                    dest: '_site/data/',
+                    src: ['*'],
+                    flatten: false
+                }]
+            },
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '.',
+                    dest: '_site/',
+                    src: ['.htaccess', '*.png', '*.ico', '*.xml', 'manifest.json'],
+                    flatten: true
+                }]
+            },
+            build: {
+                files: [{
                     expand: true,
                     cwd: './js/custom/',
                     dest: '_site/js/',
@@ -225,12 +236,6 @@ module.exports = function(grunt) {
                     cwd: './bower_components/',
                     dest: '_site/bower_components/',
                     src: ['**/*.js'],
-                    flatten: false
-                },{
-                    expand: true,
-                    cwd: './icons/',
-                    dest: '_site/',
-                    src: ['*'],
                     flatten: false
                 }]
             },
@@ -257,7 +262,7 @@ module.exports = function(grunt) {
 
 
     // default for development: type grunt
-    grunt.registerTask('default', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', 'copy:build', 'browserSync', 'watch']);
-    grunt.registerTask('dist', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', "requirejs:dist", "copy:dist", "browserSync", "watch"]);
-    grunt.registerTask('ftp', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', "requirejs:dist", "copy:dist", 'ftpush']);
+    grunt.registerTask('default', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', 'copy:common', 'copy:build', 'browserSync', 'watch']);
+    grunt.registerTask('dist', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', "requirejs:dist", 'copy:common', "copy:dist", "browserSync", "watch"]);
+    grunt.registerTask('ftp', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', "requirejs:dist", "copy:common", "copy:dist", 'ftpush']);
 };

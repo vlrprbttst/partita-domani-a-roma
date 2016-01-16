@@ -1,5 +1,5 @@
 /*jshint unused: vars */
-define(['angular', 'services/match'], function(angular) {
+define(['angular', 'services/match', 'services/storedmatchesprovider'], function(angular) {
     'use strict';
 
     /**
@@ -9,8 +9,9 @@ define(['angular', 'services/match'], function(angular) {
      * # ContentProvider
      * Service in the angularjsRequiresjsYeomanTestApp.
      */
-    angular.module('partitaaroma.services.MatchesProvider', ['partitaaroma.services.Match'])
-        .service('MatchesProvider', function($http, $q, Match) {
+    angular.module('partitaaroma.services.MatchesProvider', ['partitaaroma.services.StoredMatchesProvider', 'partitaaroma.services.Match'])
+        .service('MatchesProvider', function($http, $q, StoredMatchesProvider, Match) {
+            var NUMBER_OF_DAYS_TO_FETCH = 2;
             var days;
 
             this.getMatch = function(dayIndex) {
@@ -26,7 +27,7 @@ define(['angular', 'services/match'], function(angular) {
                     days = [];
                     var romaFixtures = $http({
                         method: 'GET',
-                        url: 'http://api.football-data.org/v1/teams/100/fixtures?timeFrame=n2&venue=home',
+                        url: 'http://api.football-data.org/v1/teams/100/fixtures?timeFrame=n' + NUMBER_OF_DAYS_TO_FETCH + '&venue=home',
                         headers: {
                             'X-Auth-Token': 'c13bbe0b9fde41ed80f374eb6f105954'
                         },
@@ -34,15 +35,16 @@ define(['angular', 'services/match'], function(angular) {
                     });
                     var lazioFixtures = $http({
                         method: 'GET',
-                        url: 'http://api.football-data.org/v1/teams/110/fixtures?timeFrame=n2&venue=home',
+                        url: 'http://api.football-data.org/v1/teams/110/fixtures?timeFrame=n' + NUMBER_OF_DAYS_TO_FETCH + '&venue=home',
                         headers: {
                             'X-Auth-Token': 'c13bbe0b9fde41ed80f374eb6f105954'
                         },
                         dataType: 'jsonp'
                     });
+                    var storedFixtures = StoredMatchesProvider.getMatches(NUMBER_OF_DAYS_TO_FETCH);
 
 
-                    $q.all([romaFixtures, lazioFixtures]).then(function(arrayOfResults) {
+                    $q.all([romaFixtures, lazioFixtures, storedFixtures]).then(function(arrayOfResults) {
                         angular.forEach(arrayOfResults, function(result, index) {
                             angular.forEach(result.data.fixtures, function(fixture, index) {
                                 var fixtureDate = new Date(fixture.date);
