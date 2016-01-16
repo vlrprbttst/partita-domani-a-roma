@@ -26,7 +26,7 @@ body {
     z-index: 2;
     margin: 0 auto;
 }
-h2 {
+h1 {
     @include reset;
     color: white;
     font-size: 62px;
@@ -43,7 +43,7 @@ h2 {
         line-height: 24px;
     }
 }
-h1 {
+h2 {
     @include reset;
     text-transform: uppercase;
     font-size: $bigness;
@@ -221,6 +221,16 @@ p {
     a:visited,
     a:hover {
         color: #fff;
+    }
+}
+
+.screen {
+    max-width: 100%;
+    border-radius:4px;
+    margin-bottom: 10px;
+    border: 2px solid #fff;
+    &:last-child {
+        margin-bottom: 20px;
     }
 }
 .close {
