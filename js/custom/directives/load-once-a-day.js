@@ -2,7 +2,7 @@ define(['angular'], function(angular) {
     'use strict';
 
     angular.module('partitaaroma.directives.LoadOnceADay', [])
-        .directive("loadOnceADay", function($route, $interval) {
+        .directive("loadOnceADay", function($window, $interval) {
             return {
                 restrict: 'A',
                 scope: true,
@@ -21,7 +21,7 @@ define(['angular'], function(angular) {
                             tomorrow.setSeconds(0);
                             tomorrowMillis = tomorrow.getTime();
 
-                            $route.reload();                        
+                            $window.location.reload();                        
                         }
                     }, 500);
                 }
