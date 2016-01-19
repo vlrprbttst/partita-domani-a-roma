@@ -79,6 +79,12 @@ h3 {
         font-size: 18px;
         line-height: 28px;
     }
+
+    @media all and (min-height:700px) and (max-height:800px) {
+        br {
+            display: none
+        }
+    }
 }
 p {
     color: white;
@@ -115,6 +121,7 @@ p {
     @include respond-to(600) {
         padding: 0 5px;
     }
+    @media all and (min-height:700px) and (max-height:800px) {margin-right: 8px}
 }
 .ss-lazio {
     background: #88D8F1;

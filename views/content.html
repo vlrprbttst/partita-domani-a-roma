@@ -2,8 +2,7 @@
     <div class="center" >
 
         <h1>C'è la partita
-        <br>
-        {{::location}} a Roma?</h1>
+        <br> {{::location}} a Roma?</h1>
         <h2>{{::match ? 'Si' : "No"}}</h2>
         <h3 ng-if="match">Gioca la
           <span class="{{::match.homeTeamClass}}">{{::match.homeTeamName}}</span><br> alle
