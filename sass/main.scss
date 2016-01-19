@@ -61,6 +61,11 @@ h2 {
         line-height: 130px;
         margin: 20px 0;
     }
+
+    @media all and (min-height:700px) and (max-height:800px) {
+    font-size: 320px;
+    line-height: 320px;
+    }
 }
 h3 {
     color: white;
