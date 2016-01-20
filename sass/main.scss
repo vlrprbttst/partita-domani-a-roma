@@ -14,11 +14,14 @@ html {
     box-sizing: inherit;
 }
 body {
-    background: #fff;
+    background: #000;
     height: 100%;
     font-family: $font;
     @include reset;
     overflow-x: hidden;
+    color:white;
+    font-size:16px;
+    line-height: 24px;
 }
 .center {
     @include vertical-align;
@@ -61,10 +64,9 @@ h2 {
         line-height: 130px;
         margin: 20px 0;
     }
-
-    @media all and (min-height:700px) and (max-height:800px) {
-    font-size: 320px;
-    line-height: 320px;
+    @media all and (min-height:700px) and (max-height:800px) and (min-width:1024px) {
+        font-size: 320px;
+        line-height: 320px;
     }
 }
 h3 {
@@ -84,10 +86,9 @@ h3 {
         font-size: 18px;
         line-height: 28px;
     }
-
     @media all and (min-height:700px) and (max-height:800px) {
         br {
-            display: none
+            display: none;
         }
     }
 }
@@ -103,7 +104,6 @@ p {
     max-width: 75%;
     margin-top: 60px;
     font-family: $font2;
-
     @include respond-to(414) {
         margin-top: 20px;
         padding: 10px;
@@ -126,7 +126,9 @@ p {
     @include respond-to(600) {
         padding: 0 5px;
     }
-    @media all and (min-height:700px) and (max-height:800px) {margin-right: 8px}
+    @media all and (min-height:700px) and (max-height:800px) {
+        margin-right: 8px;
+    }
 }
 .ss-lazio {
     background: #88D8F1;
@@ -218,7 +220,6 @@ p {
         background-size: 100% 10px;
         height: 10px;
     }
-
     @include respond-to(414) {
         width: 320px;
         transform: translateX(- 320px);
@@ -235,15 +236,11 @@ p {
         color: #fff;
     }
 }
-
 .screen {
     max-width: 100%;
-    border-radius:4px;
-    margin-bottom: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
     border: 2px solid #fff;
-    &:last-child {
-        margin-bottom: 20px;
-    }
 }
 .close {
     position: absolute;
@@ -255,7 +252,8 @@ p {
     background-size: 40px;
     cursor: pointer;
 }
-.menu-cont h1 {
+.menu-cont h1,
+.cookie-cont h1 {
     @include reset;
     text-transform: uppercase;
     font-size: 24px;
@@ -267,7 +265,8 @@ p {
     display: inline-block;
     border-bottom: 3px solid #fcff00;
 }
-.menu-cont p {
+.menu-cont p,
+.cookie-cont p {
     color: white;
     font-size: 14px;
     line-height: 22px;
@@ -287,6 +286,7 @@ p {
 }
 ul {
     @include reset;
+    margin-bottom: 20px;
     li {
         list-style-position: inside;
         p {
@@ -330,19 +330,55 @@ $switch: #BDC3C7;
     min-width: 120px;
     font-size: 16px;
 }
-
 .sharingiscaring {
     position: fixed;
     top: 8px;
     right: 20px;
-    z-index:3;
+    z-index: 3;
+}
+.cookie-popup {
+
+    position: fixed;
+    top: 45px;
+    right: 12px;
+    z-index: 3;
+    color: white;
+    font-family: $font2;
+    font-size: 12px;
+    line-height: 18px;
+    width: 230px;
+    text-align: right;
+    a,a:visited,a:hover {
+        color:white;
+        text-decoration: underline;
+    }
+    @media all and (min-width:768px) {
+        font-size: 16px;
+        line-height: 24px;
+        width: 380px;
+        br {
+            display: none;
+        }
+    }
+
 }
 
+.cookie-cont {
+    max-width: 600px;
+    margin:0 auto;
+    text-align: left;
+    font-size:16px;
+    line-height:24px;
+    color:white;
+    padding:20px;
+    img {
+        width: 100%;
+    }
+}
 .the-fb,
 .the-twt {
     display: inline-block;
 }
-
 .the-twt {
     top: 5px;
     left: 10px;
