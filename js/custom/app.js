@@ -1,12 +1,20 @@
 /*jshint unused: vars */
 define([
         'angular',
+        'angular-route',
+        'angular-cookies',
+        'angular-sanitize',
+        'angular-resource',
+        'angular-touch',
+        'angular-instafeed',
         'controllers/page',
         'controllers/content',
+        'controllers/cookies',
         'services/matchesprovider',
         'services/match',
         'directives/stopscreenmove',
-        'directives/load-once-a-day'
+        'directives/load-once-a-day',
+        'directives/cookies-policy'
     ],
     /*deps*/
     function(angular, PageCtrl, ContentCtrl) /*invoke*/ {
@@ -24,17 +32,21 @@ define([
             .module('partitaaroma', [
                 'partitaaroma.controllers.PageCtrl',
                 'partitaaroma.controllers.ContentCtrl',
+                'partitaaroma.controllers.CookiesCtrl',
                 'partitaaroma.services.MatchesProvider',
                 'partitaaroma.services.Match',
                 'partitaaroma.directives.LoadOnceADay',
                 'partitaaroma.directives.StopScreenMove',
+                'partitaaroma.directives.CookiesPolicy',
                 'ngCookies',
                 'ngResource',
                 'ngSanitize',
                 'ngRoute',
-                'ngTouch'
+                'ngTouch',
+                'ngInstafeed'
             ])
-            .config(function($routeProvider, $locationProvider) {
+            .config(function($routeProvider, $locationProvider, ngInstafeedProvider) {
+                ngInstafeedProvider.setClientId('6cf204f3acbb4c15854f6d43056b91e8');
                 $locationProvider.html5Mode(true);
                 $routeProvider
                     .when('/', {
@@ -55,6 +67,11 @@ define([
                             }
                         }
                     })
+                    .when('/cookies', {
+                        templateUrl: 'views/cookies.html',
+                        controller: 'CookiesCtrl'
+                    })
+                    /*
                     .when('/si', {
                         templateUrl: 'views/content.html',
                         controller: 'ContentCtrl',
@@ -79,10 +96,9 @@ define([
                             }
                         }
                     })
+                    */
                     .otherwise({
                         redirectTo: '/'
                     });
-                    
-
             });
     });

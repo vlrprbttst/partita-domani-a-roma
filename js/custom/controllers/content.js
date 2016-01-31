@@ -8,8 +8,8 @@ define(['angular', 'services/device'], function(angular) {
      * # HomeCtrl
      * Controller of the partitaaroma
      */
-    angular.module('partitaaroma.controllers.ContentCtrl', ['partitaaroma.services.Device'])
-        .controller('ContentCtrl', function($rootScope, $scope, $window,  $location, Device, match) {
+    angular.module('partitaaroma.controllers.ContentCtrl', ['partitaaroma.services.Device', 'ngInstafeed'])
+        .controller('ContentCtrl', function($rootScope, $scope, $window, $location, Device, match, ngInstafeed) {
             $rootScope.$on('$routeChangeStart', function(next, last) {
                 $rootScope.loaded = false;
             });
@@ -25,15 +25,31 @@ define(['angular', 'services/device'], function(angular) {
 
             var imgIndex = Math.floor((Math.random() * maxImgIndex) + 1);
             var imgType = ($scope.match ? 'si' : 'no');
+            var backgroundUrl = '/images/' + imgType + '-sfondo' + imgIndex + '.jpg';
+            $scope.background = loadImageAndRemoveLoader(backgroundUrl);
 
-            var bgImg = new Image();
-            bgImg.onload = function() {
-                $scope.contentClass = imgType + '-' + imgIndex;
-                $rootScope.loaded = true;
-                $rootScope.$apply();
-            };
-            bgImg.src = '/images/' + imgType + '-sfondo' + imgIndex + '.jpg';
+            /*
+            * Background from instagram
+            *
+            ngInstafeed.get({}, function(err, res) {
+                if (err) {
+                    return;
+                }
+                console.log(res); // see what the data is like
+                //TODO: choose an image randomly among the data array
+                $scope.background = loadImageAndRemoveLoader(res.data[0].images.standard_resolution.url);
+            });
+            */
 
+            function loadImageAndRemoveLoader(url) {
+                var bgImg = new Image();
+                bgImg.onload = function() {
+                    $rootScope.loaded = true;
+                    $rootScope.$apply();
+                };
+                bgImg.src = url;
+                return url;
+            }
 
         });
 });

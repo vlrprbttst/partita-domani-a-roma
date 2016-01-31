@@ -17,12 +17,6 @@
     "test",
     "tests"
   ],
-  "devDependencies": {
-    "jquery": "~1.9.1"
-  },
-  "resolutions": {
-    "jquery": "~2.1.4"
-  },
   "dependencies": {
     "imagesloaded": "~4.0.0",
     "requirejs": "~2.1.22",

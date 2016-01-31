@@ -59,7 +59,7 @@
     <base href="/">
 </head>
 
-<body class="" ng-app="partitaaroma">
+<body class="" ng-app="partitaaroma" load-once-a-day >
     <div id="fb-root"></div>
     <div class="overlay" ng-show="!loaded">
         <div class="message">
@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    <div class="page" ng-controller="PageCtrl" ng-cloak ng-class="deviceModel" load-once-a-day>
+    <div class="page" ng-controller="PageCtrl" ng-cloak ng-class="deviceModel">
         <div class="rotate-device">
 
         </div>
@@ -111,10 +111,8 @@
                 <a class="twitter-share-button" href="http://www.partitadomaniaroma.com?text=C'è%20la%20partita%20domani%20a%20Roma%3F%20#RomaNord%20#Olimpico%20#ASRoma%20#SSLazio%20#traffico%20#SerieA" data-size="small">Tweet</a>
             </div>
         </div>
-        <div class="cookie-popup">
-            Utilizziamo i cookie per fornire le funzioni dei social media e analizzare il traffico.<br>&nbsp;<a class="cookie-consent" href="cookies.html">Accetta</a> oppure <a class="cookie-info" href="#">visualizza ulteriori dettagli</a>.
-        </div>
-        <div class="cont" ng-view ng-class="{'opened' : opened}" stop-screen-move >
+        
+        <div class="cont" ng-view ng-class="{'opened' : opened}"  >
 
         </div>
 

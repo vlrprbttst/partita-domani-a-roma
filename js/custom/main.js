@@ -1,11 +1,13 @@
 require.config({
   paths : {
-    angular : '../../bower_components/angular/angular',
+    'angular' : '../../bower_components/angular/angular',
     'angular-cookies' : '../../bower_components/angular-cookies/angular-cookies',
     'angular-resource' : '../../bower_components/angular-resource/angular-resource',
     'angular-route' : '../../bower_components/angular-route/angular-route',
     'angular-sanitize' : '../../bower_components/angular-sanitize/angular-sanitize',
     'angular-touch' : '../../bower_components/angular-touch/angular-touch',
+    'angular-instafeed': '../../bower_components/ngInstafeed/ng-instafeed.min',
+    'instafeed': '../../bower_components/instafeed\.js/instafeed'
   },
   shim : {
     angular : {
@@ -15,7 +17,8 @@ require.config({
     'angular-cookies' : ['angular'],
     'angular-sanitize' : ['angular'],
     'angular-resource' : ['angular'],
-    'angular-touch' : ['angular']
+    'angular-touch' : ['angular'],
+    'angular-instafeed' : ['instafeed', 'angular']
   },
   priority : ['angular'],
   packages : []
@@ -26,14 +29,11 @@ window.name = 'NG_DEFER_BOOTSTRAP!';
 
 require([
   'angular',
-  'app',
-  'angular-route',
-  'angular-cookies',
-  'angular-sanitize',
-  'angular-resource',
-  'angular-touch'
-  ], function(angular, app, ngRoute, ngCookies, ngSanitize, ngResource, ngTouch) {
+  'app', 
+  'instafeed'
+  ], function(angular, app, Instafeed) {
     'use strict';
+    window.Instafeed = Instafeed;
     /* jshint ignore:start */
     var $html = angular.element(document.getElementsByTagName('html')[0]);
     /* jshint ignore:end - */

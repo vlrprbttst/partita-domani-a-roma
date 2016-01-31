@@ -44,7 +44,7 @@ define(['angular', 'services/match', 'services/storedmatchesprovider'], function
                     var storedFixtures = StoredMatchesProvider.getMatches(NUMBER_OF_DAYS_TO_FETCH);
 
 
-                    $q.all([romaFixtures, lazioFixtures, storedFixtures]).then(function(arrayOfResults) {
+                    $q.all([/*romaFixtures, lazioFixtures, */storedFixtures]).then(function(arrayOfResults) {
                         angular.forEach(arrayOfResults, function(result, index) {
                             angular.forEach(result.data.fixtures, function(fixture, index) {
                                 var fixtureDate = new Date(fixture.date);
