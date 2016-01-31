@@ -1,4 +1,4 @@
-define(['angular', 'services/device'], function(angular) {
+define(['angular', 'services/device', 'services/utilities'], function(angular) {
     'use strict';
 
     /**
@@ -8,8 +8,8 @@ define(['angular', 'services/device'], function(angular) {
      * # HomeCtrl
      * Controller of the partitaaroma
      */
-    angular.module('partitaaroma.controllers.ContentCtrl', ['partitaaroma.services.Device', 'ngInstafeed'])
-        .controller('ContentCtrl', function($rootScope, $scope, $window, $location, Device, match, ngInstafeed) {
+    angular.module('partitaaroma.controllers.ContentCtrl', ['partitaaroma.services.Device', 'partitaaroma.services.Utilities', 'ngInstafeed'])
+        .controller('ContentCtrl', function($rootScope, $scope, $window, $location, Device, match, ngInstafeed, Utilities) {
             $rootScope.$on('$routeChangeStart', function(next, last) {
                 $rootScope.loaded = false;
             });
@@ -26,7 +26,10 @@ define(['angular', 'services/device'], function(angular) {
             var imgIndex = Math.floor((Math.random() * maxImgIndex) + 1);
             var imgType = ($scope.match ? 'si' : 'no');
             var backgroundUrl = '/images/' + imgType + '-sfondo' + imgIndex + '.jpg';
-            $scope.background = loadImageAndRemoveLoader(backgroundUrl);
+            $scope.background = Utilities.loadImage(backgroundUrl, function() {
+                $rootScope.loaded = true;
+                $rootScope.$apply();
+            });
 
             /*
             * Background from instagram
@@ -37,19 +40,12 @@ define(['angular', 'services/device'], function(angular) {
                 }
                 console.log(res); // see what the data is like
                 //TODO: choose an image randomly among the data array
-                $scope.background = loadImageAndRemoveLoader(res.data[0].images.standard_resolution.url);
-            });
-            */
-
-            function loadImageAndRemoveLoader(url) {
-                var bgImg = new Image();
-                bgImg.onload = function() {
+                $scope.background = Utilities.loadImage(res.data[0].images.standard_resolution.url, function() {
                     $rootScope.loaded = true;
                     $rootScope.$apply();
-                };
-                bgImg.src = url;
-                return url;
-            }
+                });
+            });
+            */
 
         });
 });
