@@ -19,8 +19,8 @@ body {
     font-family: $font;
     @include reset;
     overflow-x: hidden;
-    color:white;
-    font-size:16px;
+    color: white;
+    font-size: 16px;
     line-height: 24px;
 }
 .center {
@@ -138,9 +138,7 @@ p {
     background: #A12034;
     color: #FF8108;
 }
-
 //@import "partials/_backgrounds.scss";
-
 .page {
     height: 100%;
     overflow: hidden;
@@ -339,7 +337,6 @@ $switch: #BDC3C7;
     z-index: 3;
 }
 .cookie-popup {
-
     position: fixed;
     top: 45px;
     right: 12px;
@@ -350,8 +347,10 @@ $switch: #BDC3C7;
     line-height: 18px;
     width: 230px;
     text-align: right;
-    a,a:visited,a:hover {
-        color:white;
+    a,
+    a:visited,
+    a:hover {
+        color: white;
         text-decoration: underline;
     }
     @media all and (min-width:768px) {
@@ -362,30 +361,57 @@ $switch: #BDC3C7;
             display: none;
         }
     }
-
 }
-
 .cookie-cont {
-    max-width: 600px;
-    margin:0 auto;
     text-align: left;
-    font-size:16px;
-    line-height:24px;
-    color:white;
+    font-size: 16px;
+    line-height: 24px;
+    color: white;
     height: 100%;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    z-index: 2;
+    z-index: 3;
     position: absolute;
-    img {
-        width: 100%;
+    width: 100%;
+    background:#111;
+    .cookie-inner {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 80px 20px 40px;
+        @media (min-width:768px) {
+            padding-top: 50px;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 5px;
+        }
+        a,
+        a:visited,
+        a:hover {
+            color: white;
+        }
+        a.back-btn {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #fcff00;
+            color: black;
+            left: 0;
+            padding: 5px 10px 5px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        h1 {
+            border: 0;
+        }
     }
 }
 
-.cookie-cont-inner {
-    padding: 0 20px 20px 20px;
+.cont.opened a.back-btn {
+    position: static;
 }
-
 .the-fb,
 .the-twt {
     display: inline-block;
