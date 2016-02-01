@@ -8,11 +8,13 @@ html {
     box-sizing: border-box;
     height: 100%;
 }
+
 *,
 *:before,
 *:after {
     box-sizing: inherit;
 }
+
 body {
     background: #000;
     height: 100%;
@@ -23,18 +25,20 @@ body {
     font-size: 16px;
     line-height: 24px;
 }
+
 .center {
     @include vertical-align;
     text-align: center;
     z-index: 2;
     margin: 0 auto;
 }
+
 h1 {
     @include reset;
     color: white;
     font-size: 62px;
     line-height: 68px;
-    text-shadow: 0 0 4px rgba(0,0,0,.8);
+    text-shadow: 0 0 4px rgba(0, 0, 0, .8);
     letter-spacing: 1px;
     text-transform: uppercase;
     @include respond-to(414) {
@@ -46,12 +50,13 @@ h1 {
         line-height: 24px;
     }
 }
+
 h2 {
     @include reset;
     text-transform: uppercase;
     font-size: $bigness;
     line-height: $bigness;
-    text-shadow: 0 0 10px rgba(0,0,0,1);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 1);
     color: #fcff00;
     margin-bottom: 40px;
     @include respond-to(414) {
@@ -69,11 +74,12 @@ h2 {
         line-height: 320px;
     }
 }
+
 h3 {
     color: white;
     @include reset;
     text-transform: uppercase;
-    text-shadow: 0 0 4px rgba(0,0,0,.8);
+    text-shadow: 0 0 4px rgba(0, 0, 0, .8);
     letter-spacing: 1px;
     font-weight: bold;
     font-size: 32px;
@@ -92,12 +98,13 @@ h3 {
         }
     }
 }
+
 p {
     color: white;
     font-size: 24px;
     line-height: 32px;
-    text-shadow: 0 0 4px rgba(0,0,0,.8);
-    background: rgba(0,0,0,.4);
+    text-shadow: 0 0 4px rgba(0, 0, 0, .8);
+    background: rgba(0, 0, 0, .4);
     padding: 20px;
     font-weight: normal;
     display: inline-block;
@@ -118,6 +125,7 @@ p {
         line-height: 16px;
     }
 }
+
 .ss-lazio,
 .as-roma {
     padding: 0 10px;
@@ -130,19 +138,23 @@ p {
         margin-right: 8px;
     }
 }
+
 .ss-lazio {
     background: #88D8F1;
     color: white;
 }
+
 .as-roma {
     background: #A12034;
     color: #FF8108;
 }
+
 //@import "partials/_backgrounds.scss";
 .page {
     height: 100%;
     overflow: hidden;
 }
+
 .menu {
     width: 50px;
     height: 50px;
@@ -151,7 +163,7 @@ p {
     border: 1px solid white;
     border-radius: 4px;
     color: white;
-    background: url(../images/menu-ico.png) center center no-repeat rgba(0,0,0,.5);
+    background: url(../images/menu-ico.png) center center no-repeat rgba(0, 0, 0, .5);
     position: absolute;
     display: inline-block;
     z-index: 3;
@@ -162,6 +174,7 @@ p {
         top: 10px;
     }
 }
+
 .cont {
     height: 100%;
     transform: translateX(0px);
@@ -175,15 +188,8 @@ p {
         position: absolute;
         top: 0;
         bottom: 0;
-        background: rgba(0,0,0,.5);
+        background: rgba(0, 0, 0, .5);
         z-index: 1;
-    }
-    &.opened {
-        transform: translateX($menu-offset);
-        transition: $transition;
-        @include respond-to(414) {
-            transform: translateX(320px);
-        }
     }
     .cont-inner {
         height: 100%;
@@ -191,8 +197,16 @@ p {
         background-position: center center;
         background-repeat: no-repeat;
         overflow: hidden;
+        &.opened {
+            transform: translateX($menu-offset);
+            transition: $transition;
+            @include respond-to(414) {
+                transform: translateX(320px);
+            }
+        }
     }
 }
+
 .menu-cont {
     position: absolute;
     left: 0;
@@ -212,7 +226,7 @@ p {
         position: absolute;
         left: 0;
         width: 100%;
-        background-image: repeating-linear-gradient( -55deg, #fcff00, #fcff00 10px, #000 10px, #000 20px );
+        background-image: repeating-linear-gradient( -55deg, #fcff00, #fcff00 10px, #000 10px, #000 20px);
         background-color: #000;
         background-position: bottom left;
         background-repeat: repeat-x;
@@ -228,7 +242,7 @@ p {
     &.opened {
         transform: translateX(0px);
         transition: $transition;
-        box-shadow: 20px 0 30px rgba(0,0,0,.4);
+        box-shadow: 20px 0 30px rgba(0, 0, 0, .4);
     }
     a,
     a:visited,
@@ -236,12 +250,14 @@ p {
         color: #fff;
     }
 }
+
 .screen {
     max-width: 100%;
     border-radius: 4px;
     margin-bottom: 20px;
     border: 2px solid #fff;
 }
+
 .close {
     position: absolute;
     right: 10px;
@@ -252,6 +268,7 @@ p {
     background-size: 40px;
     cursor: pointer;
 }
+
 .menu-cont h1,
 .cookie-cont h1 {
     @include reset;
@@ -265,6 +282,7 @@ p {
     display: inline-block;
     border-bottom: 3px solid #fcff00;
 }
+
 .menu-cont p,
 .cookie-cont p {
     color: white;
@@ -284,6 +302,7 @@ p {
         display: none;
     }
 }
+
 ul {
     @include reset;
     margin-bottom: 20px;
@@ -294,11 +313,13 @@ ul {
         }
     }
 }
+
 .rotate-device {
     display: none;
 }
+
 .page.isMobile {
-    @media (orientation:landscape) {
+    @media (orientation: landscape) {
         .rotate-device {
             height: 100%;
             width: 100%;
@@ -310,6 +331,7 @@ ul {
         }
     }
 }
+
 $switch: #BDC3C7;
 .switch {
     position: absolute;
@@ -320,7 +342,7 @@ $switch: #BDC3C7;
     text-decoration: none;
     border: 1px solid white;
     color: #fff;
-    background: rgba(0,0,0,.5);
+    background: rgba(0, 0, 0, .5);
     font-family: $font2;
     display: inline-block;
     border-radius: 4px;
@@ -330,12 +352,14 @@ $switch: #BDC3C7;
     min-width: 120px;
     font-size: 16px;
 }
+
 .sharingiscaring {
     position: fixed;
     top: 8px;
     right: 20px;
     z-index: 3;
 }
+
 .cookie-popup {
     position: fixed;
     top: 45px;
@@ -362,6 +386,7 @@ $switch: #BDC3C7;
         }
     }
 }
+
 .cookie-cont {
     text-align: left;
     font-size: 16px;
@@ -373,12 +398,12 @@ $switch: #BDC3C7;
     z-index: 3;
     position: absolute;
     width: 100%;
-    background:#111;
+    background: #111;
     .cookie-inner {
         max-width: 600px;
         margin: 0 auto;
         padding: 80px 20px 40px;
-        @media (min-width:768px) {
+        @media (min-width: 768px) {
             padding-top: 50px;
         }
         img {
@@ -412,10 +437,12 @@ $switch: #BDC3C7;
 .cont.opened a.back-btn {
     position: static;
 }
+
 .the-fb,
 .the-twt {
     display: inline-block;
 }
+
 .the-twt {
     top: 5px;
     left: 10px;

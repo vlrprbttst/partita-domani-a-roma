@@ -11,7 +11,9 @@ define(['angular'], function(angular) {
                     scope.showCookiesPolicy = $cookies.get('showCookiesPolicy') !== 'false';
                     scope.acceptCookiesPolicy = function () {
                         scope.showCookiesPolicy = false;
-                        $cookies.put('showCookiesPolicy', 'false');
+                        var cookieExpirationDate = new Date();
+                        cookieExpirationDate.setYear(2100);
+                        $cookies.put('showCookiesPolicy', 'false', {expires: cookieExpirationDate});
                     };
                 }
             };
