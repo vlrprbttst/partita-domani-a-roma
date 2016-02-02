@@ -17,5 +17,13 @@ define(['angular'], function(angular) {
                 bgImg.src = url;
                 return url;
             };
+
+            var teamNameTransformerMap = {
+                'ss lazio': 'lazio',
+                'as roma': 'roma'
+            };
+            this.transformTeamName  = function(teamName) {
+                return teamNameTransformerMap[teamName];
+            };
         });
 });
