@@ -230,7 +230,6 @@ p {
     &.menu_opened {
         transform: translateX(0px);
         transition: $transition;
-        box-shadow: 20px 0 30px rgba(0, 0, 0, .4);
     }
     a,
     a:visited,
@@ -360,6 +359,8 @@ $switch: #BDC3C7;
     line-height: 18px;
     width: 230px;
     text-align: right;
+    transition: $transition;
+    transform: translateX(0);
     a,
     a:visited,
     a:hover {
@@ -373,6 +374,14 @@ $switch: #BDC3C7;
         br {
             display: none;
         }
+    }
+}
+
+.page.menu_opened .cookie-popup {
+    transition: $transition;
+    transform: translateX($menu-offset);
+    @include respond-to(414) {
+        transform: translateX(320px);
     }
 }
 .cookie-cont {
