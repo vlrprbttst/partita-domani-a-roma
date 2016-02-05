@@ -8,13 +8,11 @@ html {
     box-sizing: border-box;
     height: 100%;
 }
-
 *,
 *:before,
 *:after {
     box-sizing: inherit;
 }
-
 body {
     background: #000;
     height: 100%;
@@ -25,14 +23,12 @@ body {
     font-size: 16px;
     line-height: 24px;
 }
-
 .center {
     @include vertical-align;
     text-align: center;
     z-index: 2;
     margin: 0 auto;
 }
-
 h1 {
     @include reset;
     color: white;
@@ -50,7 +46,6 @@ h1 {
         line-height: 24px;
     }
 }
-
 h2 {
     @include reset;
     text-transform: uppercase;
@@ -74,7 +69,6 @@ h2 {
         line-height: 320px;
     }
 }
-
 h3 {
     color: white;
     @include reset;
@@ -98,7 +92,6 @@ h3 {
         }
     }
 }
-
 p {
     color: white;
     font-size: 24px;
@@ -125,7 +118,6 @@ p {
         line-height: 16px;
     }
 }
-
 .lazio,
 .roma {
     padding: 0 10px;
@@ -138,23 +130,19 @@ p {
         margin-right: 8px;
     }
 }
-
 .lazio {
     background: #88D8F1;
     color: white;
 }
-
 .roma {
     background: #A12034;
     color: #FF8108;
 }
-
 //@import "partials/_backgrounds.scss";
 .page {
     height: 100%;
     overflow: hidden;
 }
-
 .menu {
     width: 50px;
     height: 50px;
@@ -163,7 +151,7 @@ p {
     border: 1px solid white;
     border-radius: 4px;
     color: white;
-    background: url(../images/menu-ico.png) center center no-repeat rgba(0, 0, 0, .5);
+    background: url("../images/menu-ico.png") center center no-repeat rgba(0, 0, 0, .5);
     position: absolute;
     display: inline-block;
     z-index: 3;
@@ -174,14 +162,12 @@ p {
         top: 10px;
     }
 }
-
 .cont {
     height: 100%;
     transform: translateX(0px);
     position: relative;
     z-index: 2;
     transition: $transition;
-
     .cont-inner {
         height: 100%;
         background-size: cover;
@@ -189,7 +175,7 @@ p {
         background-repeat: no-repeat;
         overflow: hidden;
         transition: $transition;
-        transform:translateX(0);
+        transform: translateX(0);
         &.menu_opened {
             transform: translateX($menu-offset);
             transition: $transition;
@@ -209,7 +195,6 @@ p {
         }
     }
 }
-
 .menu-cont {
     position: absolute;
     left: 0;
@@ -253,25 +238,22 @@ p {
         color: #fff;
     }
 }
-
 .screen {
     max-width: 100%;
     border-radius: 4px;
     margin-bottom: 20px;
     border: 2px solid #fff;
 }
-
 .close {
     position: absolute;
     right: 10px;
     top: 20px;
     width: 50px;
     height: 50px;
-    background: url(../images/close-ico.png) center center no-repeat;
+    background: url("../images/close-ico.png") center center no-repeat;
     background-size: 40px;
     cursor: pointer;
 }
-
 .menu-cont h1,
 .cookie-cont h1 {
     @include reset;
@@ -285,7 +267,6 @@ p {
     display: inline-block;
     border-bottom: 3px solid #fcff00;
 }
-
 .menu-cont p,
 .cookie-cont p {
     color: white;
@@ -305,7 +286,6 @@ p {
         display: none;
     }
 }
-
 ul {
     @include reset;
     margin-bottom: 20px;
@@ -316,11 +296,9 @@ ul {
         }
     }
 }
-
 .rotate-device {
     display: none;
 }
-
 .page.isMobile {
     @media (orientation: landscape) {
         .rotate-device {
@@ -328,13 +306,12 @@ ul {
             width: 100%;
             position: absolute;
             z-index: 1001;
-            background: url(../images/rotate.png) center center no-repeat #333;
+            background: url("../images/rotate.png") center center no-repeat #333;
             display: block;
             background-size: auto 89px;
         }
     }
 }
-
 $switch: #BDC3C7;
 .switch {
     position: absolute;
@@ -355,14 +332,23 @@ $switch: #BDC3C7;
     min-width: 120px;
     font-size: 16px;
 }
-
 .sharingiscaring {
     position: fixed;
     top: 8px;
     right: 20px;
     z-index: 3;
+    transform: translateX(0px);
+    transition: $transition;
 }
-
+.page.menu_opened {
+    .sharingiscaring {
+        transition: $transition;
+        transform: translateX($menu-offset);
+        @include respond-to(414) {
+            transform: translateX(320px);
+        }
+    }
+}
 .cookie-popup {
     position: fixed;
     top: 45px;
@@ -389,7 +375,6 @@ $switch: #BDC3C7;
         }
     }
 }
-
 .cookie-cont {
     text-align: left;
     font-size: 16px;
@@ -401,11 +386,10 @@ $switch: #BDC3C7;
     z-index: 3;
     position: absolute;
     width: 100%;
-    
     .cookie-inner {
         max-width: 600px;
         margin: 0 auto;
-        padding:20px;
+        padding: 20px;
         a,
         a:visited,
         a:hover {
@@ -417,7 +401,7 @@ $switch: #BDC3C7;
             background: #fcff00;
             color: black;
             left: 0;
-            padding: 5px 10px 5px;
+            padding: 5px 10px;
             text-align: center;
             text-transform: uppercase;
         }
@@ -426,14 +410,10 @@ $switch: #BDC3C7;
         }
     }
 }
-
-
-
 .the-fb,
 .the-twt {
     display: inline-block;
 }
-
 .the-twt {
     top: 5px;
     left: 10px;
