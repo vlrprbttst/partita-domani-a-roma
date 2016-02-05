@@ -6,11 +6,25 @@
         "homeTeamName": "SS Lazio",
         "awayTeamName": "Juventus FC"
     }],
+    "2016-02-14": [{
+        "type": "Rugby Six Nations",
+        "date": "2016-02-14T14:00:00Z",
+        "status": "TIMED",
+        "homeTeamName": "Italrugby",
+        "awayTeamName": "Inghilterra"
+    }],
     "2016-02-25": [{
         "type": "UEFA Europa League",
-        "date": "2016-02-25T18:00:00Z",
+        "date": "2016-02-25T17:00:00Z",
         "status": "TIMED",
         "homeTeamName": "SS Lazio",
         "awayTeamName": "Galatasaray"
+    }],
+    "2016-02-27": [{
+        "type": "Rugby Six Nations",
+        "date": "2016-02-14T14:25:00Z",
+        "status": "TIMED",
+        "homeTeamName": "Italrugby",
+        "awayTeamName": "Inghilterra"
     }]
 }

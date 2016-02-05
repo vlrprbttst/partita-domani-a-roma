@@ -35,7 +35,7 @@ define(['angular', 'services/match', 'services/storedmatchesprovider'], function
                                 fixtures: getDaysMatches(numberOfDays)
                             }
                         });
-                        return;                        
+                        return;
                     });
                 });
 
@@ -53,11 +53,15 @@ define(['angular', 'services/match', 'services/storedmatchesprovider'], function
                     var nowMillis = now.getTime();
                     for (var i = 1; i <= numberOfDays; i++) {
                         var day = new Date(nowMillis + 86400000 * (i - 1));
+                        var date = day.getDate();
+                        if (date < 10) {
+                            date = '0' + date;
+                        }
                         var month = day.getMonth() + 1;
-                        if(month < 10) {
+                        if (month < 10) {
                             month = '0' + month;
                         }
-                        var key = day.getFullYear() + "-" + month + "-" + day.getDate();
+                        var key = day.getFullYear() + "-" + month + "-" + date;
                         keys.push(key);
                     }
                 }

@@ -30,22 +30,14 @@
     <h1>Cookies</h1>
     <p>Questo sito utilizza cookie di sessione, cookie analytics e cookies di terze parti. Per saperne di più <a href="cookies">clicca qui</a>. </p>
 </div>
-<div class="sharingiscaring">
-    <div class="the-fb">
-        <div class="fb-like" data-href="http://www.partitadomaniaroma.com" data-layout="button_count" data-action="like" data-show-faces="false" data-share="true"></div>
-    </div>
-        <div class="the-twt">
-        <a class="twitter-share-button" href="http://www.partitadomaniaroma.com?text=C'è%20la%20partita%20domani%20a%20Roma%3F%20#RomaNord%20#Olimpico%20#ASRoma%20#SSLazio%20#traffico%20#SerieA" data-size="small">Tweet</a>
-    </div>
-</div>
 <cookies-policy></cookies-policy>
 <div class="cont-inner" ng-class="{'opened' : opened}" stop-screen-move style="background-image:url({{::background}})">
     <div class="center">
         <h1>C'è la partita
         <br> {{::location}} a Roma?</h1>
         <h2>{{::match ? 'Si' : "No"}}</h2>
-        <h3 ng-if="match">Gioca la
-          <span class="{{::match.homeTeamClass}}">{{::match.homeTeamName}}</span><br> alle
+        <h3 ng-if="match">Gioca {{::match.homeTeam.article}}
+          <span class="{{::match.homeTeamClass}}">{{::match.homeTeam.name}}</span><br> alle
           <span class="orario">{{::match.timestamp | date:'HH:mm'}}</span>
         </h3>
     </div>

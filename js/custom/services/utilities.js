@@ -19,8 +19,18 @@ define(['angular'], function(angular) {
             };
 
             var teamNameTransformerMap = {
-                'ss lazio': 'lazio',
-                'as roma': 'roma'
+                'ss lazio': {
+                    article: 'la',
+                    name: 'lazio'
+                },
+                'as roma': {
+                    article: 'la',
+                    name: 'roma'
+                },
+                'italrugby': {
+                    article: 'l\'',
+                    name: 'italrugby'
+                }
             };
             this.transformTeamName  = function(teamName) {
                 return teamNameTransformerMap[teamName];
