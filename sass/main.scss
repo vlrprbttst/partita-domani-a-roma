@@ -190,7 +190,7 @@ p {
         overflow: hidden;
         transition: $transition;
         transform:translateX(0);
-        &.opened {
+        &.menu_opened {
             transform: translateX($menu-offset);
             transition: $transition;
             @include respond-to(414) {
@@ -242,7 +242,7 @@ p {
         transform: translateX(- 320px);
         padding: 40px 20px;
     }
-    &.opened {
+    &.menu_opened {
         transform: translateX(0px);
         transition: $transition;
         box-shadow: 20px 0 30px rgba(0, 0, 0, .4);

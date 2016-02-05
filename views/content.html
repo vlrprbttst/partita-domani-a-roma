@@ -1,7 +1,7 @@
-<div class="menu" ng-click="opened = !opened"></div>
-<div class="menu-cont" ng-class="{'opened' : opened}">
+<div class="menu" ng-click="toggleMenu()"></div>
+<div class="menu-cont" ng-class="{'menu_opened' : menuOpened}">
     <div class="stripes-top"></div>
-    <div class="close" ng-click="opened = !opened"></div>
+    <div class="close" ng-click="toggleMenu()"></div>
     <h1>Perche?</h1>
     <p>Questo servizio è dedicato a tutti i romani che non seguono il calcio, ma ne sono vittima ogni settimana: <b>traffico</b>, aree di parcheggio <b>transennate</b>, strade <b>chiuse con conseguente deviazione del traffico</b>.</p>
     <p>Chi non segue il calcio spesso scopre troppo tardi lo svolgersi di una partita, e si trova a fronteggiare i disagi del caso senza potersi organizzare in anticipo.</p>
@@ -31,7 +31,7 @@
     <p>Questo sito utilizza cookie di sessione, cookie analytics e cookies di terze parti. Per saperne di più <a href="cookies">clicca qui</a>. </p>
 </div>
 <cookies-policy></cookies-policy>
-<div class="cont-inner" ng-class="{'opened' : opened}" stop-screen-move style="background-image:url({{::background}})">
+<div class="cont-inner" ng-class="{'menu_opened' : menuOpened}" stop-screen-move style="background-image:url({{::background}})">
     <div class="center">
         <h1>C'è la partita
         <br> {{::location}} a Roma?</h1>

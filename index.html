@@ -59,7 +59,7 @@
             <div class="spin"></div>
         </div>
     </div>
-    <div class="page" ng-controller="PageCtrl" ng-cloak ng-class="deviceModel">
+    <div class="page {{::deviceModel}}" ng-controller="PageCtrl" ng-cloak ng-class="{'menu_opened' : menuOpened}">
         <div class="rotate-device"></div>
 
         <div class="sharingiscaring" ng-hide="hideSocialButtons">

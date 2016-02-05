@@ -10,9 +10,6 @@ define(['angular', 'services/device', 'services/utilities'], function(angular) {
      */
     angular.module('partitaaroma.controllers.ContentCtrl', ['partitaaroma.services.Device', 'partitaaroma.services.Utilities', 'ngInstafeed'])
         .controller('ContentCtrl', function($rootScope, $scope, $window, $location, Device, match, ngInstafeed, Utilities) {
-            $rootScope.$on('$routeChangeStart', function(next, last) {
-                $rootScope.loaded = false;
-            });
 
             var maxImgIndex = 10;
 
@@ -30,6 +27,11 @@ define(['angular', 'services/device', 'services/utilities'], function(angular) {
                 $rootScope.loaded = true;
                 $rootScope.$apply();
             });
+
+            $scope.toggleMenu = function() {
+                $rootScope.menuOpened = !$rootScope.menuOpened;
+                console.log($rootScope.menuOpened);
+            };
 
             /*
             * Background from instagram
