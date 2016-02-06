@@ -435,3 +435,10 @@ $switch: #BDC3C7;
     left: 10px;
     position: relative;
 }
+
+.page.iOS a.back-btn {
+    position: static;
+}
+.page.iOS .cookie-inner {
+    padding: 20px;
+}
