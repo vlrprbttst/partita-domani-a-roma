@@ -25,9 +25,11 @@ body {
 }
 .center {
     @include vertical-align;
+    position:absolute;
     text-align: center;
     z-index: 2;
     margin: 0 auto;
+    width: 100vw;
 }
 h1 {
     @include reset;
@@ -155,7 +157,7 @@ p {
     border: 1px solid white;
     border-radius: 4px;
     color: white;
-    background: url("../images/menu-ico.png") center center no-repeat rgba(0, 0, 0, .5);
+    background: url(../images/menu-ico.png) center center no-repeat rgba(0, 0, 0, .5);
     position: absolute;
     display: inline-block;
     z-index: 3;
@@ -174,6 +176,7 @@ p {
     transition: $transition;
     .cont-inner {
         height: 100%;
+        width: 150%;
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
@@ -193,9 +196,12 @@ p {
             height: 100%;
             position: absolute;
             top: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, .5);
+            left: 0;
+            background: rgba(0, 0, 0, .6);
             z-index: 1;
+        }
+        @media (min-width:600px) {
+            width: 160%;
         }
     }
 }
@@ -253,7 +259,7 @@ p {
     top: 20px;
     width: 50px;
     height: 50px;
-    background: url("../images/close-ico.png") center center no-repeat;
+    background: url(../images/close-ico.png) center center no-repeat;
     background-size: 40px;
     cursor: pointer;
 }
@@ -292,6 +298,7 @@ p {
 ul {
     @include reset;
     margin-bottom: 20px;
+    padding: 0 0 0 20px;
     li {
         list-style-position: outside;
         p {
@@ -309,7 +316,7 @@ ul {
             width: 100%;
             position: absolute;
             z-index: 1001;
-            background: url("../images/rotate.png") center center no-repeat #333;
+            background: url(../images/rotate.png) center center no-repeat #333;
             display: block;
             background-size: auto 89px;
         }
@@ -319,7 +326,7 @@ $switch: #BDC3C7;
 .switch {
     position: absolute;
     bottom: 20px;
-    left: 50%;
+    left: 50vw;
     transform: translateX(-50%);
     z-index: 11;
     text-decoration: none;
@@ -380,7 +387,6 @@ $switch: #BDC3C7;
         }
     }
 }
-
 .page.menu_opened .cookie-popup {
     transition: $transition;
     transform: translateX($menu-offset);
@@ -435,10 +441,24 @@ $switch: #BDC3C7;
     left: 10px;
     position: relative;
 }
-
 .page.iOS a.back-btn {
     position: static;
 }
 .page.iOS .cookie-inner {
     padding: 20px;
+}
+
+.insta-img {
+    vertical-align: bottom;
+    border: 0;
+    width: 302px;
+    transform:translateX(-151px);
+    display: inline-block;
+    float: left;
+    display: inline-block;
+
+    @media (max-width:414px) {
+        width: 150px;
+        transform:translateX(-75px);
+    }
 }
