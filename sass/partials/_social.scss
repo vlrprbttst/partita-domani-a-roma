@@ -1,0 +1,27 @@
+.sharingiscaring {
+    position: fixed;
+    top: 8px;
+    right: 20px;
+    z-index: 3;
+    transform: translateX(0px);
+    transition: $transition;
+}
+.page.menu_opened {
+    .sharingiscaring {
+        transition: $transition;
+        transform: translateX($menu-offset);
+        @include respond-to(414) {
+            transform: translateX(320px);
+        }
+    }
+}
+
+.the-fb,
+.the-twt {
+    display: inline-block;
+}
+.the-twt {
+    top: 5px;
+    left: 10px;
+    position: relative;
+}

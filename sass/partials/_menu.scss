@@ -1,0 +1,116 @@
+.menu {
+    width: 50px;
+    height: 50px;
+    left: 20px;
+    top: 20px;
+    border: 1px solid white;
+    border-radius: 4px;
+    color: white;
+    background: url(../images/menu-ico.png) center center no-repeat rgba(0, 0, 0, .5);
+    position: absolute;
+    display: inline-block;
+    z-index: 3;
+    cursor: pointer;
+    background-size: 25px;
+    @include respond-to(375) {
+        left: 10px;
+        top: 10px;
+    }
+}
+
+.menu-cont {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: $menu-offset;
+    background-color: #000;
+    color: white;
+    z-index: 4;
+    transform: translateX(- $menu-offset);
+    transition: $transition;
+    @include clearfix;
+    padding: 40px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    .stripes-top {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        background-image: repeating-linear-gradient( -55deg, #fcff00, #fcff00 10px, #000 10px, #000 20px);
+        background-color: #000;
+        background-position: bottom left;
+        background-repeat: repeat-x;
+        top: 0;
+        background-size: 100% 10px;
+        height: 10px;
+    }
+    @include respond-to(414) {
+        width: 320px;
+        transform: translateX(- 320px);
+        padding: 40px 20px;
+    }
+    &.menu_opened {
+        transform: translateX(0px);
+        transition: $transition;
+    }
+    a,
+    a:visited,
+    a:hover {
+        color: #fff;
+    }
+}
+
+.close {
+    position: absolute;
+    right: 10px;
+    top: 20px;
+    width: 50px;
+    height: 50px;
+    background: url("../images/close-ico.png") center center no-repeat;
+    background-size: 40px;
+    cursor: pointer;
+}
+.menu-cont h1,
+.cookie-cont h1 {
+    @include reset;
+    text-transform: uppercase;
+    font-size: 24px;
+    line-height: 32px;
+    text-shadow: none;
+    color: #fcff00;
+    margin-bottom: 20px;
+    clear: both;
+    display: inline-block;
+    border-bottom: 3px solid #fcff00;
+}
+.menu-cont p,
+.cookie-cont p {
+    color: white;
+    font-size: 14px;
+    line-height: 22px;
+    text-shadow: none;
+    letter-spacing: 0;
+    background: none;
+    padding: 0;
+    font-weight: normal;
+    display: block;
+    max-width: 100%;
+    margin-top: 0;
+    font-family: $font2;
+    &:after,
+    &:before {
+        display: none;
+    }
+}
+ul {
+    @include reset;
+    margin-bottom: 20px;
+    padding: 0 0 0 20px;
+    li {
+        list-style-position: outside;
+        p {
+            margin-bottom: 5px;
+        }
+    }
+}
