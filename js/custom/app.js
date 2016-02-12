@@ -46,7 +46,7 @@ define([
                 'ngInstafeed'
             ])
             .config(function($routeProvider, $locationProvider, ngInstafeedProvider) {
-                ngInstafeedProvider.setClientId('6cf204f3acbb4c15854f6d43056b91e8');
+                ngInstafeedProvider.setAccessToken('2692511198.5b9e1e6.c0e59bc733bd425c85a82e6ad3092ea6');
                 $locationProvider.html5Mode(true);
                 $routeProvider
                     .when('/', {
@@ -71,7 +71,6 @@ define([
                         templateUrl: 'views/cookies.html',
                         controller: 'CookiesCtrl'
                     })
-                    /*
                     .when('/si', {
                         templateUrl: 'views/content.html',
                         controller: 'ContentCtrl',
@@ -96,7 +95,6 @@ define([
                             }
                         }
                     })
-                    */
                     .otherwise({
                         redirectTo: '/'
                     });

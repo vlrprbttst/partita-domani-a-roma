@@ -11,11 +11,23 @@ define(['angular'], function(angular) {
      */
     angular.module('partitaaroma.services.Utilities', [])
         .service('Utilities', function() {
-            this.loadImage = function(url, callback) {
-                var bgImg = new Image();
-                bgImg.onload = callback;
-                bgImg.src = url;
-                return url;
+            this.loadImages = function(urls, callback) {
+                if (!Array.isArray(urls)) {
+                    urls = [urls];
+                }
+
+                var imagesLoadedCounter = 0;
+                function imageLoadedCallback() {
+                    imagesLoadedCounter++;
+                    if (imagesLoadedCounter == urls.length && callback) {
+                        callback();
+                    }
+                }
+                urls.forEach(function (url) {
+                    var bgImg = new Image();
+                    bgImg.onload = imageLoadedCallback;
+                    bgImg.src = url;
+                });
             };
 
             var teamNameTransformerMap = {
@@ -33,7 +45,8 @@ define(['angular'], function(angular) {
                 }
             };
             this.transformTeamName  = function(teamName) {
-                return teamNameTransformerMap[teamName];
+                var tranformedTeamName = teamNameTransformerMap[teamName];
+                return tranformedTeamName || teamName;
             };
         });
 });
