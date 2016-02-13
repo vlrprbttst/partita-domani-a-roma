@@ -50,10 +50,8 @@ define(['angular', 'services/device', 'services/utilities'], function(angular) {
                 });
             } else {
                 var instaImgNumber = 18;
-                var instaImgResolution = 'low_resolution';
                 if ($window.innerWidth > 599) {
                     instaImgNumber = 15;
-                    instaImgResolution = 'low_resolution';
                 }
                 if ($window.innerWidth > 768) {
                     instaImgNumber = 20;
@@ -75,7 +73,7 @@ define(['angular', 'services/device', 'services/utilities'], function(angular) {
                     var totalInstaImages = res.data.length;
                     var imagesToLoad = [];
                     for (var i = 0; i < instaImgNumber; i++) {
-                        var image = res.data[(i % totalInstaImages)].images[instaImgResolution].url;
+                        var image = res.data[(i % totalInstaImages)].images.low_resolution.url;
                         imagesToLoad.push(image);
                     }
 

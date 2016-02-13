@@ -10,10 +10,7 @@ define(['angular', 'services/utilities'], function(angular) {
      */
     angular.module('partitaaroma.controllers.CookiesCtrl', ['partitaaroma.services.Utilities'])
         .controller('CookiesCtrl', function($rootScope, $scope, $window, $cookies, Utilities) {
-            $scope.headerImage = Utilities.loadImage('/images/social-img.jpg', function() {
-                $rootScope.loaded = true;
-                $rootScope.$apply();
-            });
+            $rootScope.loaded = true;
 
             $scope.back = function() {
                 var cookieExpirationDate = new Date();
