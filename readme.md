@@ -2,7 +2,7 @@
 
 :it: **ITALIANO**
 
-Come voi forse saprete, lo stadio a Roma è situato in pieno centro, e ad ogni occasione in cui si svolge una gara, tutta l'area intorno allo stadio si paralizza e i disagi si estendono a tutta Roma nord. Per chi come me che non segue il calcio e lavora in zona stadio, arrivare la mattina e trovare tutte le aree di parcheggio transennate costituisce un disagio enorme. lo stesso vale per il traffico tremendo che provoca una partita ritardando il ritorno a casa.
+Come voi forse saprete, lo stadio a Roma è situato in pieno centro, e ad ogni occasione in cui si svolge una gara, tutta l'area intorno allo stadio si paralizza e i disagi si estendono a tutta Roma nord. Per chi come me che non segue il calcio e lavora in zona stadio, arrivare la mattina e trovare tutte le aree di parcheggio transennate costituisce un disagio enorme. Lo stesso vale per il traffico tremendo che provoca una partita ritardando il ritorno a casa.
 
 *"se l'avessi saputo prima sarei venuto con l'autobus"*, ma di cercare su google ogni giorno e decodificare il calendario delle partite non ne avevo voglia così ho deciso di creare questo "servizio" con [Patrizio Munzi](https://www.linkedin.com/in/patriziomunzi) per chi come me vive, lavora o semplicemente transita giornalmente in area stadio.
 
@@ -38,5 +38,4 @@ Open the terminal in the root of the project and type `npm install`. Once finish
 
 Once done, type `grunt` wait for it to end, a browser window will open with your website running and will watch for changes and live reload accordingly.
 
-Run `grunt dist` to rebuild the `_site` folder before uploading to the server manually or<br>
-run `grunt ftp` to rebuild the `_site` folder and to upload the site via `grunt ftppush` directly from the terminal.
+Run `grunt dist` to rebuild the `_site` folder before uploading to the server manually
