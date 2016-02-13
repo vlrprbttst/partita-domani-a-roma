@@ -241,22 +241,6 @@ module.exports = function(grunt) {
             },
         },
 
-        ftpush: {
-            build: {
-                auth: {
-                    host: 'ftp.valeriopierbattista.com',
-                    port: 21,
-                    authKey: 'key1' //ftp login is in the .ftppass file, remember adding it to the exclusions in .gitignore if you are publishing the repo on github
-                },
-                src: '_site', //root
-                dest: '/www/projects/partitadomaniaroma', //destination folder
-                exclusions: ['**/.DS_Store'],
-                // keep : ['blog','cv','projects'], // SUPER IMPORTANT! check what resources should STAY on the server, for example your wordpress installation or other subfolders you use for other projects. else they'll get wiped out
-                simple: false,
-                useList: false
-            }
-        },
-
         clean: ["_site"]
     });
 
@@ -264,5 +248,5 @@ module.exports = function(grunt) {
     // default for development: type grunt
     grunt.registerTask('default', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', 'copy:common', 'copy:build', 'browserSync', 'watch']);
     grunt.registerTask('dist', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', "requirejs:dist", 'copy:common', "copy:dist", "browserSync", "watch"]);
-    grunt.registerTask('ftp', ['clean', 'htmlmin', 'sass', 'postcss', 'imagemin', "requirejs:dist", "copy:common", "copy:dist", 'ftpush']);
+    
 };

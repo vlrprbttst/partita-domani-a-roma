@@ -20,9 +20,6 @@ $RECYCLE.BIN/
 .sass-cache
 node_modules
 bower_components
-.grunt/ftpush
-.grunt
-.ftppass
 _site
 
 # =========================
