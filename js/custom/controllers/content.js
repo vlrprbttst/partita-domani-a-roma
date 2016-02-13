@@ -49,17 +49,17 @@ define(['angular', 'services/device', 'services/utilities'], function(angular) {
                     $rootScope.$apply();
                 });
             } else {
-                var instaImgNumber = 20;
-                var instaImgResolution = 'thumbnail';
-                if ($window.innerWidth > 600) {
-                    instaImgNumber = 11;
+                var instaImgNumber = 18;
+                var instaImgResolution = 'low_resolution';
+                if ($window.innerWidth > 599) {
+                    instaImgNumber = 15;
                     instaImgResolution = 'low_resolution';
                 }
                 if ($window.innerWidth > 768) {
-                    instaImgNumber = 23;
+                    instaImgNumber = 20;
                 }
-                if ($window.innerWidth > 1281) {
-                    instaImgNumber = 42;
+                if ($window.innerWidth >= 1281) {
+                    instaImgNumber = 30;
                 }
 
                 ngInstafeed.get({

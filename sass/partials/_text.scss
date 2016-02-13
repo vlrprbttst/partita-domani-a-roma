@@ -113,9 +113,12 @@ p {
     background: #0072CA;
     color: #fff;
 }
-
 .switch {
-
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 11;
     text-decoration: none;
     border: 1px solid white;
     color: #fff;
@@ -128,9 +131,8 @@ p {
     letter-spacing: 1px;
     min-width: 120px;
     font-size: 16px;
-
     @media (max-width:414px) {
-        font-size:14px;
+        font-size: 14px;
+        min-width:auto;
     }
-
 }

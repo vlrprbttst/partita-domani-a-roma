@@ -45,7 +45,7 @@ body {
     transition: $transition;
     .cont-inner {
         height: 100%;
-        width: 150%;
+        width: 100%;
         background-size: cover;
         background-position: center center;
         background-repeat: no-repeat;
@@ -69,9 +69,6 @@ body {
             background: rgba(0, 0, 0, .6);
             z-index: 1;
         }
-        @media (min-width:600px) {
-            width: 160%;
-        }
     }
 }
 
@@ -80,11 +77,8 @@ body {
     text-align: center;
     z-index: 2;
      top:50%;
-     left: 33.333333333333%;
+     left:50%;
      transform:translate(-50%,-50%);
-     @media (min-width:600px) {
-         left:31.25%;
-     }
 }
 
 .screen {
@@ -114,14 +108,14 @@ body {
 .insta-img {
     vertical-align: bottom;
     border: 0;
-    width: 302px;
-    transform:translateX(-151px);
+    width: 33.3333333%;
     display: inline-block;
     float: left;
-    display: inline-block;
 
-    @media (max-width:414px) {
-        width: 150px;
-        transform:translateX(-75px);
+    @media (min-width:769px) {
+        width: 20%;
+    }
+    @media (min-width:1281px) {
+        width:16.66666666666667%;
     }
 }
