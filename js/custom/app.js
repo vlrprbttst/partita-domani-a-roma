@@ -46,7 +46,7 @@ define([
                 'ngInstafeed'
             ])
             .config(function($routeProvider, $locationProvider, ngInstafeedProvider) {
-                ngInstafeedProvider.setAccessToken('2692511198.5b9e1e6.c0e59bc733bd425c85a82e6ad3092ea6');
+                ngInstafeedProvider.setAccessToken('2692511198.1677ed0.dcde766d1e964e67b5fc3059618d2a18');
                 $locationProvider.html5Mode(true);
                 $routeProvider
                     .when('/', {
