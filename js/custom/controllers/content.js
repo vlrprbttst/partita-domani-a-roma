@@ -24,7 +24,7 @@ define(['angular', 'services/device', 'services/utilities'], function(angular) {
                 $rootScope.menuOpened = !$rootScope.menuOpened;
             };
 
-            /*
+            
             var imgIndex = Math.floor((Math.random() * maxImgIndex) + 1);
             var imgType = ($scope.match ? 'si' : 'no');
             var backgroundUrl = '/images/' + imgType + '-sfondo' + imgIndex + '.jpg';
@@ -33,12 +33,12 @@ define(['angular', 'services/device', 'services/utilities'], function(angular) {
                 $rootScope.loaded = true;
                 $rootScope.$apply();
             });
-            */
+
 
 
             /*
              * Background from instagram
-             */
+
 
             if (!$scope.match) {
                 var imgIndex = Math.floor((Math.random() * maxImgIndex) + 1);
@@ -87,7 +87,7 @@ define(['angular', 'services/device', 'services/utilities'], function(angular) {
                     });
                 });
 
-            }
+            } */
 
         });
 });
