@@ -33,5 +33,12 @@
         "status": "TIMED",
         "homeTeamName": "SS Lazio",
         "awayTeamName": "Sparta Praga"
+    }],
+    "2016-08-23": [{
+        "type": "UEFA Champions League",
+        "date": "2016-08-23T18:45:00Z",
+        "status": "TIMED",
+        "homeTeamName": "AS Roma",
+        "awayTeamName": "Porto"
     }]
 }
