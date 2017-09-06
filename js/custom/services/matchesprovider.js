@@ -21,7 +21,7 @@ define(['angular', 'services/match', 'services/storedmatchesprovider'], function
                         if (typeof dayIndex === "undefined") {
                             dayIndex = 0;
                         }
-                        resolve(days[dayIndex] ? days[dayIndex][0] : null);
+                        resolve(days[dayIndex] ? days[dayIndex] : null);
                         return;
                     }
                     days = [];
@@ -48,21 +48,31 @@ define(['angular', 'services/match', 'services/storedmatchesprovider'], function
                         angular.forEach(arrayOfResults, function(result, index) {
                             angular.forEach(result.data.fixtures, function(fixture, index) {
                                 var fixtureDate = new Date(fixture.date);
+                                var today = new Date();
+                                var homeTeamName = fixture.homeTeamName.toLowerCase();
+                                if (homeTeamName.indexOf("ss lazio") === -1 || homeTeamName.indexOf("as roma") === -1 || homeTeamName.indexOf("italrugby") === -1) {
+                                    return;
+                                }
+                                if (fixtureDate.getYear() < today.getDate() || fixtureDate.getMonth() < today.getMonth() || fixtureDate.getDate() < today.getDate()) {
+                                    return;
+                                }
                                 var json = {
                                     timestamp: fixtureDate.getTime(),
                                     homeTeamName: fixture.homeTeamName,
                                     awayTeamName: fixture.awayTeamName,
                                 };
-                                if (new Date().getDate() == fixtureDate.getDate()) {
-                                    days[0] = days[0] || [];
-                                    days[0].push(new Match(json));
+                                if (today.getDate() == fixtureDate.getDate()) {
+                                    if (typeof days[0] === "undefined" ) {
+                                        days[0] = new Match(json);
+                                    }
                                 } else {
-                                    days[1] = days[1] || [];
-                                    days[1].push(new Match(json));
+                                    if (typeof days[1] === "undefined" ) {
+                                        days[1] = new Match(json);
+                                    }
                                 }
                             });
                         });
-                        resolve(days[dayIndex] ? days[dayIndex][0] : null);
+                        resolve(days[dayIndex] ? days[dayIndex] : null);
 
                     });
 
