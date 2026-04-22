@@ -1,7 +1,6 @@
 <script setup>
 defineProps({ open: Boolean })
 defineEmits(['toggle'])
-const base = import.meta.env.BASE_URL
 </script>
 
 <template>
@@ -20,14 +19,19 @@ const base = import.meta.env.BASE_URL
       e si trova a fronteggiare i disagi del caso <b>senza potersi organizzare in anticipo</b>.
     </p>
 
-    <h1>Consultazione veloce</h1>
+    <h1>Installalo come app</h1>
     <p>
-      Accedi al sito da mobile e cerca fra le opzioni del browser il tasto
-      "<b>Aggiungi a Home</b>" / "<b>Add to Homescreen</b>". L'icona del sito apparirà nella
-      schermata Home fra le altre app del cellulare.
+      Puoi aggiungere questo sito alla schermata Home del tuo telefono e usarlo come una vera app,
+      senza barre del browser.
     </p>
-    <img :src="base + 'images/screenshot-android.jpg'" alt="screenshot android" class="screen">
-    <img :src="base + 'images/screen-ios.png'"          alt="screenshot iOS"     class="screen">
+    <p>
+      <b>Su Android</b>: apri il sito in Chrome, tocca i tre puntini in alto a destra e seleziona
+      <b>Aggiungi a schermata Home</b> oppure <b>Installa app</b>.
+    </p>
+    <p>
+      <b>Su iPhone</b>: apri il sito in Safari, tocca l'icona di condivisione
+      (il quadrato con la freccia in su) e seleziona <b>Aggiungi a schermata Home</b>.
+    </p>
 
     <h1>Credits</h1>
     <ul>
@@ -35,15 +39,14 @@ const base = import.meta.env.BASE_URL
         <p>
           Ideato e realizzato da
           <a href="http://valeriopierbattista.com" target="_blank">Valerio Pierbattista</a>
-          e
-          <a href="https://www.linkedin.com/in/patriziomunzi" target="_blank">Patrizio Munzi</a>
+          e <a href="https://claude.ai" target="_blank">Claude.ai</a>
         </p>
       </li>
       <li><p>Le immagini di sfondo sono prese da Google</p></li>
       <li>
         <p>
           Il repository del progetto è su
-          <a href="https://github.com/vlrprbttst/partita-domani-a-roma" target="_blank">Github</a>
+          <a href="https://github.com/vlrprbttst/partita-domani-a-roma/tree/rewrite-modern" target="_blank">Github</a>
         </p>
       </li>
       <li>
