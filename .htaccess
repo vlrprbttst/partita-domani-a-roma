@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule !\.html|\.css|\.png|\.ico|\.gif|\.jpe?g|\.js|\.xml|\.json$ /index.html [L]
