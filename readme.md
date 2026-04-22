@@ -2,40 +2,52 @@
 
 :it: **ITALIANO**
 
-Come voi forse saprete, lo stadio a Roma è situato in pieno centro, e ad ogni occasione in cui si svolge una gara, tutta l'area intorno allo stadio si paralizza e i disagi si estendono a tutta Roma nord. Per chi come me che non segue il calcio e lavora in zona stadio, arrivare la mattina e trovare tutte le aree di parcheggio transennate costituisce un disagio enorme. Lo stesso vale per il traffico tremendo che provoca una partita ritardando il ritorno a casa.
+Lo stadio Olimpico di Roma si trova in pieno centro città, e ogni volta che si gioca una partita l'area circostante si paralizza: parcheggi transennati, strade chiuse, traffico esteso a tutta Roma nord. Per chi non segue il calcio e vive, lavora o transita in quella zona, scoprirlo all'ultimo momento è un disagio concreto.
 
-*"se l'avessi saputo prima sarei venuto con l'autobus"*, ma di cercare su google ogni giorno e decodificare il calendario delle partite non ne avevo voglia così ho deciso di creare questo "servizio" con [Patrizio Munzi](https://www.linkedin.com/in/patriziomunzi) per chi come me vive, lavora o semplicemente transita giornalmente in area stadio.
+*"Se l'avessi saputo prima sarei venuto con l'autobus"* — questo sito nasce da quella frustrazione. Una risposta semplice a una domanda semplice: c'è la partita domani?
 
-La web app si appoggia ad un'API che fornisce i dati delle partite, aggiornando il sito in automatico.
-
-www.partitadomaniaroma.com
+I dati vengono aggiornati automaticamente tramite [football-data.org](http://football-data.org).
 
 :uk: **ENGLISH**
 
-This web app tells you if there's a soccer match in Rome the next day (or the same day). This is useful because the Olympic Stadium in Rome is right in the city center, and each time there's a match, a whole part of the city is jammed in traffic. This service is for those who don't follow soccer and don't know when the next match will be but want to get organized in advance or want to get mentally ready for the discomfort that awaits.
+A simple web app that answers one question: is there a football match in Rome tomorrow?
 
-This is a collaboration with [Patrizio Munzi](https://www.linkedin.com/in/patriziomunzi).
+Rome's Olympic Stadium sits in the middle of the city. Every match day, the surrounding area grinds to a halt — parking lots get cordoned off, roads close, and traffic backs up across the whole north side of the city. For people who don't follow football but live or work nearby, finding out too late is a real problem.
 
-www.partitadomaniaroma.com
+This app gives you a heads-up so you can plan accordingly. Match data is fetched automatically from [football-data.org](http://football-data.org) and updated every few hours.
 
-## Requirements
+## Live
 
-You'll need to have the following items installed before continuing.
+[vlrprbttst.github.io/partita-domani-a-roma](https://vlrprbttst.github.io/partita-domani-a-roma/)
 
-  * [Node.js](http://nodejs.org): Use the installer provided on the NodeJS website.
-  * [Grunt](http://gruntjs.com/): Run `[sudo] npm install -g grunt-cli`
-  * [Bower](http://bower.io/): Run `[sudo] npm install -g bower`
+## Development
 
-## Dependencies
+Built with Vue 3 + Vite. Clone the repo and install dependencies:
 
-The gems used in this project are Sass and Compass, type these in the terminal anywhere:
+```bash
+npm install
+```
 
-`gem install sass`
+Add a `.env` file at the root with your [football-data.org](https://www.football-data.org) API token:
 
-`gem install compass`  
+```
+VITE_FOOTBALL_API_TOKEN=your_token_here
+```
 
-Open the terminal in the root of the project and type `npm install`. Once finished, type `bower install` for the bower dependencies.
+Start the dev server:
 
-Once done, type `grunt` wait for it to end, a browser window will open with your website running and will watch for changes and live reload accordingly.
+```bash
+npm run dev
+```
 
-Run `grunt dist` to rebuild the `_site` folder before uploading to the server manually
+Build for production:
+
+```bash
+npm run build
+```
+
+Deployment to GitHub Pages is handled automatically via GitHub Actions on every push to `rewrite-modern`.
+
+## Credits
+
+Made by [Valerio Pierbattista](http://valeriopierbattista.com) and [Claude.ai](https://claude.ai).
