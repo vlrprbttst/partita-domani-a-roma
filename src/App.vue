@@ -1,8 +1,7 @@
 <script setup>
-import { reactive, computed, watch, provide, onMounted, onUnmounted } from 'vue'
+import { reactive, watch, provide, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import MenuPanel from './components/MenuPanel.vue'
-import ConsentBanner from './components/ConsentBanner.vue'
 
 const state = reactive({ loaded: false, menuOpen: false })
 
@@ -13,8 +12,6 @@ const deviceClass = /iPad|iPhone|iPod/i.test(ua) ? 'isMobile iOS'
   : /Android/i.test(ua) ? 'isMobile android' : ''
 
 const route = useRoute()
-
-const hideSocial = computed(() => route.path === '/cookies')
 
 watch(() => route.path, () => { state.menuOpen = false })
 
@@ -39,7 +36,7 @@ onUnmounted(() => clearTimeout(midnightTimer))
   <div class="page" :class="[deviceClass, { menu_opened: state.menuOpen }]">
     <div class="rotate-device"></div>
 
-    <div class="sharingiscaring" v-if="!hideSocial">
+    <div class="sharingiscaring">
       <div class="the-fb">
         <div id="fb-root"></div>
         <div
@@ -51,17 +48,9 @@ onUnmounted(() => clearTimeout(midnightTimer))
           data-share="true"
         ></div>
       </div>
-      <div class="the-twt">
-        <a
-          class="twitter-share-button"
-          href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fvlrprbttst.github.io%2Fpartita-domani-a-roma%2F&text=C%27%C3%A8%20la%20partita%20domani%20a%20Roma%3F%20%23RomaNord%20%23Olimpico%20%23ASRoma%20%23SSLazio%20%23traffico%20%23SerieA"
-          data-size="small"
-        >Tweet</a>
-      </div>
     </div>
 
     <MenuPanel :open="state.menuOpen" @toggle="state.menuOpen = !state.menuOpen" />
-    <ConsentBanner />
 
     <div class="cont">
       <RouterView :key="route.path" />

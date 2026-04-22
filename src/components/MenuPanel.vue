@@ -54,10 +54,5 @@ const base = import.meta.env.BASE_URL
       </li>
     </ul>
 
-    <h1>Cookies</h1>
-    <p>
-      Questo sito utilizza cookie di sessione, cookie analytics e cookie di terze parti.
-      Per saperne di più <RouterLink to="/cookies">clicca qui</RouterLink>.
-    </p>
   </div>
 </template>
