@@ -21,6 +21,8 @@ $RECYCLE.BIN/
 node_modules
 bower_components
 _site
+dist/
+.env
 
 # =========================
 # Operating System Files

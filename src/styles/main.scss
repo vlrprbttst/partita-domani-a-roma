@@ -1,0 +1,443 @@
+// ─── Variables ───────────────────────────────────────────────────────────────
+$font:        'Oswald', sans-serif;
+$font2:       'Roboto', sans-serif;
+$transition:  all 600ms cubic-bezier(0.86, 0, 0.07, 1);
+$bigness:     400px;
+$menu-offset: 500px;
+
+// ─── Mixins ───────────────────────────────────────────────────────────────────
+@mixin reset {
+  margin: 0;
+  padding: 0;
+}
+
+@mixin clearfix {
+  &::after { content: ''; display: table; clear: both; }
+}
+
+@mixin respond-to($bp) {
+  @media all and (max-width: #{$bp}px) { @content; }
+}
+
+// ─── Base ────────────────────────────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  height: 100%;
+}
+
+body {
+  background: #000;
+  height: 100%;
+  font-family: $font;
+  @include reset;
+  overflow-x: hidden;
+  color: white;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+#app {
+  height: 100%;
+}
+
+// ─── Layout ──────────────────────────────────────────────────────────────────
+.page {
+  height: 100%;
+  overflow: hidden;
+}
+
+.cont {
+  height: 100%;
+  transform: translateX(0);
+  position: relative;
+  z-index: 2;
+  transition: $transition;
+}
+
+.cont-inner {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  transition: $transition;
+  transform: translateX(0);
+  position: relative;
+
+  &.menu_opened {
+    transform: translateX($menu-offset);
+    transition: $transition;
+    @include respond-to(414) { transform: translateX(320px); }
+  }
+
+  &::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+  }
+}
+
+.center {
+  position: absolute;
+  text-align: center;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.screen {
+  max-width: 100%;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 2px solid #fff;
+}
+
+// ─── Rotate overlay (mobile landscape) ───────────────────────────────────────
+.rotate-device { display: none; }
+
+.page.isMobile {
+  @media (orientation: landscape) {
+    .rotate-device {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      z-index: 1001;
+      background: url(/images/rotate.png) center center no-repeat #333;
+      display: block;
+      background-size: auto 89px;
+    }
+  }
+}
+
+// ─── Loading overlay ─────────────────────────────────────────────────────────
+@keyframes clockwise {
+  to { transform: rotate(360deg) translateZ(0); }
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: black;
+}
+
+.message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spin {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  box-shadow:
+    12px -12px  hsla(0, 0%, 100%, 0.125),
+    17px 0      hsla(0, 0%, 100%, 0.25),
+    12px 12px   hsla(0, 0%, 100%, 0.375),
+    0 17px      hsla(0, 0%, 100%, 0.5),
+    -12px 12px  hsla(0, 0%, 100%, 0.625),
+    -17px 0     hsla(0, 0%, 100%, 0.75),
+    -12px -12px hsla(0, 0%, 100%, 0.875),
+    0 -17px     hsla(0, 0%, 100%, 1);
+  animation: clockwise 0.75s steps(8, end) infinite;
+}
+
+// ─── Typography ──────────────────────────────────────────────────────────────
+h1 {
+  @include reset;
+  color: white;
+  font-size: 62px;
+  line-height: 68px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  @include respond-to(414) { font-size: 24px; line-height: 30px; }
+  @include respond-to(375) { font-size: 20px; line-height: 24px; }
+}
+
+h2 {
+  @include reset;
+  text-transform: uppercase;
+  font-size: $bigness;
+  line-height: $bigness;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 1);
+  color: #fcff00;
+  margin-bottom: 40px;
+  @include respond-to(414) { font-size: 184px; line-height: 190px; margin: 20px 0; }
+  @include respond-to(375) { font-size: 124px; line-height: 130px; margin: 20px 0; }
+  @media all and (min-height: 700px) and (max-height: 800px) and (min-width: 1024px) {
+    font-size: 320px;
+    line-height: 320px;
+  }
+}
+
+h3 {
+  @include reset;
+  color: white;
+  text-transform: uppercase;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 1px;
+  font-weight: bold;
+  font-size: 32px;
+  line-height: 44px;
+  margin-bottom: 20px;
+  @include respond-to(414) { font-size: 20px; line-height: 30px; }
+  @include respond-to(375) { font-size: 18px; line-height: 28px; }
+  @media all and (min-height: 700px) and (max-height: 800px) { br { display: none; } }
+}
+
+p {
+  color: white;
+  font-size: 24px;
+  line-height: 32px;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  font-weight: normal;
+  display: inline-block;
+  max-width: 75%;
+  margin-top: 60px;
+  font-family: $font2;
+  @include respond-to(414) { margin-top: 20px; padding: 10px; font-size: 16px; line-height: 24px; max-width: 80%; }
+  @include respond-to(375) { margin-top: 20px; padding: 10px; font-size: 12px; line-height: 16px; }
+}
+
+// ─── Team badges ─────────────────────────────────────────────────────────────
+.lazio, .roma, .italrugby {
+  padding: 0 10px;
+  text-shadow: none;
+  border-radius: 2px;
+  @include respond-to(600) { padding: 0 5px; }
+  @media all and (min-height: 700px) and (max-height: 800px) { margin-right: 8px; }
+}
+
+.lazio     { background: #88D8F1; color: white; }
+.roma      { background: #A12034; color: #FF8108; }
+.italrugby { background: #0072CA; color: #fff; }
+
+// ─── Switch button ────────────────────────────────────────────────────────────
+.switch {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+  text-decoration: none;
+  border: 1px solid white;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  font-family: $font2;
+  display: inline-block;
+  border-radius: 4px;
+  padding: 10px 20px;
+  text-align: center;
+  letter-spacing: 1px;
+  min-width: 120px;
+  font-size: 16px;
+  @include respond-to(414) { font-size: 14px; min-width: auto; }
+}
+
+// ─── Menu ────────────────────────────────────────────────────────────────────
+.menu {
+  width: 50px;
+  height: 50px;
+  left: 20px;
+  top: 20px;
+  border: 1px solid white;
+  border-radius: 4px;
+  background: url(/images/menu-ico.png) center center no-repeat rgba(0, 0, 0, 0.5);
+  position: absolute;
+  display: inline-block;
+  z-index: 3;
+  cursor: pointer;
+  background-size: 25px;
+  @include respond-to(375) { left: 10px; top: 10px; }
+}
+
+.menu-cont {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: $menu-offset;
+  background-color: #000;
+  color: white;
+  z-index: 4;
+  transform: translateX(-$menu-offset);
+  transition: $transition;
+  @include clearfix;
+  padding: 40px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @include respond-to(414) {
+    width: 320px;
+    transform: translateX(-320px);
+    padding: 40px 20px;
+  }
+
+  &.menu_opened {
+    transform: translateX(0);
+    transition: $transition;
+  }
+
+  .stripes-top {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 10px;
+    background-image: repeating-linear-gradient(
+      -55deg,
+      #fcff00, #fcff00 10px,
+      #000 10px, #000 20px
+    );
+  }
+
+  a, a:visited, a:hover { color: #fff; }
+}
+
+.close {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+  width: 50px;
+  height: 50px;
+  background: url(/images/close-ico.png) center center no-repeat;
+  background-size: 40px;
+  cursor: pointer;
+}
+
+.menu-cont h1, .cookie-cont h1 {
+  @include reset;
+  text-transform: uppercase;
+  font-size: 24px;
+  line-height: 32px;
+  text-shadow: none;
+  color: #fcff00;
+  margin-bottom: 20px;
+  clear: both;
+  display: inline-block;
+  border-bottom: 3px solid #fcff00;
+}
+
+.menu-cont p, .cookie-cont p {
+  color: white;
+  font-size: 14px;
+  line-height: 22px;
+  text-shadow: none;
+  letter-spacing: 0;
+  background: none;
+  padding: 0;
+  font-weight: normal;
+  display: block;
+  max-width: 100%;
+  margin-top: 0;
+  font-family: $font2;
+}
+
+ul {
+  @include reset;
+  margin-bottom: 20px;
+  padding: 0 0 0 20px;
+
+  li {
+    list-style-position: outside;
+    p { margin-bottom: 5px; }
+  }
+}
+
+// ─── Social sharing ───────────────────────────────────────────────────────────
+.sharingiscaring {
+  position: fixed;
+  top: 8px;
+  right: 20px;
+  z-index: 3;
+  transform: translateX(0);
+  transition: $transition;
+}
+
+.page.menu_opened .sharingiscaring {
+  transition: $transition;
+  transform: translateX($menu-offset);
+  @include respond-to(414) { transform: translateX(320px); }
+}
+
+.the-fb, .the-twt { display: inline-block; }
+.the-twt { top: 5px; left: 10px; position: relative; }
+
+// ─── Cookie banner ────────────────────────────────────────────────────────────
+.cookie-popup {
+  position: fixed;
+  top: 45px;
+  right: 12px;
+  z-index: 3;
+  color: white;
+  font-family: $font2;
+  font-size: 12px;
+  line-height: 18px;
+  width: 230px;
+  text-align: right;
+  transition: $transition;
+  transform: translateX(0);
+
+  a, a:visited, a:hover { color: white; text-decoration: underline; cursor: pointer; }
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+    line-height: 24px;
+    width: 380px;
+    br { display: none; }
+  }
+}
+
+.page.menu_opened .cookie-popup {
+  transition: $transition;
+  transform: translateX($menu-offset);
+  @include respond-to(414) { transform: translateX(320px); }
+}
+
+// ─── Cookie policy page ───────────────────────────────────────────────────────
+.cookie-cont {
+  text-align: left;
+  font-size: 16px;
+  line-height: 24px;
+  color: white;
+  height: 100%;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 3;
+  position: absolute;
+  width: 100%;
+
+  .cookie-inner {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+
+    a, a:visited, a:hover { color: white; }
+
+    a.back-btn {
+      display: block;
+      background: #fcff00;
+      color: black;
+      padding: 5px 10px;
+      text-align: center;
+      text-transform: uppercase;
+      text-decoration: none;
+      margin-top: 20px;
+    }
+
+    h1 { border: 0; }
+  }
+}

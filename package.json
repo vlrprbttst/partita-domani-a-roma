@@ -1,23 +1,19 @@
 {
   "name": "partita-domani-a-roma",
-  "version": "0.1.0",
-  "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-browser-sync": "^1.5.3",
-    "grunt-contrib-clean": "^0.7.0",
-    "grunt-contrib-concat": "^0.5.1",
-    "grunt-contrib-copy": "^0.8.2",
-    "grunt-contrib-htmlmin": "^0.6.0",
-    "grunt-contrib-imagemin": "^1.0.0",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-contrib-sass": "~0.7.4",
-    "grunt-contrib-uglify": "^0.5.1",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-newer": "^0.7.0",
-    "grunt-postcss": "^0.7.1",
-    "autoprefixer": "^6.2.3",
-    "cssnano": "^3.4.0",
-    "load-grunt-tasks": "^3.4.0"
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "dependencies": {}
+  "dependencies": {
+    "vue": "^3.4.0",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "sass": "^1.70.0",
+    "vite": "^5.0.0"
+  }
 }
