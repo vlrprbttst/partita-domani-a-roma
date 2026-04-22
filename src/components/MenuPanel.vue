@@ -1,6 +1,7 @@
 <script setup>
 defineProps({ open: Boolean })
 defineEmits(['toggle'])
+const base = import.meta.env.BASE_URL
 </script>
 
 <template>
@@ -25,8 +26,8 @@ defineEmits(['toggle'])
       "<b>Aggiungi a Home</b>" / "<b>Add to Homescreen</b>". L'icona del sito apparirà nella
       schermata Home fra le altre app del cellulare.
     </p>
-    <img src="/images/screenshot-android.jpg" alt="screenshot android" class="screen">
-    <img src="/images/screen-ios.png"          alt="screenshot iOS"     class="screen">
+    <img :src="base + 'images/screenshot-android.jpg'" alt="screenshot android" class="screen">
+    <img :src="base + 'images/screen-ios.png'"          alt="screenshot iOS"     class="screen">
 
     <h1>Credits</h1>
     <ul>

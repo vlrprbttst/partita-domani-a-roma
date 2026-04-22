@@ -1,6 +1,3 @@
-const BASE_URL = import.meta.env.DEV
-  ? '/football-api/v4'
-  : 'https://api.football-data.org/v4'
 const TOKEN = import.meta.env.VITE_FOOTBALL_API_TOKEN
 
 const TEAMS = { roma: 100, lazio: 110 }
@@ -19,9 +16,10 @@ function normalizeTeam(raw) {
   return TEAM_STYLES[raw.toLowerCase()] ?? { name: raw.toLowerCase(), article: '' }
 }
 
-async function fetchTeamMatches(teamId, dateStr) {
+// Dev only: calls the API through the Vite proxy to avoid CORS
+async function fetchTeamMatchesDev(teamId, dateStr) {
   const res = await fetch(
-    `${BASE_URL}/teams/${teamId}/matches?dateFrom=${dateStr}&dateTo=${dateStr}&venue=HOME`,
+    `/football-api/v4/teams/${teamId}/matches?dateFrom=${dateStr}&dateTo=${dateStr}&venue=HOME`,
     { headers: { 'X-Auth-Token': TOKEN } }
   )
   const remaining = res.headers.get('X-Requests-Available-Minute')
@@ -37,9 +35,10 @@ async function fetchTeamMatches(teamId, dateStr) {
   }))
 }
 
-async function fetchStoredMatches(dateStr) {
+// Dev only: reads the legacy fixtures.json fallback
+async function fetchStoredMatchesDev(dateStr) {
   try {
-    const res = await fetch('/data/fixtures.json')
+    const res  = await fetch(`${import.meta.env.BASE_URL}data/fixtures.json`)
     const data = await res.json()
     return (data[dateStr] ?? []).map(f => ({
       timestamp:    new Date(f.date),
@@ -51,13 +50,35 @@ async function fetchStoredMatches(dateStr) {
   }
 }
 
+// Production: reads the pre-fetched static JSON built by scripts/fetch-matches.js
+async function fetchMatchFromStatic(dateStr) {
+  try {
+    const res  = await fetch(`${import.meta.env.BASE_URL}data/matches.json`)
+    const data = await res.json()
+    const m    = data[dateStr]
+    if (!m) return null
+    return {
+      timestamp:    new Date(m.timestamp),
+      homeTeam:     m.homeTeam,
+      awayTeamName: m.awayTeamName,
+    }
+  } catch {
+    return null
+  }
+}
+
 export async function getMatchForDate(date) {
   const dateStr = dateRome(date)
-  const [roma, lazio, stored] = await Promise.all([
-    fetchTeamMatches(TEAMS.roma,  dateStr).catch(() => []),
-    fetchTeamMatches(TEAMS.lazio, dateStr).catch(() => []),
-    fetchStoredMatches(dateStr),
-  ])
-  const all = [...roma, ...lazio, ...stored]
-  return all.length > 0 ? all[0] : null
+
+  if (import.meta.env.DEV) {
+    const [roma, lazio, stored] = await Promise.all([
+      fetchTeamMatchesDev(TEAMS.roma,  dateStr).catch(() => []),
+      fetchTeamMatchesDev(TEAMS.lazio, dateStr).catch(() => []),
+      fetchStoredMatchesDev(dateStr),
+    ])
+    const all = [...roma, ...lazio, ...stored]
+    return all.length > 0 ? all[0] : null
+  }
+
+  return fetchMatchFromStatic(dateStr)
 }

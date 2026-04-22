@@ -22,7 +22,7 @@ function formatTime(date) {
 function preloadBackground(hasMatch) {
   const idx  = Math.floor(Math.random() * 10) + 1
   const type = hasMatch ? 'si' : 'no'
-  const url  = `/images/${type}-sfondo${idx}.jpg`
+  const url  = `${import.meta.env.BASE_URL}images/${type}-sfondo${idx}.jpg`
   background.value = url
   return new Promise(resolve => {
     const img = new Image()
