@@ -1,27 +1,20 @@
 <script setup>
-import { ref, computed, provide, onMounted, onUnmounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { reactive, computed, provide, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 import MenuPanel from './components/MenuPanel.vue'
-import CookieBanner from './components/CookieBanner.vue'
+import ConsentBanner from './components/ConsentBanner.vue'
 
-const loaded  = ref(false)
-const menuOpen = ref(false)
+const state = reactive({ loaded: false, menuOpen: false })
 
-provide('appState', { loaded, menuOpen })
+provide('appState', state)
 
 const ua = navigator.userAgent || navigator.vendor || window.opera
 const deviceClass = /iPad|iPhone|iPod/i.test(ua) ? 'isMobile iOS'
   : /Android/i.test(ua) ? 'isMobile android' : ''
 
-const route  = useRoute()
-const router = useRouter()
+const route = useRoute()
 
 const hideSocial = computed(() => route.path === '/cookies')
-
-router.beforeEach(() => {
-  loaded.value  = false
-  menuOpen.value = false
-})
 
 let midnightTimer = null
 
@@ -37,11 +30,11 @@ onUnmounted(() => clearTimeout(midnightTimer))
 </script>
 
 <template>
-  <div class="overlay" v-if="!loaded">
+  <div class="overlay" v-if="!state.loaded">
     <div class="message"><div class="spin"></div></div>
   </div>
 
-  <div class="page" :class="[deviceClass, { menu_opened: menuOpen }]">
+  <div class="page" :class="[deviceClass, { menu_opened: state.menuOpen }]">
     <div class="rotate-device"></div>
 
     <div class="sharingiscaring" v-if="!hideSocial">
@@ -65,11 +58,11 @@ onUnmounted(() => clearTimeout(midnightTimer))
       </div>
     </div>
 
-    <MenuPanel :open="menuOpen" @toggle="menuOpen = !menuOpen" />
-    <CookieBanner />
+    <MenuPanel :open="state.menuOpen" @toggle="state.menuOpen = !state.menuOpen" />
+    <ConsentBanner />
 
     <div class="cont">
-      <RouterView />
+      <RouterView :key="route.path" />
     </div>
   </div>
 </template>

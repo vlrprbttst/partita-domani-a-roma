@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import CookiesView from '../views/CookiesView.vue'
 
 export default createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes: [
     { path: '/',        component: HomeView,   props: { dayOffset: 1 } },
     { path: '/oggi',    component: HomeView,   props: { dayOffset: 0 } },

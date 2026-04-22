@@ -1,4 +1,6 @@
-const BASE_URL = 'https://api.football-data.org/v4'
+const BASE_URL = import.meta.env.DEV
+  ? '/football-api/v4'
+  : 'https://api.football-data.org/v4'
 const TOKEN = import.meta.env.VITE_FOOTBALL_API_TOKEN
 
 const TEAMS = { roma: 100, lazio: 110 }

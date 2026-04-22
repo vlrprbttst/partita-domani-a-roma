@@ -1,12 +1,12 @@
 <script setup>
 import { inject, onMounted } from 'vue'
 
-const { loaded, menuOpen } = inject('appState')
-onMounted(() => { loaded.value = true })
+const state = inject('appState')
+onMounted(() => { state.loaded = true })
 </script>
 
 <template>
-  <div class="menu" @click="menuOpen = !menuOpen"></div>
+  <div class="menu" @click="state.menuOpen = !state.menuOpen"></div>
 
   <div class="cookie-cont">
     <div class="cookie-inner">

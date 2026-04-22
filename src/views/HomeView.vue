@@ -7,7 +7,7 @@ const props = defineProps({
   testMode:  { type: String, default: null },
 })
 
-const { loaded, menuOpen } = inject('appState')
+const state = inject('appState')
 
 const match      = ref(null)
 const background = ref('')
@@ -32,29 +32,32 @@ function preloadBackground(hasMatch) {
 }
 
 onMounted(async () => {
-  if (props.testMode === 'si') {
-    match.value = {
-      timestamp: new Date(),
-      homeTeam: { name: 'roma', article: 'la' },
-      awayTeamName: 'Test FC',
+  state.loaded = false
+  try {
+    if (props.testMode === 'si') {
+      match.value = {
+        timestamp: new Date(),
+        homeTeam: { name: 'roma', article: 'la' },
+        awayTeamName: 'Test FC',
+      }
+    } else if (props.testMode !== 'no') {
+      const target = new Date()
+      target.setDate(target.getDate() + props.dayOffset)
+      match.value = await getMatchForDate(target)
     }
-  } else if (props.testMode !== 'no') {
-    const target = new Date()
-    target.setDate(target.getDate() + props.dayOffset)
-    match.value = await getMatchForDate(target)
+    await preloadBackground(!!match.value)
+  } finally {
+    state.loaded = true
   }
-
-  await preloadBackground(!!match.value)
-  loaded.value = true
 })
 </script>
 
 <template>
-  <div class="menu" @click="menuOpen = !menuOpen"></div>
+  <div class="menu" @click="state.menuOpen = !state.menuOpen"></div>
 
   <div
     class="cont-inner"
-    :class="{ menu_opened: menuOpen }"
+    :class="{ menu_opened: state.menuOpen }"
     :style="{ backgroundImage: `url(${background})` }"
     @touchmove.prevent
   >
