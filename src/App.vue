@@ -36,20 +36,6 @@ onUnmounted(() => clearTimeout(midnightTimer))
   <div class="page" :class="[deviceClass, { menu_opened: state.menuOpen }]">
     <div class="rotate-device"></div>
 
-    <div class="sharingiscaring">
-      <div class="the-fb">
-        <div id="fb-root"></div>
-        <div
-          class="fb-like"
-          data-href="https://vlrprbttst.github.io/partita-domani-a-roma/"
-          data-layout="button_count"
-          data-action="like"
-          data-show-faces="false"
-          data-share="true"
-        ></div>
-      </div>
-    </div>
-
     <MenuPanel :open="state.menuOpen" @toggle="state.menuOpen = !state.menuOpen" />
 
     <div class="cont">
