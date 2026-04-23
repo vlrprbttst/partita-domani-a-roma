@@ -55,6 +55,7 @@ async function load() {
 const THRESHOLD = 80
 const pullY     = ref(0)
 const ready     = ref(false)
+const releasing = ref(false)
 let startY = 0
 
 function onTouchStart(e) {
@@ -74,12 +75,15 @@ function onTouchMove(e) {
 
 async function onTouchEnd() {
   if (ready.value) {
+    releasing.value = true
     pullY.value = 0
-    ready.value = false
+    ready.value  = false
+    await new Promise(r => setTimeout(r, 300))
+    releasing.value = false
     await load()
   } else {
     pullY.value = 0
-    ready.value = false
+    ready.value  = false
   }
 }
 
@@ -99,7 +103,8 @@ onMounted(load)
   >
     <div
       class="pull-indicator"
-      :style="{ opacity: pullY / THRESHOLD, transform: `translateY(${pullY * 0.4}px)` }"
+      :class="{ releasing }"
+      :style="{ opacity: releasing ? 0 : pullY / THRESHOLD, transform: `translateY(${pullY * 0.4}px)` }"
     >
       <span
         class="pull-icon"

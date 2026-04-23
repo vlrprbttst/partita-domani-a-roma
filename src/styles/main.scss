@@ -363,14 +363,17 @@ ul {
   top: 16px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 28px;
+  font-size: 32px;
   color: white;
   opacity: 0;
   pointer-events: none;
   z-index: 10;
 
+  &.releasing { transition: opacity 0.3s ease; }
+
   .pull-icon {
     display: inline-block;
+    transform-origin: center;
 
     &.spinning {
       color: #fcff00;
