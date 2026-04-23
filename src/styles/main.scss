@@ -366,9 +366,20 @@ ul {
   font-size: 28px;
   color: white;
   opacity: 0;
-  transition: color 0.2s;
   pointer-events: none;
   z-index: 10;
 
-  &.ready { color: #fcff00; }
+  .pull-icon {
+    display: inline-block;
+
+    &.spinning {
+      color: #fcff00;
+      animation: ptr-spin 0.5s linear infinite;
+    }
+  }
+}
+
+@keyframes ptr-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }

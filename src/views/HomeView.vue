@@ -99,9 +99,14 @@ onMounted(load)
   >
     <div
       class="pull-indicator"
-      :class="{ ready }"
       :style="{ opacity: pullY / THRESHOLD, transform: `translateY(${pullY * 0.4}px)` }"
-    >&#8635;</div>
+    >
+      <span
+        class="pull-icon"
+        :class="{ spinning: ready }"
+        :style="!ready ? { transform: `rotate(${pullY * 3}deg)` } : {}"
+      >&#8635;</span>
+    </div>
 
     <div class="center">
       <h1>C'è la partita<br>{{ location }} a Roma?</h1>
