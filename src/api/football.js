@@ -35,21 +35,6 @@ async function fetchTeamMatchesDev(teamId, dateStr) {
   }))
 }
 
-// Dev only: reads the legacy fixtures.json fallback
-async function fetchStoredMatchesDev(dateStr) {
-  try {
-    const res  = await fetch(`${import.meta.env.BASE_URL}data/fixtures.json`)
-    const data = await res.json()
-    return (data[dateStr] ?? []).map(f => ({
-      timestamp:    new Date(f.date),
-      homeTeam:     normalizeTeam(f.homeTeamName),
-      awayTeamName: f.awayTeamName,
-    }))
-  } catch {
-    return []
-  }
-}
-
 // Production: reads the pre-fetched static JSON built by scripts/fetch-matches.js
 async function fetchMatchFromStatic(dateStr) {
   try {
@@ -71,12 +56,11 @@ export async function getMatchForDate(date) {
   const dateStr = dateRome(date)
 
   if (import.meta.env.DEV) {
-    const [roma, lazio, stored] = await Promise.all([
+    const [roma, lazio] = await Promise.all([
       fetchTeamMatchesDev(TEAMS.roma,  dateStr).catch(() => []),
       fetchTeamMatchesDev(TEAMS.lazio, dateStr).catch(() => []),
-      fetchStoredMatchesDev(dateStr),
     ])
-    const all = [...roma, ...lazio, ...stored]
+    const all = [...roma, ...lazio]
     return all.length > 0 ? all[0] : null
   }
 

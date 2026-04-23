@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git mv *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git reset *)",
+      "Bash(grep -E '\\\\.\\(json|js|ts|vue|html|md|lock|yml|yaml|htaccess|xml\\)$')",
+      "Bash(awk '{print $5, $9}')",
+      "Bash(npm outdated *)",
+      "Bash(npm audit *)",
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(m['utcDate'], m['homeTeam']['name'], 'vs', m['awayTeam']['name'], '-', m['status']\\) for m in data.get\\('matches',[]\\)]\")"
+    ]
+  }
+}
