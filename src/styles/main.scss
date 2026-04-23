@@ -356,3 +356,19 @@ ul {
     p { margin-bottom: 5px; }
   }
 }
+
+// ─── Pull to refresh ──────────────────────────────────────────────────────────
+.pull-indicator {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 28px;
+  color: white;
+  opacity: 0;
+  transition: color 0.2s;
+  pointer-events: none;
+  z-index: 10;
+
+  &.ready { color: #fcff00; }
+}

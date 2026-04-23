@@ -31,7 +31,7 @@ function preloadBackground(hasMatch) {
   })
 }
 
-onMounted(async () => {
+async function load() {
   state.loaded = false
   try {
     if (props.testMode === 'si') {
@@ -49,7 +49,41 @@ onMounted(async () => {
   } finally {
     state.loaded = true
   }
-})
+}
+
+// Pull-to-refresh
+const THRESHOLD = 80
+const pullY     = ref(0)
+const ready     = ref(false)
+let startY = 0
+
+function onTouchStart(e) {
+  if (state.menuOpen) return
+  startY = e.touches[0].clientY
+}
+
+function onTouchMove(e) {
+  e.preventDefault()
+  if (state.menuOpen) return
+  const delta = e.touches[0].clientY - startY
+  if (delta > 0) {
+    pullY.value = Math.min(delta, THRESHOLD * 1.5)
+    ready.value = pullY.value >= THRESHOLD
+  }
+}
+
+async function onTouchEnd() {
+  if (ready.value) {
+    pullY.value = 0
+    ready.value = false
+    await load()
+  } else {
+    pullY.value = 0
+    ready.value = false
+  }
+}
+
+onMounted(load)
 </script>
 
 <template>
@@ -59,8 +93,16 @@ onMounted(async () => {
     class="cont-inner"
     :class="{ menu_opened: state.menuOpen }"
     :style="{ backgroundImage: `url(${background})` }"
-    @touchmove.prevent
+    @touchstart.passive="onTouchStart"
+    @touchmove.prevent="onTouchMove"
+    @touchend.passive="onTouchEnd"
   >
+    <div
+      class="pull-indicator"
+      :class="{ ready }"
+      :style="{ opacity: pullY / THRESHOLD, transform: `translateY(${pullY * 0.4}px)` }"
+    >&#8635;</div>
+
     <div class="center">
       <h1>C'è la partita<br>{{ location }} a Roma?</h1>
       <h2>{{ match ? 'Sì' : 'No' }}</h2>
