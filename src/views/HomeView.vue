@@ -115,7 +115,7 @@ onMounted(load)
 
     <div class="center">
       <h1>C'è la partita<br>{{ location }} a Roma?</h1>
-      <h2>{{ match ? 'Sì' : 'No' }}</h2>
+      <h2>{{ match ? 'SI' : 'No' }}</h2>
       <h3 v-if="match">
         Gioca {{ match.homeTeam.article }}
         <span :class="match.homeTeam.name">{{ match.homeTeam.name }}</span><br>
