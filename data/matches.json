@@ -1,1 +1,11 @@
-{}
+{
+  "nextMatch": {
+    "date": "2026-04-27",
+    "timestamp": "2026-04-27T18:45:00Z",
+    "homeTeam": {
+      "name": "lazio",
+      "article": "la"
+    },
+    "awayTeamName": "Udinese Calcio"
+  }
+}
