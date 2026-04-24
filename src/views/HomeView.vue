@@ -61,6 +61,23 @@ async function load() {
 }
 
 // Pull-to-refresh
+// Share
+const canShare = !!navigator.share
+
+async function share() {
+  const text = match.value
+    ? `C'è la partita ${location} a Roma! Gioca ${match.value.homeTeam.article} ${match.value.homeTeam.name} alle ${formatTime(match.value.timestamp)}.`
+    : `Non c'è la partita ${location} a Roma.`
+  try {
+    await navigator.share({
+      title: "C'è la partita a Roma?",
+      text,
+      url: window.location.href,
+    })
+  } catch { /* utente ha annullato */ }
+}
+
+// Pull-to-refresh
 const THRESHOLD = 80
 let startY      = 0
 let pullY       = 0
@@ -103,6 +120,13 @@ onMounted(load)
 
 <template>
   <div class="menu" @click="state.menuOpen = !state.menuOpen"></div>
+  <button v-if="canShare" class="share-btn" @click="share" aria-label="Condividi">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+      <polyline points="16 6 12 2 8 6"/>
+      <line x1="12" y1="2" x2="12" y2="15"/>
+    </svg>
+  </button>
 
   <div
     class="cont-inner"
