@@ -516,3 +516,48 @@ ul {
   }
 }
 
+// ─── Cookie policy page ───────────────────────────────────────────────────────
+.cookie-cont {
+  height: 100%;
+  background: #000;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 2;
+
+  a, a:visited, a:hover { color: #fcff00; }
+}
+
+.cookie-inner {
+  padding: 80px 40px 40px;
+  max-width: 700px;
+  @include respond-to(414) { padding: 80px 20px 40px; }
+}
+
+.back-btn {
+  display: inline-block;
+  margin-top: 30px;
+  border: 1px solid white;
+  color: #fff;
+  font-family: $font2;
+  font-size: 14px;
+  border-radius: 4px;
+  padding: 10px 20px;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+
+.reset-btn {
+  display: inline-block;
+  margin: 10px 0 30px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+  background: none;
+  font-family: $font2;
+  font-size: 13px;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
