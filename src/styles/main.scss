@@ -93,13 +93,16 @@ body {
   transform: translate(-50%, -50%);
 
   .next-match {
-    margin-top: 12px;
+    
     font-family: $font2;
     font-size: 13px;
     color: rgba(255, 255, 255, 0.75);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     white-space: nowrap;
+    margin: 12px 0 0 0;
+    padding: 0 12px;
+    border-radius: 6px;
   }
 }
 
