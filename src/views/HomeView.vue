@@ -147,6 +147,7 @@ onMounted(load)
       <p v-if="!match && nextMatch" class="next-match">
         <b>Prossima partita:</b> {{ formatNextDate(nextMatch.date) }} &middot;
         <span :class="nextMatch.homeTeam.name">{{ nextMatch.homeTeam.name }}</span>
+        <template v-if="nextMatch.timestamp"> &middot; ore {{ formatTime(nextMatch.timestamp) }}</template>
       </p>
       <h3 v-if="match">
         Gioca {{ match.homeTeam.article }}
