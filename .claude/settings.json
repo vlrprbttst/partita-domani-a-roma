@@ -10,7 +10,8 @@
       "Bash(awk '{print $5, $9}')",
       "Bash(npm outdated *)",
       "Bash(npm audit *)",
-      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(m['utcDate'], m['homeTeam']['name'], 'vs', m['awayTeam']['name'], '-', m['status']\\) for m in data.get\\('matches',[]\\)]\")"
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(m['utcDate'], m['homeTeam']['name'], 'vs', m['awayTeam']['name'], '-', m['status']\\) for m in data.get\\('matches',[]\\)]\")",
+      "Bash(npm run *)"
     ],
     "additionalDirectories": [
       "c:\\c\\Users\\Valerio\\Desktop\\claude workspace\\partita-domani-a-roma\\public\\icons"

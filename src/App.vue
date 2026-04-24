@@ -57,7 +57,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="overlay" v-if="!state.loaded">
+  <a href="#main-content" class="skip-link">Salta al contenuto</a>
+
+  <div class="overlay" v-if="!state.loaded" role="status" aria-live="polite" aria-label="Caricamento in corso">
     <div class="message"><div class="spin"></div></div>
   </div>
 
@@ -66,17 +68,17 @@ onUnmounted(() => {
 
     <MenuPanel :open="state.menuOpen" @toggle="state.menuOpen = !state.menuOpen" />
     <ConsentBanner />
-    <div v-if="deferredInstall && !installDismissed" class="install-banner">
+    <div v-if="deferredInstall && !installDismissed" class="install-banner" role="banner" aria-label="Installa l'app">
       <img :src="`${BASE_URL}icons/android-chrome-192x192.png`" class="install-banner__icon" alt="">
-      <div class="install-banner__text">
+      <div class="install-banner__text" aria-hidden="true">
         <strong>Partita a Roma?</strong>
         <span>Aggiungi alla schermata home</span>
       </div>
-      <button class="install-banner__btn" @click="install">Installa</button>
-      <button class="install-banner__close" @click="installDismissed = true" aria-label="Chiudi">✕</button>
+      <button class="install-banner__btn" @click="install" aria-label="Installa l'app sulla schermata home">Installa</button>
+      <button class="install-banner__close" @click="installDismissed = true" aria-label="Chiudi il banner di installazione">✕</button>
     </div>
 
-    <div class="cont">
+    <div class="cont" id="main-content">
       <RouterView :key="route.path" />
     </div>
   </div>

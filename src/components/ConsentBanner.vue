@@ -36,8 +36,8 @@ function refuse() {
   <div v-if="visible" class="analytics-notice">
     <p>Questo sito usa cookie di Google Analytics per statistiche anonime. <RouterLink to="/cookie-policy">Maggiori info</RouterLink></p>
     <div class="analytics-notice__actions">
-      <a href="#" @click.prevent="refuse">Rifiuta</a>
-      <a href="#" @click.prevent="accept">Accetta</a>
+      <button @click="refuse" aria-label="Rifiuta i cookie analitici">Rifiuta</button>
+      <button @click="accept" aria-label="Accetta i cookie analitici">Accetta</button>
     </div>
   </div>
 </template>

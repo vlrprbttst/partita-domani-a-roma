@@ -4,9 +4,9 @@ defineEmits(['toggle'])
 </script>
 
 <template>
-  <div class="menu-cont" :class="{ menu_opened: open }">
+  <nav id="main-menu" class="menu-cont" :class="{ menu_opened: open }" aria-label="Menu principale" :aria-hidden="(!open).toString()">
     <div class="stripes-top"></div>
-    <div class="close" @click="$emit('toggle')"></div>
+    <button class="close" @click="$emit('toggle')" aria-label="Chiudi menu"></button>
 
     <h1>Perché?</h1>
     <p>
@@ -57,5 +57,5 @@ defineEmits(['toggle'])
       </li>
     </ul>
 
-  </div>
+  </nav>
 </template>

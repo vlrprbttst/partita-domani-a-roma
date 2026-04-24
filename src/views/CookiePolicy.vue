@@ -13,7 +13,13 @@ function resetConsent() {
 </script>
 
 <template>
-  <div class="menu" @click="state.menuOpen = !state.menuOpen"></div>
+  <button
+    class="menu"
+    :aria-label="state.menuOpen ? 'Chiudi menu' : 'Apri menu'"
+    :aria-expanded="state.menuOpen.toString()"
+    aria-controls="main-menu"
+    @click="state.menuOpen = !state.menuOpen"
+  ></button>
 
   <div class="cookie-cont">
     <div class="cookie-inner">
