@@ -33,6 +33,9 @@ defineEmits(['toggle'])
       (il quadrato con la freccia in su) e seleziona <b>Aggiungi a schermata Home</b>.
     </p>
 
+    <h1>Privacy</h1>
+    <p><RouterLink to="/cookie-policy">Cookie Policy</RouterLink></p>
+
     <h1>Credits</h1>
     <ul>
       <li>
