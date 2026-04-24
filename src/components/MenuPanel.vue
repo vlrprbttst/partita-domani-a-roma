@@ -41,21 +41,21 @@ defineEmits(['toggle'])
       <li>
         <p>
           Ideato e realizzato da
-          <a href="https://www.linkedin.com/in/valeriopierbattista/" target="_blank">Valerio Pierbattista</a>
-          e <a href="https://claude.ai" target="_blank">Claude.ai</a>
+          <a href="https://www.linkedin.com/in/valeriopierbattista/" target="_blank" rel="noopener noreferrer">Valerio Pierbattista</a>
+          e <a href="https://claude.ai" target="_blank" rel="noopener noreferrer">Claude.ai</a>
         </p>
       </li>
       <li><p>Le immagini di sfondo sono prese da Google</p></li>
       <li>
         <p>
           Il repository del progetto è su
-          <a href="https://github.com/vlrprbttst/partita-domani-a-roma/tree/rewrite-modern" target="_blank">Github</a>
+          <a href="https://github.com/vlrprbttst/partita-domani-a-roma/tree/rewrite-modern" target="_blank" rel="noopener noreferrer">Github</a>
         </p>
       </li>
       <li>
         <p>
           Le informazioni sulle partite sono prese da
-          <a href="http://football-data.org" target="_blank">www.football-data.org</a>
+          <a href="https://www.football-data.org" target="_blank" rel="noopener noreferrer">www.football-data.org</a>
         </p>
       </li>
     </ul>
