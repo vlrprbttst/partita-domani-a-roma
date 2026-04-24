@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from 'vue'
+import { trackEvent } from '../utils/analytics.js'
 
 const visible = ref(!localStorage.getItem('cookiesAccepted'))
 
 function accept() {
   localStorage.setItem('cookiesAccepted', '1')
   visible.value = false
+  trackEvent('consent_accepted')
 }
 </script>
 

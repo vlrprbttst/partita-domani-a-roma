@@ -1,6 +1,7 @@
 <script setup>
 import { ref, inject, onMounted } from 'vue'
 import { getMatchForDate, getNextMatch } from '../api/football.js'
+import { trackEvent } from '../utils/analytics.js'
 
 const props = defineProps({
   dayOffset: { type: Number, default: 1 },
@@ -55,6 +56,7 @@ async function load() {
       nextMatch.value = await getNextMatch()
     }
     await preloadBackground(!!match.value)
+    trackEvent('result_viewed', { result: match.value ? 'si' : 'no', day: location })
   } finally {
     state.loaded = true
   }
@@ -68,12 +70,14 @@ async function share() {
   const text = match.value
     ? `C'è la partita ${location} a Roma! Gioca ${match.value.homeTeam.article} ${match.value.homeTeam.name} alle ${formatTime(match.value.timestamp)}.`
     : `Non c'è la partita ${location} a Roma.`
+  trackEvent('share_tapped')
   try {
     await navigator.share({
       title: "C'è la partita a Roma?",
       text,
       url: window.location.href,
     })
+    trackEvent('share_completed')
   } catch { /* utente ha annullato */ }
 }
 
@@ -109,6 +113,7 @@ async function onTouchEnd() {
   pullY     = 0
   pullReady = false
   if (wasReady) {
+    trackEvent('pull_to_refresh')
     await load()
   } else {
     state.loaded = true
@@ -119,7 +124,7 @@ onMounted(load)
 </script>
 
 <template>
-  <div class="menu" @click="state.menuOpen = !state.menuOpen"></div>
+  <div class="menu" @click="state.menuOpen = !state.menuOpen; trackEvent('menu_opened')"></div>
   <button v-if="canShare" class="share-btn" @click="share" aria-label="Condividi">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
@@ -150,7 +155,7 @@ onMounted(load)
       </h3>
     </div>
 
-    <RouterLink class="switch" :to="location === 'domani' ? '/oggi' : '/'">
+    <RouterLink class="switch" :to="location === 'domani' ? '/oggi' : '/'" @click="trackEvent('switch_day', { to: location === 'domani' ? 'oggi' : 'domani' })">
       {{ location === 'domani' ? 'e oggi?' : 'e domani?' }}
     </RouterLink>
   </div>
