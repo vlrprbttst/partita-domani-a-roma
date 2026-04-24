@@ -38,7 +38,7 @@ defineEmits(['toggle'])
       <li>
         <p>
           Ideato e realizzato da
-          <a href="http://valeriopierbattista.com" target="_blank">Valerio Pierbattista</a>
+          <a href="https://www.linkedin.com/in/valeriopierbattista/" target="_blank">Valerio Pierbattista</a>
           e <a href="https://claude.ai" target="_blank">Claude.ai</a>
         </p>
       </li>
