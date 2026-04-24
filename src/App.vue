@@ -2,6 +2,7 @@
 import { reactive, watch, provide, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import MenuPanel from './components/MenuPanel.vue'
+import ConsentBanner from './components/ConsentBanner.vue'
 
 const state = reactive({ loaded: false, menuOpen: false })
 
@@ -37,6 +38,7 @@ onUnmounted(() => clearTimeout(midnightTimer))
     <div class="rotate-device"></div>
 
     <MenuPanel :open="state.menuOpen" @toggle="state.menuOpen = !state.menuOpen" />
+    <ConsentBanner />
 
     <div class="cont">
       <RouterView :key="route.path" />

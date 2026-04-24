@@ -267,6 +267,42 @@ p {
   @include respond-to(414) { font-size: 14px; min-width: auto; }
 }
 
+// ─── Cookie consent banner ───────────────────────────────────────────────────
+.cookie-popup {
+  position: fixed;
+  top: 80px;
+  right: 12px;
+  z-index: 3;
+  color: white;
+  font-family: $font2;
+  font-size: 12px;
+  line-height: 18px;
+  width: 180px;
+  text-align: right;
+  transition: $transition;
+  transform: translateX(0);
+
+  a, a:visited, a:hover {
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+    display: block;
+    margin-top: 4px;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 14px;
+    line-height: 20px;
+    width: 220px;
+  }
+}
+
+.page.menu_opened .cookie-popup {
+  transition: $transition;
+  transform: translateX($menu-offset);
+  @include respond-to(414) { transform: translateX(320px); }
+}
+
 // ─── Share button ────────────────────────────────────────────────────────────
 .share-btn {
   width: 50px;
