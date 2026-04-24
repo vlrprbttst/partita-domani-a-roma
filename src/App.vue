@@ -27,7 +27,8 @@ function scheduleMidnightReload() {
 }
 
 // PWA install prompt
-const deferredInstall = ref(null)
+const deferredInstall  = ref(null)
+const installDismissed = ref(false)
 
 function onBeforeInstallPrompt(e) {
   e.preventDefault()
@@ -64,9 +65,15 @@ onUnmounted(() => {
 
     <MenuPanel :open="state.menuOpen" @toggle="state.menuOpen = !state.menuOpen" />
     <ConsentBanner />
-    <button v-if="deferredInstall" class="install-btn" @click="install">
-      Installa app
-    </button>
+    <div v-if="deferredInstall && !installDismissed" class="install-banner">
+      <img src="/partita-domani-a-roma/icons/android-chrome-192x192.png" class="install-banner__icon" alt="">
+      <div class="install-banner__text">
+        <strong>Partita a Roma?</strong>
+        <span>Aggiungi alla schermata home</span>
+      </div>
+      <button class="install-banner__btn" @click="install">Installa</button>
+      <button class="install-banner__close" @click="installDismissed = true" aria-label="Chiudi">✕</button>
+    </div>
 
     <div class="cont">
       <RouterView :key="route.path" />
