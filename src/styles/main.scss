@@ -377,32 +377,3 @@ ul {
   }
 }
 
-// ─── Pull to refresh ──────────────────────────────────────────────────────────
-.pull-indicator {
-  position: absolute;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 32px;
-  color: white;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 10;
-
-  &.releasing { transition: opacity 0.3s ease; }
-
-  .pull-icon {
-    display: inline-block;
-    transform-origin: center;
-
-    &.spinning {
-      color: #fcff00;
-      animation: ptr-spin 0.5s linear infinite;
-    }
-  }
-}
-
-@keyframes ptr-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}

@@ -62,10 +62,9 @@ async function load() {
 
 // Pull-to-refresh
 const THRESHOLD = 80
-const pullY     = ref(0)
-const ready     = ref(false)
-const releasing = ref(false)
-let startY = 0
+let startY      = 0
+let pullY       = 0
+let pullReady   = false
 
 function onTouchStart(e) {
   if (state.menuOpen) return
@@ -77,22 +76,25 @@ function onTouchMove(e) {
   if (state.menuOpen) return
   const delta = e.touches[0].clientY - startY
   if (delta > 0) {
-    pullY.value = Math.min(delta, THRESHOLD * 1.5)
-    ready.value = pullY.value >= THRESHOLD
+    pullY = Math.min(delta, THRESHOLD * 1.5)
+    if (!pullReady && pullY >= THRESHOLD) {
+      pullReady = true
+      state.loaded = false
+    } else if (pullReady && pullY < THRESHOLD) {
+      pullReady = false
+      state.loaded = true
+    }
   }
 }
 
 async function onTouchEnd() {
-  if (ready.value) {
-    releasing.value = true
-    pullY.value = 0
-    ready.value  = false
-    await new Promise(r => setTimeout(r, 300))
-    releasing.value = false
+  const wasReady = pullReady
+  pullY     = 0
+  pullReady = false
+  if (wasReady) {
     await load()
   } else {
-    pullY.value = 0
-    ready.value  = false
+    state.loaded = true
   }
 }
 
@@ -110,18 +112,6 @@ onMounted(load)
     @touchmove.prevent="onTouchMove"
     @touchend.passive="onTouchEnd"
   >
-    <div
-      class="pull-indicator"
-      :class="{ releasing }"
-      :style="{ opacity: releasing ? 0 : pullY / THRESHOLD, transform: `translateY(${pullY * 0.4}px)` }"
-    >
-      <span
-        class="pull-icon"
-        :class="{ spinning: ready }"
-        :style="!ready ? { transform: `rotate(${pullY * 3}deg)` } : {}"
-      >&#8635;</span>
-    </div>
-
     <div class="center">
       <h1>C'è la partita<br>{{ location }} a Roma?</h1>
       <h2>{{ match ? 'SI' : 'No' }}</h2>
