@@ -1,19 +1,43 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { trackEvent } from '../utils/analytics.js'
 
-const visible = ref(!localStorage.getItem('cookiesAccepted'))
+const visible = ref(false)
+
+function grantConsent() {
+  if (typeof window.gtag === 'function') {
+    window.gtag('consent', 'update', { analytics_storage: 'granted' })
+  }
+}
+
+onMounted(() => {
+  const saved = localStorage.getItem('cookiesChoice')
+  if (saved === 'accepted') {
+    grantConsent()
+  } else if (!saved) {
+    visible.value = true
+  }
+})
 
 function accept() {
-  localStorage.setItem('cookiesAccepted', '1')
+  localStorage.setItem('cookiesChoice', 'accepted')
   visible.value = false
+  grantConsent()
   trackEvent('consent_accepted')
+}
+
+function refuse() {
+  localStorage.setItem('cookiesChoice', 'refused')
+  visible.value = false
 }
 </script>
 
 <template>
   <div v-if="visible" class="analytics-notice">
-    Questo sito usa cookie di<br>Google Analytics per statistiche.
-    <a href="#" @click.prevent="accept">OK, ho capito</a>
+    <p>Questo sito usa cookie di Google Analytics per statistiche anonime.</p>
+    <div class="analytics-notice__actions">
+      <a href="#" @click.prevent="refuse">Rifiuta</a>
+      <a href="#" @click.prevent="accept">Accetta</a>
+    </div>
   </div>
 </template>

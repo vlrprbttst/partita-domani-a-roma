@@ -338,18 +338,42 @@ p {
   transition: $transition;
   transform: translateX(0);
 
-  a, a:visited, a:hover {
+  p {
     color: white;
-    text-decoration: underline;
-    cursor: pointer;
+    font-size: 12px;
+    line-height: 16px;
+    background: none;
+    padding: 0;
+    margin: 0 0 8px 0;
     display: block;
-    margin-top: 4px;
+    max-width: 100%;
+    text-shadow: none;
+    font-family: $font2;
+    font-weight: normal;
+    margin-top: 0;
   }
 
-  @media (min-width: 768px) {
-    font-size: 14px;
-    line-height: 20px;
-    width: 220px;
+  &__actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+
+    a, a:visited, a:hover {
+      color: white;
+      cursor: pointer;
+      display: inline-block;
+      padding: 4px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 3px;
+      font-size: 11px;
+      text-decoration: none;
+
+      &:last-child {
+        background: white;
+        color: black;
+        border-color: white;
+      }
+    }
   }
 }
 
