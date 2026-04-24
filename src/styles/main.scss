@@ -91,17 +91,24 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  
+    width: 100%;
+ 
 
   .next-match {
-    
+    b {
+      @media (max-width:767px) {
+    display: block;
+  }
+      
+    }
     font-family: $font2;
     font-size: 13px;
     color: rgba(255, 255, 255, 0.75);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    white-space: nowrap;
     margin: 12px 0 0 0;
-    padding: 0 12px;
+    padding: 6px 12px;
     border-radius: 6px;
   }
 }
@@ -234,7 +241,7 @@ p {
   @media all and (min-height: 700px) and (max-height: 800px) { margin-right: 8px; }
 }
 
-.lazio     { background: #88D8F1; color: white; }
+.lazio     { background: #88D8F1; color: black; }
 .roma      { background: #A12034; color: #FF8108; }
 .italrugby { background: #0072CA; color: #fff; }
 
