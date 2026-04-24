@@ -10,7 +10,7 @@ function accept() {
 </script>
 
 <template>
-  <div v-if="visible" class="cookie-popup">
+  <div v-if="visible" class="analytics-notice">
     Questo sito usa cookie di<br>Google Analytics per statistiche.
     <a href="#" @click.prevent="accept">OK, ho capito</a>
   </div>

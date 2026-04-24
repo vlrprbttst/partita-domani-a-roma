@@ -268,7 +268,7 @@ p {
 }
 
 // ─── Cookie consent banner ───────────────────────────────────────────────────
-.cookie-popup {
+.analytics-notice {
   position: fixed;
   top: 80px;
   right: 12px;
@@ -297,7 +297,7 @@ p {
   }
 }
 
-.page.menu_opened .cookie-popup {
+.page.menu_opened .analytics-notice {
   transition: $transition;
   transform: translateX($menu-offset);
   @include respond-to(414) { transform: translateX(320px); }
