@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://vlrprbttst.github.io/partita-domani-a-roma/sitemap.xml

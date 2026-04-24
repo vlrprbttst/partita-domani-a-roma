@@ -35,12 +35,25 @@
   <meta property="og:description" content="Questo servizio è dedicato a tutti i romani che non seguono il calcio, ma ne sono vittima ogni settimana.">
   <meta property="og:image"       content="https://vlrprbttst.github.io/partita-domani-a-roma/images/social-img.jpg">
 
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
+  <script>
+    // Decode path from 404.html redirect (spa-github-pages)
+    (function(l) {
+      if (l.search[1] === '/') {
+        var decoded = l.search.slice(1).split('&').map(function(s) {
+          return s.replace(/~and~/g, '&');
+        }).join('?');
+        window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+      }
+    }(window.location));
+  </script>
   <div id="app"></div>
   <script type="module" src="/src/main.js"></script>
 </body>

@@ -1,8 +1,8 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
 export default createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory('/partita-domani-a-roma/'),
   routes: [
     { path: '/',     component: HomeView, props: { dayOffset: 1 } },
     { path: '/oggi', component: HomeView, props: { dayOffset: 0 } },
