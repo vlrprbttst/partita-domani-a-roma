@@ -1,8 +1,9 @@
 <script setup>
-import { reactive, watch, provide, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, watch, provide, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import MenuPanel from './components/MenuPanel.vue'
 import ConsentBanner from './components/ConsentBanner.vue'
+import { trackEvent } from './utils/analytics.js'
 
 const state = reactive({ loaded: false, menuOpen: false })
 
@@ -25,8 +26,32 @@ function scheduleMidnightReload() {
   midnightTimer = setTimeout(() => window.location.reload(), midnight - Date.now())
 }
 
-onMounted(scheduleMidnightReload)
-onUnmounted(() => clearTimeout(midnightTimer))
+// PWA install prompt
+const deferredInstall = ref(null)
+
+function onBeforeInstallPrompt(e) {
+  e.preventDefault()
+  deferredInstall.value = e
+}
+
+async function install() {
+  if (!deferredInstall.value) return
+  trackEvent('pwa_install_tapped')
+  deferredInstall.value.prompt()
+  const { outcome } = await deferredInstall.value.userChoice
+  if (outcome === 'accepted') trackEvent('pwa_install_accepted')
+  deferredInstall.value = null
+}
+
+onMounted(() => {
+  scheduleMidnightReload()
+  window.addEventListener('beforeinstallprompt', onBeforeInstallPrompt)
+})
+
+onUnmounted(() => {
+  clearTimeout(midnightTimer)
+  window.removeEventListener('beforeinstallprompt', onBeforeInstallPrompt)
+})
 </script>
 
 <template>
@@ -39,6 +64,9 @@ onUnmounted(() => clearTimeout(midnightTimer))
 
     <MenuPanel :open="state.menuOpen" @toggle="state.menuOpen = !state.menuOpen" />
     <ConsentBanner />
+    <button v-if="deferredInstall" class="install-btn" @click="install">
+      Installa app
+    </button>
 
     <div class="cont">
       <RouterView :key="route.path" />

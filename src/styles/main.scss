@@ -267,6 +267,25 @@ p {
   @include respond-to(414) { font-size: 14px; min-width: auto; }
 }
 
+// ─── PWA install button ───────────────────────────────────────────────────────
+.install-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  border: 1px solid white;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
+  font-family: $font2;
+  font-size: 14px;
+  border-radius: 4px;
+  padding: 10px 24px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
 // ─── Cookie consent banner ───────────────────────────────────────────────────
 .analytics-notice {
   position: fixed;
