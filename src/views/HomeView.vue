@@ -1,6 +1,6 @@
 <script setup>
 import { ref, inject, onMounted } from 'vue'
-import { getMatchForDate } from '../api/football.js'
+import { getMatchForDate, getNextMatch } from '../api/football.js'
 
 const props = defineProps({
   dayOffset: { type: Number, default: 1 },
@@ -10,8 +10,14 @@ const props = defineProps({
 const state = inject('appState')
 
 const match      = ref(null)
+const nextMatch  = ref(null)
 const background = ref('')
 const location   = props.dayOffset === 0 ? 'oggi' : 'domani'
+
+function formatNextDate(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00')
+  return d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })
+}
 
 function formatTime(date) {
   return date.toLocaleTimeString('it-IT', {
@@ -44,6 +50,9 @@ async function load() {
       const target = new Date()
       target.setDate(target.getDate() + props.dayOffset)
       match.value = await getMatchForDate(target)
+    }
+    if (!match.value && props.testMode == null) {
+      nextMatch.value = await getNextMatch()
     }
     await preloadBackground(!!match.value)
   } finally {
@@ -116,6 +125,10 @@ onMounted(load)
     <div class="center">
       <h1>C'è la partita<br>{{ location }} a Roma?</h1>
       <h2>{{ match ? 'SI' : 'No' }}</h2>
+      <p v-if="!match && nextMatch" class="next-match">
+        Prossima partita: {{ formatNextDate(nextMatch.date) }} &middot;
+        <span :class="nextMatch.homeTeam.name">{{ nextMatch.homeTeam.name }}</span>
+      </p>
       <h3 v-if="match">
         Gioca {{ match.homeTeam.article }}
         <span :class="match.homeTeam.name">{{ match.homeTeam.name }}</span><br>

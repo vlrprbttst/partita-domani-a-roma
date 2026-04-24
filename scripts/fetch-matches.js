@@ -42,9 +42,13 @@ async function fetchTeamMatches(teamId, from, to) {
 const today    = new Date()
 const tomorrow = new Date()
 tomorrow.setDate(tomorrow.getDate() + 1)
+const future   = new Date()
+future.setDate(future.getDate() + 30)
 
-const from = dateRome(today)
-const to   = dateRome(tomorrow)
+const todayStr    = dateRome(today)
+const tomorrowStr = dateRome(tomorrow)
+const from = todayStr
+const to   = dateRome(future)
 
 console.log(`Fetching matches ${from} → ${to}`)
 
@@ -53,10 +57,23 @@ const [roma, lazio] = await Promise.all([
   fetchTeamMatches(TEAMS.lazio, from, to).catch(() => []),
 ])
 
+const all = [...roma, ...lazio].sort((a, b) => a.date.localeCompare(b.date))
+
 const byDate = {}
-for (const match of [...roma, ...lazio]) {
-  if (!byDate[match.date]) {
-    byDate[match.date] = {
+let nextMatch = null
+
+for (const match of all) {
+  if (match.date === todayStr || match.date === tomorrowStr) {
+    if (!byDate[match.date]) {
+      byDate[match.date] = {
+        timestamp:    match.timestamp,
+        homeTeam:     match.homeTeam,
+        awayTeamName: match.awayTeamName,
+      }
+    }
+  } else if (!nextMatch) {
+    nextMatch = {
+      date:         match.date,
       timestamp:    match.timestamp,
       homeTeam:     match.homeTeam,
       awayTeamName: match.awayTeamName,
@@ -64,9 +81,11 @@ for (const match of [...roma, ...lazio]) {
   }
 }
 
+const output = { ...byDate, nextMatch }
+
 const outDir  = process.argv[2] ?? 'public/data'
 const outFile = join(outDir, 'matches.json')
 mkdirSync(outDir, { recursive: true })
-writeFileSync(outFile, JSON.stringify(byDate, null, 2))
+writeFileSync(outFile, JSON.stringify(output, null, 2))
 console.log(`Written ${outFile}`)
-console.log(JSON.stringify(byDate, null, 2))
+console.log(JSON.stringify(output, null, 2))

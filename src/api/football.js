@@ -17,9 +17,9 @@ function normalizeTeam(raw) {
 }
 
 // Dev only: calls the API through the Vite proxy to avoid CORS
-async function fetchTeamMatchesDev(teamId, dateStr) {
+async function fetchTeamMatchesDev(teamId, from, to = from) {
   const res = await fetch(
-    `/football-api/v4/teams/${teamId}/matches?dateFrom=${dateStr}&dateTo=${dateStr}&venue=HOME`,
+    `/football-api/v4/teams/${teamId}/matches?dateFrom=${from}&dateTo=${to}&venue=HOME`,
     { headers: { 'X-Auth-Token': TOKEN } }
   )
   const remaining = res.headers.get('X-Requests-Available-Minute')
@@ -29,6 +29,7 @@ async function fetchTeamMatchesDev(teamId, dateStr) {
   if (!res.ok) return []
   const data = await res.json()
   return (data.matches ?? []).map(m => ({
+    date:         dateRome(new Date(m.utcDate)),
     timestamp:    new Date(m.utcDate),
     homeTeam:     normalizeTeam(m.homeTeam.name),
     awayTeamName: m.awayTeam.name,
@@ -36,20 +37,9 @@ async function fetchTeamMatchesDev(teamId, dateStr) {
 }
 
 // Production: reads the pre-fetched static JSON built by scripts/fetch-matches.js
-async function fetchMatchFromStatic(dateStr) {
-  try {
-    const res  = await fetch(`${import.meta.env.BASE_URL}data/matches.json`)
-    const data = await res.json()
-    const m    = data[dateStr]
-    if (!m) return null
-    return {
-      timestamp:    new Date(m.timestamp),
-      homeTeam:     m.homeTeam,
-      awayTeamName: m.awayTeamName,
-    }
-  } catch {
-    return null
-  }
+async function fetchStatic() {
+  const res  = await fetch(`${import.meta.env.BASE_URL}data/matches.json`)
+  return res.json()
 }
 
 export async function getMatchForDate(date) {
@@ -64,5 +54,38 @@ export async function getMatchForDate(date) {
     return all.length > 0 ? all[0] : null
   }
 
-  return fetchMatchFromStatic(dateStr)
+  try {
+    const data = await fetchStatic()
+    const m    = data[dateStr]
+    if (!m) return null
+    return { timestamp: new Date(m.timestamp), homeTeam: m.homeTeam, awayTeamName: m.awayTeamName }
+  } catch {
+    return null
+  }
+}
+
+export async function getNextMatch() {
+  if (import.meta.env.DEV) {
+    const afterTomorrow = new Date()
+    afterTomorrow.setDate(afterTomorrow.getDate() + 2)
+    const future = new Date()
+    future.setDate(future.getDate() + 30)
+    const from = dateRome(afterTomorrow)
+    const to   = dateRome(future)
+    const [roma, lazio] = await Promise.all([
+      fetchTeamMatchesDev(TEAMS.roma,  from, to).catch(() => []),
+      fetchTeamMatchesDev(TEAMS.lazio, from, to).catch(() => []),
+    ])
+    const all = [...roma, ...lazio].sort((a, b) => a.date.localeCompare(b.date))
+    return all[0] ?? null
+  }
+
+  try {
+    const data = await fetchStatic()
+    const m    = data.nextMatch
+    if (!m) return null
+    return { date: m.date, timestamp: new Date(m.timestamp), homeTeam: m.homeTeam, awayTeamName: m.awayTeamName }
+  } catch {
+    return null
+  }
 }
