@@ -3,7 +3,7 @@
 ## Cos'è l'app
 
 Sito/PWA che risponde a un'unica domanda: **"C'è la partita domani a Roma?"**
-Mostra SI o NO in base alle partite casalinghe di Roma e Lazio (Serie A) e in futuro potenzialmente Italrugby.
+Mostra SI o NO in base alle partite casalinghe di Roma e Lazio (Serie A).
 Pubblico target: romani che non seguono il calcio ma ne subiscono i disagi (traffico, strade chiuse).
 
 URL live: https://vlrprbttst.github.io/partita-domani-a-roma/
@@ -110,7 +110,7 @@ Implementato:
 - Focus visible: outline giallo 3px (`#fcff00`)
 - Target size minimo 44×44px su tutti gli elementi interattivi
 - `prefers-reduced-motion` disabilita tutte le transizioni
-- Contrasto colori: badge `.roma` (`#8C1A2E`), `.italrugby` (`#004A82`) soddisfano 7:1 AAA
+- Contrasto colori: badge `.roma` (`#8C1A2E`) soddisfa 7:1 AAA
 
 ---
 
@@ -130,7 +130,6 @@ Implementato:
 Definite in `scripts/fetch-matches.js` e `src/api/football.js`:
 - **Roma** — ID football-data.org: `100`
 - **Lazio** — ID football-data.org: `110`
-- **Italrugby** — menzionato nello stile ma non ancora nell'API fetch
 
 ---
 

@@ -3,9 +3,8 @@ const TOKEN = import.meta.env.VITE_FOOTBALL_API_TOKEN
 const TEAMS = { roma: 100, lazio: 110 }
 
 const TEAM_STYLES = {
-  'as roma':   { name: 'roma',      article: 'la' },
-  'ss lazio':  { name: 'lazio',     article: 'la' },
-  'italrugby': { name: 'italrugby', article: "l'" },
+  'as roma':  { name: 'roma',  article: 'la' },
+  'ss lazio': { name: 'lazio', article: 'la' },
 }
 
 function dateRome(date) {

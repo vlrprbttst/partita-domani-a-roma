@@ -21,8 +21,8 @@ function resetConsent() {
     @click="state.menuOpen = !state.menuOpen"
   ></button>
 
-  <div class="cookie-cont">
-    <div class="cookie-inner">
+  <div class="policy-page">
+    <div class="policy-content">
 
       <h1>Cookie Policy</h1>
       <p>
@@ -133,3 +133,4 @@ function resetConsent() {
     </div>
   </div>
 </template>
+
