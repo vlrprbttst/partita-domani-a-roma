@@ -1,5 +1,7 @@
 # Context: Partita Domani a Roma
 
+> **Istruzione per l'AI**: questo file va aggiornato automaticamente ogni volta che cambia qualcosa di degno di nota nel progetto (architettura, comportamenti speciali, decisioni tecniche non ovvie, convenzioni CSS critiche, ecc.).
+
 ## Cos'è l'app
 
 Sito/PWA che risponde a un'unica domanda: **"C'è la partita domani a Roma?"**
@@ -45,7 +47,7 @@ Il token API (`VITE_FOOTBALL_API_TOKEN`) è in `.env` locale e come GitHub Secre
 |---|---|
 | `src/App.vue` | Root: stato globale (`loaded`, `menuOpen`), PWA install banner, skip link |
 | `src/views/HomeView.vue` | Vista principale: logica match, pull-to-refresh, share, result |
-| `src/views/CookiePolicy.vue` | Pagina cookie policy GDPR |
+| `src/views/CookiePolicy.vue` | Pagina cookie policy GDPR — niente hamburger menu, testo full-width, barra fissa in basso con "Torna alla home" (giallo, allineato a destra) |
 | `src/components/MenuPanel.vue` | Sidebar menu con nav landmarks |
 | `src/components/ConsentBanner.vue` | Banner GDPR consenso cookie (GA4 Consent Mode v2) |
 | `src/api/football.js` | Fetch dati: proxy in dev, JSON statico in prod |
@@ -122,6 +124,10 @@ Implementato:
 - `cache: 'no-cache'` sul fetch di `matches.json` per evitare dati stantii nella PWA
 - GA4 disabilitato di default (Consent Mode v2)
 - Localhost escluso da GA4
+
+## Note CSS importanti
+
+- Le classi CSS della pagina cookie policy si chiamano `.policy-page` e `.policy-content` (non `cookie-*`): i filtri degli ad blocker (EasyPrivacy/uBlock) nascondono via CSS qualsiasi elemento con classe contenente "cookie", rendendo la pagina invisibile su desktop con ad blocker attivo.
 
 ---
 
