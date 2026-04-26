@@ -38,7 +38,7 @@ async function fetchTeamMatchesDev(teamId, from, to = from) {
 
 // Production: reads the pre-fetched static JSON built by scripts/fetch-matches.js
 async function fetchStatic() {
-  const res  = await fetch(`${import.meta.env.BASE_URL}data/matches.json`)
+  const res = await fetch(`${import.meta.env.BASE_URL}data/matches.json`, { cache: 'no-cache' })
   return res.json()
 }
 
