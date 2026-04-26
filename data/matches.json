@@ -1,11 +1,19 @@
 {
-  "nextMatch": {
-    "date": "2026-04-27",
+  "2026-04-27": {
     "timestamp": "2026-04-27T18:45:00Z",
     "homeTeam": {
       "name": "lazio",
       "article": "la"
     },
     "awayTeamName": "Udinese Calcio"
+  },
+  "nextMatch": {
+    "date": "2026-05-04",
+    "timestamp": "2026-05-04T18:45:00Z",
+    "homeTeam": {
+      "name": "roma",
+      "article": "la"
+    },
+    "awayTeamName": "ACF Fiorentina"
   }
 }
