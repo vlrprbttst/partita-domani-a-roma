@@ -53,7 +53,15 @@ async function load() {
       match.value = await getMatchForDate(target)
     }
     if (!match.value && props.testMode == null) {
-      nextMatch.value = await getNextMatch()
+      // On "oggi" page, don't show next match if tomorrow already has one
+      if (props.dayOffset === 0) {
+        const tomorrow = new Date()
+        tomorrow.setDate(tomorrow.getDate() + 1)
+        const tomorrowMatch = await getMatchForDate(tomorrow)
+        if (!tomorrowMatch) nextMatch.value = await getNextMatch()
+      } else {
+        nextMatch.value = await getNextMatch()
+      }
     }
     await preloadBackground(!!match.value)
     trackEvent('result_viewed', { result: match.value ? 'si' : 'no', day: location })
