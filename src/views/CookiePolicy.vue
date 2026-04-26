@@ -13,14 +13,6 @@ function resetConsent() {
 </script>
 
 <template>
-  <button
-    class="menu"
-    :aria-label="state.menuOpen ? 'Chiudi menu' : 'Apri menu'"
-    :aria-expanded="state.menuOpen.toString()"
-    aria-controls="main-menu"
-    @click="state.menuOpen = !state.menuOpen"
-  ></button>
-
   <div class="policy-page">
     <div class="policy-content">
 
@@ -89,8 +81,8 @@ function resetConsent() {
         I dati raccolti da Google Analytics includono: tipo di dispositivo e browser, paese di
         accesso, pagine visitate, durata della visita. Nessun dato personale identificativo
         (nome, email, IP completo) viene raccolto o trasmesso.
-        Per maggiori informazioni: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy di Google</a>
-        e <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">opt-out da Google Analytics</a>.
+        Per maggiori informazioni: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy di Google</a>
+        e <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">opt-out da Google Analytics</a>.
       </p>
 
       <h1>Cookie di terze parti</h1>
@@ -112,14 +104,14 @@ function resetConsent() {
         proprio browser. Le istruzioni variano a seconda del browser utilizzato:
       </p>
       <ul>
-        <li><p><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener">Google Chrome</a></p></li>
-        <li><p><a href="https://support.mozilla.org/it/kb/protezione-antitracciamento-avanzata-firefox" target="_blank" rel="noopener">Mozilla Firefox</a></p></li>
-        <li><p><a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" target="_blank" rel="noopener">Apple Safari</a></p></li>
-        <li><p><a href="https://support.microsoft.com/it-it/microsoft-edge/eliminare-i-cookie-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener">Microsoft Edge</a></p></li>
+        <li><p><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer">Google Chrome</a></p></li>
+        <li><p><a href="https://support.mozilla.org/it/kb/protezione-antitracciamento-avanzata-firefox" target="_blank" rel="noopener noreferrer">Mozilla Firefox</a></p></li>
+        <li><p><a href="https://support.apple.com/it-it/guide/safari/sfri11471/mac" target="_blank" rel="noopener noreferrer">Apple Safari</a></p></li>
+        <li><p><a href="https://support.microsoft.com/it-it/microsoft-edge/eliminare-i-cookie-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" rel="noopener noreferrer">Microsoft Edge</a></p></li>
       </ul>
       <p>
         Per informazioni generali sulla gestione dei cookie:
-        <a href="https://www.allaboutcookies.org" target="_blank" rel="noopener">www.allaboutcookies.org</a>.
+        <a href="https://www.allaboutcookies.org" target="_blank" rel="noopener noreferrer">www.allaboutcookies.org</a>.
       </p>
 
       <h1>Modifiche alla presente informativa</h1>
@@ -129,8 +121,10 @@ function resetConsent() {
         <br><strong>Ultimo aggiornamento: aprile 2026</strong>
       </p>
 
-      <RouterLink class="back-btn" to="/">← Torna alla home</RouterLink>
     </div>
   </div>
-</template>
 
+  <div class="policy-bar">
+    <RouterLink class="back-btn" to="/">← Torna alla home</RouterLink>
+  </div>
+</template>
