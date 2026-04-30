@@ -1,5 +1,5 @@
 <script setup>
-import { ref, inject, onMounted } from 'vue'
+import { ref, inject, onMounted, nextTick } from 'vue'
 import { getMatchForDate, getNextMatch } from '../api/football.js'
 import { trackEvent } from '../utils/analytics.js'
 import { notificationsSupported, subscribeToNotifications, unsubscribeFromNotifications } from '../api/firebase.js'
@@ -16,7 +16,44 @@ const nextMatch  = ref(null)
 const background = ref('')
 const location   = props.dayOffset === 0 ? 'oggi' : 'domani'
 
-const notifSupported = notificationsSupported()
+const notifSupported  = notificationsSupported()
+const bellBtnRef      = ref(null)
+
+const CONFETTI_COLORS = ['#8C1A2E', '#fcff00', '#88D8F1', '#ffffff']
+const CONFETTI_DIRS   = [
+  [ 0,-56],[ 28,-48],[ 48,-28],[ 56,  0],
+  [48, 28],[ 28, 48],[  0, 56],[-28, 48],
+  [-48,28],[-56,  0],[-48,-28],[-28,-48],
+]
+const CONFETTI_SIZES  = [7, 5, 8, 6, 7, 5, 8, 6, 7, 5, 8, 6]
+
+function fireConfetti() {
+  if (!bellBtnRef.value) return
+  const { left, top, width, height } = bellBtnRef.value.getBoundingClientRect()
+  const cx = left + width / 2
+  const cy = top  + height / 2
+  CONFETTI_DIRS.forEach(([tx, ty], i) => {
+    const size = CONFETTI_SIZES[i]
+    const el   = document.createElement('div')
+    Object.assign(el.style, {
+      position: 'fixed', zIndex: '9999', pointerEvents: 'none',
+      left: (cx - size / 2) + 'px', top: (cy - size / 2) + 'px',
+      width: size + 'px', height: size + 'px',
+      background: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      borderRadius: '1px',
+    })
+    document.body.appendChild(el)
+    el.animate(
+      [
+        { transform: 'translate(0,0) rotate(0deg) scale(1)', opacity: 1 },
+        { transform: `translate(${tx}px,${ty}px) rotate(${i % 2 === 0 ? 180 : -180}deg) scale(0.3)`, opacity: 0 },
+      ],
+      { duration: 700, easing: 'cubic-bezier(0.2,0.8,0.4,1)', fill: 'forwards' }
+    ).onfinish = () => el.remove()
+  })
+}
+
+
 const notifState     = ref(
   !notificationsSupported()                                                                    ? 'unsupported' :
   Notification.permission === 'denied'                                                         ? 'denied'      :
@@ -25,15 +62,23 @@ const notifState     = ref(
 
 async function avvisami() {
   state.loaded = false
+  let succeeded = false
   try {
     const result = await subscribeToNotifications()
     notifState.value = result === 'granted' ? 'subscribed' : result
-    if (result === 'granted') localStorage.setItem('notifSubscribed', 'true')
+    if (result === 'granted') {
+      localStorage.setItem('notifSubscribed', 'true')
+      succeeded = true
+    }
     trackEvent('notify_subscribe', { result })
   } catch {
     notifState.value = 'idle'
   } finally {
     state.loaded = true
+    if (succeeded) {
+      await nextTick()
+      fireConfetti()
+    }
   }
 }
 
@@ -180,6 +225,7 @@ onMounted(load)
     class="notify-wrap"
   >
     <button
+      ref="bellBtnRef"
       class="notify-btn"
       :aria-label="notifState === 'subscribed' ? 'Disattiva notifiche' : 'Attiva notifiche'"
       @click="notifState === 'subscribed' ? disattiva() : avvisami()"
