@@ -54,8 +54,11 @@ Il token API (`VITE_FOOTBALL_API_TOKEN`) è in `.env` locale e come GitHub Secre
 | `src/utils/analytics.js` | Wrapper `trackEvent()` per GA4 |
 | `src/styles/main.scss` | Tutti gli stili dell'app |
 | `src/router/index.js` | Route: `/`, `/oggi`, `/si`, `/no`, `/cookie-policy` |
+| `src/api/firebase.js` | Init Firebase client, subscribe/unsubscribe notifiche push |
 | `scripts/fetch-matches.js` | Script Node.js per GitHub Actions: chiama API, scrive matches.json |
+| `scripts/send-notifications.js` | Fetcha matches.json dal URL GitHub Pages deployato, invia FCM push se domani c'è partita |
 | `.github/workflows/deploy.yml` | CI/CD: build + fetch + deploy. Trigger: push, cron `0 */6 * * *`, workflow_dispatch |
+| `.github/workflows/notify.yml` | Invia notifiche push. Cron `0 10 * * *` (12:00 ora di Roma). Trigger: workflow_dispatch |
 | `public/404.html` | Redirect SPA per GitHub Pages (spa-github-pages trick) |
 | `public/icons/manifest.json` | PWA manifest |
 | `public/sw.js` | Service worker minimale (PWA launcher, no cache) |
@@ -129,20 +132,31 @@ Implementato:
 
 Implementate con **Firebase Cloud Messaging (FCM)** + Firestore.
 
-- `src/api/firebase.js` — init Firebase client, `subscribeToNotifications()` chiede il permesso, ottiene il FCM token e lo salva in Firestore (`subscriptions` collection)
+**Flusso utente:**
+- In home appare il bottone "Avvisami la prossima volta: Attiva le Notifiche" (solo se non ancora iscritto e notifiche non bloccate)
+- Al click → il browser chiede il permesso → se concesso, il token FCM viene salvato su Firestore
+- Compare l'icona campanella barrata in alto a destra → cliccandola si disiscrive (token rimosso da Firestore + `deleteToken()`)
+
+**Componenti:**
+- `src/api/firebase.js` — init Firebase client, `subscribeToNotifications()` e `unsubscribeFromNotifications()`
 - `public/sw.js` — importa Firebase compat via CDN, gestisce `onBackgroundMessage` e `notificationclick`
-- `scripts/send-notifications.js` — legge `dist/data/matches.json`; se domani c'è partita, invia FCM a tutti i token in Firestore; usa `sentNotifications` collection per evitare invii duplicati
-- `.github/workflows/deploy.yml` — esegue `send-notifications.js` dopo `fetch-matches.js`
+- `scripts/send-notifications.js` — fetcha `matches.json` dall'URL GitHub Pages deployato (non da filesystem locale); se domani c'è partita, invia FCM a tutti i token; token chunked a 500 (limite FCM); stale token cleanup chunked a 30 (limite Firestore `in`)
+
+**Timing invio:**
+- Workflow dedicato `notify.yml`, cron `0 10 * * *` → **12:00 ora di Roma** (CEST = UTC+2)
+- Separato da `deploy.yml` che non esegue più notifiche
+
+**Deduplicazione:** Firestore `sentNotifications/{YYYY-MM-DD}` — se il doc esiste, skip. Evita invii doppi se il workflow gira più volte.
 
 **Segreti GitHub necessari:**
-- `FIREBASE_SERVICE_ACCOUNT` — JSON del service account Firebase (per Admin SDK)
-- `VITE_FIREBASE_VAPID_KEY` — chiave pubblica VAPID da Firebase Console → Cloud Messaging
+- `FIREBASE_SERVICE_ACCOUNT` — JSON del service account Firebase (per Admin SDK, usato da `notify.yml`)
+- `VITE_FIREBASE_VAPID_KEY` — chiave pubblica VAPID da Firebase Console → Cloud Messaging (usata da `deploy.yml` nel build)
 
 **Segreti locali (.env):**
 - `VITE_FIREBASE_VAPID_KEY` — stessa chiave, per il build locale
 
 **Firestore collections:**
-- `subscriptions` — `{ token, createdAt }` — un doc per utente iscritto
+- `subscriptions` — `{ token, createdAt }` — un doc per iscrizione (deduplicati server-side con `Set`)
 - `sentNotifications` — `{ sentAt, recipientCount }` — chiave = data partita (YYYY-MM-DD), previene duplicati
 
 **Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home). Su Android e desktop funziona da browser.
