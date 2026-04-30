@@ -1,0 +1,23 @@
+name: Send Match Notifications
+
+on:
+  schedule:
+    - cron: '0 10 * * *'  # 12:00 Rome (CEST = UTC+2)
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: node scripts/send-notifications.js
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

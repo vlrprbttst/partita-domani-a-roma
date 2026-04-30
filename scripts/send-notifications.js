@@ -1,9 +1,8 @@
-// Reads dist/data/matches.json and sends FCM push notifications if tomorrow has a match.
-// Runs after fetch-matches.js in GitHub Actions. Uses Firestore to avoid duplicate sends.
+// Fetches matches from deployed GitHub Pages and sends FCM push notifications if tomorrow has a match.
+// Runs daily at 10:00 UTC (12:00 Rome CEST) via notify.yml. Uses Firestore to avoid duplicate sends.
 import { initializeApp, cert } from 'firebase-admin/app'
 import { getMessaging }        from 'firebase-admin/messaging'
 import { getFirestore }        from 'firebase-admin/firestore'
-import { readFileSync }        from 'fs'
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
 initializeApp({ credential: cert(serviceAccount) })
@@ -21,9 +20,11 @@ const tomorrowStr = dateRome(tomorrow)
 
 let matchesData
 try {
-  matchesData = JSON.parse(readFileSync('dist/data/matches.json', 'utf8'))
-} catch {
-  console.log('No matches.json found, skipping notifications')
+  const res = await fetch('https://vlrprbttst.github.io/partita-domani-a-roma/data/matches.json')
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  matchesData = await res.json()
+} catch (err) {
+  console.log('Failed to fetch matches.json:', err.message)
   process.exit(0)
 }
 

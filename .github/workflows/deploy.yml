@@ -31,10 +31,6 @@ jobs:
         env:
           VITE_FOOTBALL_API_TOKEN: ${{ secrets.VITE_FOOTBALL_API_TOKEN }}
 
-      - run: node scripts/send-notifications.js
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
