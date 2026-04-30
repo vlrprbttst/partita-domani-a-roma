@@ -53,27 +53,34 @@ if (tokens.length === 0) {
 const { homeTeam } = tomorrowMatch
 const name = homeTeam.name.charAt(0).toUpperCase() + homeTeam.name.slice(1)
 
-const response = await messaging.sendEachForMulticast({
-  tokens,
-  notification: {
-    title: 'Partita domani a Roma!',
-    body:  `Gioca ${homeTeam.article} ${name}. Apri l'app per l'orario.`,
-  },
-  webpush: {
-    fcmOptions: { link: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
-  },
-})
+const chunks = []
+for (let i = 0; i < tokens.length; i += 500) chunks.push(tokens.slice(i, i + 500))
 
-// Remove stale tokens
-const stale = response.responses
-  .map((r, i) => (!r.success && r.error?.code === 'messaging/registration-token-not-registered') ? tokens[i] : null)
-  .filter(Boolean)
+const stale = []
+for (const chunk of chunks) {
+  const response = await messaging.sendEachForMulticast({
+    tokens: chunk,
+    notification: {
+      title: 'Partita domani a Roma!',
+      body:  `Gioca ${homeTeam.article} ${name}. Apri l'app per l'orario.`,
+    },
+    webpush: {
+      fcmOptions: { link: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
+    },
+  })
+  response.responses.forEach((r, i) => {
+    if (!r.success && r.error?.code === 'messaging/registration-token-not-registered') stale.push(chunk[i])
+  })
+}
 
+// Remove stale tokens (Firestore 'in' limit: 30 per query)
 if (stale.length > 0) {
-  const staleDocs = await db.collection('subscriptions').where('token', 'in', stale).get()
-  const batch = db.batch()
-  staleDocs.forEach(doc => batch.delete(doc.ref))
-  await batch.commit()
+  for (let i = 0; i < stale.length; i += 30) {
+    const staleDocs = await db.collection('subscriptions').where('token', 'in', stale.slice(i, i + 30)).get()
+    const batch = db.batch()
+    staleDocs.forEach(doc => batch.delete(doc.ref))
+    await batch.commit()
+  }
   console.log(`Removed ${stale.length} stale tokens`)
 }
 
