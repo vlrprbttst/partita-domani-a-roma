@@ -18,9 +18,9 @@ const location   = props.dayOffset === 0 ? 'oggi' : 'domani'
 
 const notifSupported = notificationsSupported()
 const notifState     = ref(
-  !notificationsSupported()       ? 'unsupported' :
-  Notification.permission === 'granted' ? 'subscribed'  :
-  Notification.permission === 'denied'  ? 'denied'      : 'idle'
+  !notificationsSupported()                                                                    ? 'unsupported' :
+  Notification.permission === 'denied'                                                         ? 'denied'      :
+  Notification.permission === 'granted' && localStorage.getItem('notifSubscribed') === 'true' ? 'subscribed'  : 'idle'
 )
 
 async function avvisami() {
@@ -28,6 +28,7 @@ async function avvisami() {
   try {
     const result = await subscribeToNotifications()
     notifState.value = result === 'granted' ? 'subscribed' : result
+    if (result === 'granted') localStorage.setItem('notifSubscribed', 'true')
     trackEvent('notify_subscribe', { result })
   } catch {
     notifState.value = 'idle'
@@ -41,6 +42,7 @@ async function disattiva() {
   try {
     await unsubscribeFromNotifications()
     notifState.value = 'idle'
+    localStorage.removeItem('notifSubscribed')
     trackEvent('notify_unsubscribe')
   } catch {
     notifState.value = 'subscribed'
