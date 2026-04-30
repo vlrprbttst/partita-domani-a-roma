@@ -48,7 +48,7 @@ function fireConfetti() {
         { transform: 'translate(0,0) rotate(0deg) scale(1)', opacity: 1 },
         { transform: `translate(${tx}px,${ty}px) rotate(${i % 2 === 0 ? 180 : -180}deg) scale(0.3)`, opacity: 0 },
       ],
-      { duration: 700, easing: 'cubic-bezier(0.2,0.8,0.4,1)', fill: 'forwards' }
+      { duration: 1000, easing: 'cubic-bezier(0.2,0.8,0.4,1)', fill: 'forwards' }
     ).onfinish = () => el.remove()
   })
 }
@@ -77,7 +77,7 @@ async function avvisami() {
     state.loaded = true
     if (succeeded) {
       await nextTick()
-      fireConfetti()
+      setTimeout(fireConfetti, 600)
     }
   }
 }
