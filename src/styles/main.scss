@@ -624,6 +624,48 @@ ul {
   letter-spacing: 0.5px;
 }
 
+// ─── Notify CTA (inline text button) ─────────────────────────────────────────
+.notify-cta {
+  margin:16px auto 0;
+  display: block;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 4px;
+  color: #fff;
+  font-family: $font2;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  text-shadow: none;
+  @include respond-to(414) { font-size: 12px; }
+}
+
+// ─── Notify button ───────────────────────────────────────────────────────────
+.notify-btn {
+  width: 50px;
+  height: 50px;
+  right: 20px;
+  top: 80px;
+  border: 1px solid white;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  cursor: pointer;
+  color: white;
+  padding: 0;
+
+  svg { width: 30px; height: 30px; }
+
+  @include respond-to(375) { right: 10px; top: 70px; }
+}
+
 // ─── Reduced motion ───────────────────────────────────────────────────────────
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

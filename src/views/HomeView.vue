@@ -2,6 +2,7 @@
 import { ref, inject, onMounted } from 'vue'
 import { getMatchForDate, getNextMatch } from '../api/football.js'
 import { trackEvent } from '../utils/analytics.js'
+import { notificationsSupported, subscribeToNotifications, unsubscribeFromNotifications } from '../api/firebase.js'
 
 const props = defineProps({
   dayOffset: { type: Number, default: 1 },
@@ -14,6 +15,39 @@ const match      = ref(null)
 const nextMatch  = ref(null)
 const background = ref('')
 const location   = props.dayOffset === 0 ? 'oggi' : 'domani'
+
+const notifSupported = notificationsSupported()
+const notifState     = ref(
+  !notificationsSupported()       ? 'unsupported' :
+  Notification.permission === 'granted' ? 'subscribed'  :
+  Notification.permission === 'denied'  ? 'denied'      : 'idle'
+)
+
+async function avvisami() {
+  state.loaded = false
+  try {
+    const result = await subscribeToNotifications()
+    notifState.value = result === 'granted' ? 'subscribed' : result
+    trackEvent('notify_subscribe', { result })
+  } catch {
+    notifState.value = 'idle'
+  } finally {
+    state.loaded = true
+  }
+}
+
+async function disattiva() {
+  state.loaded = false
+  try {
+    await unsubscribeFromNotifications()
+    notifState.value = 'idle'
+    trackEvent('notify_unsubscribe')
+  } catch {
+    notifState.value = 'subscribed'
+  } finally {
+    state.loaded = true
+  }
+}
 
 function formatNextDate(dateStr) {
   const d = new Date(dateStr + 'T12:00:00')
@@ -139,6 +173,19 @@ onMounted(load)
     aria-controls="main-menu"
     @click="state.menuOpen = !state.menuOpen; trackEvent('menu_opened')"
   ></button>
+  <button
+    v-if="notifSupported && notifState === 'subscribed'"
+    class="notify-btn"
+    aria-label="Disattiva notifiche"
+    @click="disattiva()"
+  >
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <path d="M11 3C8.79086 3 7 4.79086 7 7V9.2C7 10.1 6.7 10.97 6.15 11.65L5.2 12.8C4.64 13.48 5.12 14.5 6 14.5H16C16.88 14.5 17.36 13.48 16.8 12.8L15.85 11.65C15.3 10.97 15 10.1 15 9.2V7C15 4.79086 13.2091 3 11 3Z" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 17C9.4 17.6 10.1 18 11 18C11.9 18 12.6 17.6 13 17" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M5 5L17 17" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
   <button v-if="canShare" class="share-btn" @click="share" aria-label="Condividi questa pagina">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
       <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
@@ -168,6 +215,15 @@ onMounted(load)
         <span :class="match.homeTeam.name">{{ match.homeTeam.name }}</span><br>
         alle <span class="orario">{{ formatTime(match.timestamp) }}</span>
       </h3>
+
+      <button
+        v-if="notifSupported && notifState === 'idle'"
+        class="notify-cta"
+        @click="avvisami"
+        aria-label="Attiva le notifiche per le prossime partite"
+      >
+        Avvisami la prossima volta: Attiva le Notifiche
+      </button>
     </div>
 
     <RouterLink

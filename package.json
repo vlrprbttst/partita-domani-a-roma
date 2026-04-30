@@ -8,11 +8,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "firebase": "^12.12.1",
     "vue": "^3.4.0",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.0",
+    "firebase-admin": "^13.8.0",
     "sass": "^1.70.0",
     "vite": "^5.0.0"
   }

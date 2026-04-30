@@ -125,6 +125,30 @@ Implementato:
 - GA4 disabilitato di default (Consent Mode v2)
 - Localhost escluso da GA4
 
+## Notifiche Push
+
+Implementate con **Firebase Cloud Messaging (FCM)** + Firestore.
+
+- `src/api/firebase.js` — init Firebase client, `subscribeToNotifications()` chiede il permesso, ottiene il FCM token e lo salva in Firestore (`subscriptions` collection)
+- `public/sw.js` — importa Firebase compat via CDN, gestisce `onBackgroundMessage` e `notificationclick`
+- `scripts/send-notifications.js` — legge `dist/data/matches.json`; se domani c'è partita, invia FCM a tutti i token in Firestore; usa `sentNotifications` collection per evitare invii duplicati
+- `.github/workflows/deploy.yml` — esegue `send-notifications.js` dopo `fetch-matches.js`
+
+**Segreti GitHub necessari:**
+- `FIREBASE_SERVICE_ACCOUNT` — JSON del service account Firebase (per Admin SDK)
+- `VITE_FIREBASE_VAPID_KEY` — chiave pubblica VAPID da Firebase Console → Cloud Messaging
+
+**Segreti locali (.env):**
+- `VITE_FIREBASE_VAPID_KEY` — stessa chiave, per il build locale
+
+**Firestore collections:**
+- `subscriptions` — `{ token, createdAt }` — un doc per utente iscritto
+- `sentNotifications` — `{ sentAt, recipientCount }` — chiave = data partita (YYYY-MM-DD), previene duplicati
+
+**Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home). Su Android e desktop funziona da browser.
+
+---
+
 ## Note CSS importanti
 
 - Le classi CSS della pagina cookie policy si chiamano `.policy-page` e `.policy-content` (non `cookie-*`): i filtri degli ad blocker (EasyPrivacy/uBlock) nascondono via CSS qualsiasi elemento con classe contenente "cookie", rendendo la pagina invisibile su desktop con ad blocker attivo.

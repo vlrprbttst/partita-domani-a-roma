@@ -85,6 +85,28 @@ function resetConsent() {
         e <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">opt-out da Google Analytics</a>.
       </p>
 
+      <h1>3. Notifiche push (solo su consenso esplicito)</h1>
+      <p>
+        Se l'utente sceglie di attivare le notifiche push tramite l'apposito bottone, il sito utilizza
+        <strong>Firebase Cloud Messaging</strong> (Google LLC, USA) per inviare notifiche il giorno
+        prima di una partita a Roma. L'attivazione richiede il consenso esplicito del browser e può
+        essere revocata in qualsiasi momento tramite l'icona campanella presente nell'app.
+      </p>
+      <ul>
+        <li>
+          <p>
+            <strong>Token FCM</strong> — Identificativo anonimo generato dal browser —
+            Scopo: recapitare le notifiche push — Conservato su: Firebase Firestore (Google LLC, USA) —
+            Durata: fino alla disattivazione da parte dell'utente — Terze parti: Google LLC
+          </p>
+        </li>
+      </ul>
+      <p>
+        Il token FCM non contiene dati personali identificativi (nome, email, IP). Viene eliminato
+        da Firestore non appena l'utente disattiva le notifiche. Per maggiori informazioni:
+        <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">Privacy e sicurezza in Firebase</a>.
+      </p>
+
       <h1>Cookie di terze parti</h1>
       <p>
         Questo sito <strong>non utilizza</strong> cookie di social network (Facebook, Instagram,
@@ -118,7 +140,7 @@ function resetConsent() {
       <p>
         Il Titolare si riserva di modificare la presente Cookie Policy in qualsiasi momento.
         Le modifiche hanno efficacia dal momento della pubblicazione sul sito.
-        <br><strong>Ultimo aggiornamento: aprile 2026</strong>
+        <br><strong>Ultimo aggiornamento: maggio 2026</strong>
       </p>
 
     </div>
