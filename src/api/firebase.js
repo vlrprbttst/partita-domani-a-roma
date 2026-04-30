@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection, addDoc, query, where, getDocs, deleteDoc } from 'firebase/firestore'
+import { getFirestore, doc, setDoc, deleteDoc } from 'firebase/firestore'
 import { getMessaging, getToken, deleteToken } from 'firebase/messaging'
 
 const app = initializeApp({
@@ -32,8 +32,7 @@ export async function subscribeToNotifications() {
 
   if (!token) return 'error'
 
-  // Always write — duplicates are deduplicated server-side in send-notifications.js
-  await addDoc(collection(db, 'subscriptions'), {
+  await setDoc(doc(db, 'subscriptions', token), {
     token,
     createdAt: new Date().toISOString(),
   })
@@ -49,10 +48,7 @@ export async function unsubscribeFromNotifications() {
       vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
       serviceWorkerRegistration: sw,
     })
-    if (token) {
-      const snap = await getDocs(query(collection(db, 'subscriptions'), where('token', '==', token)))
-      snap.forEach(doc => deleteDoc(doc.ref))
-    }
+    if (token) await deleteDoc(doc(db, 'subscriptions', token))
   } catch { /* token già scaduto o assente, procedi comunque */ }
   await deleteToken(messaging)
 }
