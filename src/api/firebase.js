@@ -23,6 +23,8 @@ export async function subscribeToNotifications() {
   const permission = await Notification.requestPermission()
   if (permission !== 'granted') return 'denied'
 
+  navigator.storage?.persist?.()
+
   const sw = await navigator.serviceWorker.ready
   const messaging = getMessaging(app)
   const token = await getToken(messaging, {
