@@ -102,7 +102,7 @@ Tutti i componenti figli usano `inject('appState')`.
 
 - Icona unica: `public/icons/android-chrome-192x192.png` (usata anche per iOS) e `android-chrome-512x512.png`
 - Install prompt: catturato con `beforeinstallprompt` in App.vue, mostrato come banner in cima
-- Service worker: `public/sw.js` — network-first, nessuna cache (solo per abilitare PWA install)
+- Service worker: `public/sw.js` — network-first per asset; navigazione (`index.html`) fetchata con `cache: 'no-store'` per garantire sempre il bundle JS più recente dopo ogni deploy
 
 ---
 
@@ -114,7 +114,7 @@ Implementato:
 - Skip link ("Salta al contenuto")
 - Focus visible: outline giallo 3px (`#fcff00`)
 - Target size minimo 44×44px su tutti gli elementi interattivi
-- `prefers-reduced-motion` disabilita tutte le transizioni
+- `prefers-reduced-motion` disabilita tutte le transizioni CSS e l'animazione confetti
 - Contrasto colori: badge `.roma` (`#8C1A2E`) soddisfa 7:1 AAA
 
 ---
@@ -158,6 +158,10 @@ Implementate con **Firebase Cloud Messaging (FCM)** + Firestore.
 **Firestore collections:**
 - `subscriptions` — `{ token, createdAt }` — un doc per iscrizione (deduplicati server-side con `Set`)
 - `sentNotifications` — `{ sentAt, recipientCount }` — chiave = data partita (YYYY-MM-DD), previene duplicati
+
+**Persistenza storage:** `navigator.storage.persist()` viene chiamato al momento della sottoscrizione per prevenire l'eviction del localStorage da parte di Android Chrome sotto pressione di memoria.
+
+**localStorage key:** `notifSubscribed` (`'true'`) — traccia l'intent dell'utente; documentato nella Cookie Policy.
 
 **Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home). Su Android e desktop funziona da browser.
 

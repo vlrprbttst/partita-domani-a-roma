@@ -54,6 +54,13 @@ function resetConsent() {
             — Terze parti: nessuna
           </p>
         </li>
+        <li>
+          <p>
+            <strong>notifSubscribed</strong> — localStorage — Scopo: memorizzare lo stato di
+            iscrizione alle notifiche push — Durata: persistente fino alla disattivazione delle
+            notifiche o alla cancellazione manuale — Terze parti: nessuna
+          </p>
+        </li>
       </ul>
 
       <h1>2. Cookie analitici (solo con consenso)</h1>

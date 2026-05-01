@@ -34,6 +34,7 @@ const CONFETTI_SHAPES = [
 
 function fireConfetti() {
   if (!bellBtnRef.value) return
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
   const { left, top, width, height } = bellBtnRef.value.getBoundingClientRect()
   const cx = left + width / 2
   const cy = top  + height / 2
