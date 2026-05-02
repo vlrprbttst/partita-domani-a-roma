@@ -15,6 +15,8 @@ messaging.onBackgroundMessage((payload) => {
     body: payload.notification.body,
     icon: '/partita-domani-a-roma/icons/android-chrome-192x192.png',
     data: { url: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
+    tag:  'partita-domani-a-roma',
+    renotify: true,
   })
 })
 
