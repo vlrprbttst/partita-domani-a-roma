@@ -171,6 +171,8 @@ Implementate con **Firebase Cloud Messaging (FCM)** + Firestore.
 
 **Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home). Su Android e desktop funziona da browser.
 
+**Deduplicazione lato client:** `public/sw.js` mostra le notifiche con `tag: 'partita-domani-a-roma'` e `renotify: true`. Questo previene la visualizzazione di notifiche duplicate sul dispositivo quando lo stesso utente è iscritto sia da browser che da PWA installata (FCM tratta i due come token distinti, ma il SW condiviso ne mostra solo una grazie al tag).
+
 ---
 
 ## Note CSS importanti
