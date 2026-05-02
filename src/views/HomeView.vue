@@ -69,16 +69,21 @@ const notifState     = ref(
   Notification.permission === 'granted' && localStorage.getItem('notifSubscribed') === 'true' ? 'subscribed'  : 'idle'
 )
 
+// Guard against the (rare) race where syncNotifState resolves after the user
+// has tapped the bell: once the user has acted, their action is the truth.
+let userActed = false
+
 async function syncNotifState() {
   const hint = localStorage.getItem('notifSubscribed') === 'true'
   const real = await detectNotificationState({ autoRecover: hint })
-  if (real === null) return
+  if (real === null || userActed) return
   notifState.value = real
   if (real === 'subscribed') localStorage.setItem('notifSubscribed', 'true')
   else                        localStorage.removeItem('notifSubscribed')
 }
 
 async function avvisami() {
+  userActed = true
   state.loaded = false
   let succeeded = false
   try {
@@ -101,6 +106,7 @@ async function avvisami() {
 }
 
 async function disattiva() {
+  userActed = true
   state.loaded = false
   try {
     await unsubscribeFromNotifications()
