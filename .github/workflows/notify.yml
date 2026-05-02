@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 10 * * *'  # 12:00 Rome (CEST = UTC+2)
   workflow_dispatch:
+    inputs:
+      force_send:
+        description: 'Force a test notification to all subscribers (bypasses match check)'
+        type: boolean
+        default: false
 
 jobs:
   notify:
@@ -21,3 +26,4 @@ jobs:
       - run: node scripts/send-notifications.js
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          FORCE_SEND: ${{ inputs.force_send }}

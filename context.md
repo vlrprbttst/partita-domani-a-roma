@@ -148,6 +148,8 @@ Implementate con **Firebase Cloud Messaging (FCM)** + Firestore.
 
 **Deduplicazione:** Firestore `sentNotifications/{YYYY-MM-DD}` — se il doc esiste, skip. Evita invii doppi se il workflow gira più volte.
 
+**Test end-to-end manuale:** `notify.yml` accetta input `force_send` (workflow_dispatch) che, se true, imposta `FORCE_SEND=true` e fa partire `send-notifications.js` in modalità test: bypassa il check partita e la dedup, invia una notifica generica ("Test FCM end-to-end") a tutti gli iscritti. Utile per verificare la catena Firestore→FCM→Service Worker senza aspettare una partita reale.
+
 **Segreti GitHub necessari:**
 - `FIREBASE_SERVICE_ACCOUNT` — JSON del service account Firebase (per Admin SDK, usato da `notify.yml`)
 - `VITE_FIREBASE_VAPID_KEY` — chiave pubblica VAPID da Firebase Console → Cloud Messaging (usata da `deploy.yml` nel build)

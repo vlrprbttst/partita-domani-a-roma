@@ -1,5 +1,7 @@
 // Fetches matches from deployed GitHub Pages and sends FCM push notifications if tomorrow has a match.
 // Runs daily at 10:00 UTC (12:00 Rome CEST) via notify.yml. Uses Firestore to avoid duplicate sends.
+// FORCE_SEND=true bypasses the match check + dedup and emits a generic test notification — used by
+// notify.yml's workflow_dispatch input for manual end-to-end verification.
 import { initializeApp, cert } from 'firebase-admin/app'
 import { getMessaging }        from 'firebase-admin/messaging'
 import { getFirestore }        from 'firebase-admin/firestore'
@@ -10,36 +12,51 @@ initializeApp({ credential: cert(serviceAccount) })
 const db        = getFirestore()
 const messaging = getMessaging()
 
+const forceSend = process.env.FORCE_SEND === 'true'
+
 function dateRome(date) {
   return date.toLocaleDateString('sv', { timeZone: 'Europe/Rome' })
 }
 
-const tomorrow    = new Date()
-tomorrow.setDate(tomorrow.getDate() + 1)
-const tomorrowStr = dateRome(tomorrow)
+let title, body, dedupRef
 
-let matchesData
-try {
-  const res = await fetch('https://vlrprbttst.github.io/partita-domani-a-roma/data/matches.json')
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  matchesData = await res.json()
-} catch (err) {
-  console.log('Failed to fetch matches.json:', err.message)
-  process.exit(0)
-}
+if (forceSend) {
+  console.log('FORCE_SEND enabled: bypassing match check and dedup')
+  title = 'Test FCM end-to-end'
+  body  = 'Se vedi questa notifica, la catena Firestore→FCM→Service Worker funziona.'
+} else {
+  const tomorrow    = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const tomorrowStr = dateRome(tomorrow)
 
-const tomorrowMatch = matchesData[tomorrowStr]
-if (!tomorrowMatch) {
-  console.log(`No match on ${tomorrowStr}, skipping notifications`)
-  process.exit(0)
-}
+  let matchesData
+  try {
+    const res = await fetch('https://vlrprbttst.github.io/partita-domani-a-roma/data/matches.json')
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    matchesData = await res.json()
+  } catch (err) {
+    console.log('Failed to fetch matches.json:', err.message)
+    process.exit(0)
+  }
 
-// Avoid sending more than once per match date
-const sentRef = db.collection('sentNotifications').doc(tomorrowStr)
-const sentDoc = await sentRef.get()
-if (sentDoc.exists) {
-  console.log(`Notification already sent for ${tomorrowStr}`)
-  process.exit(0)
+  const tomorrowMatch = matchesData[tomorrowStr]
+  if (!tomorrowMatch) {
+    console.log(`No match on ${tomorrowStr}, skipping notifications`)
+    process.exit(0)
+  }
+
+  // Avoid sending more than once per match date
+  dedupRef = db.collection('sentNotifications').doc(tomorrowStr)
+  const sentDoc = await dedupRef.get()
+  if (sentDoc.exists) {
+    console.log(`Notification already sent for ${tomorrowStr}`)
+    process.exit(0)
+  }
+
+  const { homeTeam } = tomorrowMatch
+  const name = homeTeam.name.charAt(0).toUpperCase() + homeTeam.name.slice(1)
+  title = 'Partita domani a Roma!'
+  body  = `Gioca ${homeTeam.article} ${name}. Apri l'app per l'orario.`
 }
 
 const snap   = await db.collection('subscriptions').get()
@@ -50,9 +67,6 @@ if (tokens.length === 0) {
   process.exit(0)
 }
 
-const { homeTeam } = tomorrowMatch
-const name = homeTeam.name.charAt(0).toUpperCase() + homeTeam.name.slice(1)
-
 const chunks = []
 for (let i = 0; i < tokens.length; i += 500) chunks.push(tokens.slice(i, i + 500))
 
@@ -60,10 +74,7 @@ const stale = []
 for (const chunk of chunks) {
   const response = await messaging.sendEachForMulticast({
     tokens: chunk,
-    notification: {
-      title: 'Partita domani a Roma!',
-      body:  `Gioca ${homeTeam.article} ${name}. Apri l'app per l'orario.`,
-    },
+    notification: { title, body },
     webpush: {
       fcmOptions: { link: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
     },
@@ -84,5 +95,5 @@ if (stale.length > 0) {
   console.log(`Removed ${stale.length} stale tokens`)
 }
 
-await sentRef.set({ sentAt: new Date().toISOString(), recipientCount: tokens.length })
-console.log(`Sent to ${tokens.length} subscribers for match on ${tomorrowStr}`)
+if (dedupRef) await dedupRef.set({ sentAt: new Date().toISOString(), recipientCount: tokens.length })
+console.log(`Sent to ${tokens.length} subscribers${forceSend ? ' (FORCE_SEND test)' : ''}`)
