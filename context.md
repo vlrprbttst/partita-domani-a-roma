@@ -159,9 +159,13 @@ Implementate con **Firebase Cloud Messaging (FCM)** + Firestore.
 - `subscriptions` — `{ token, createdAt }` — un doc per iscrizione (deduplicati server-side con `Set`)
 - `sentNotifications` — `{ sentAt, recipientCount }` — chiave = data partita (YYYY-MM-DD), previene duplicati
 
-**Persistenza storage:** `navigator.storage.persist()` viene chiamato al momento della sottoscrizione per prevenire l'eviction del localStorage da parte di Android Chrome sotto pressione di memoria.
+**Rilevamento stato (self-healing):** la fonte di verità dell'iscrizione è **Firestore** (`subscriptions/{token}`), non `localStorage`. Al mount di `HomeView`, `detectNotificationState()` (in `src/api/firebase.js`) chiama `getToken()` e verifica via `getDoc` se il token è registrato; se sì → `subscribed`, se no → `idle`. Su errore di rete restituisce `null` e mantiene lo stato ottimistico iniziale. Questo recupera automaticamente lo stato dopo eviction di `localStorage` (Android Chrome sotto pressione di memoria, Safari ITP 7-day, cancellazione manuale dei dati del sito).
 
-**localStorage key:** `notifSubscribed` (`'true'`) — traccia l'intent dell'utente; documentato nella Cookie Policy.
+**Auto-recovery:** se al boot `Notification.permission === 'granted'`, `localStorage.notifSubscribed === 'true'` e `getToken()` restituisce un token NON presente in Firestore (caso IndexedDB pulito ma localStorage intatto), il token viene **ri-salvato automaticamente su Firestore**. Risultato: una volta iscritto, l'utente rimane iscritto finché non clicca esplicitamente la campanella o revoca il permesso dal browser.
+
+**Persistenza storage:** `navigator.storage.persist()` viene chiamato al momento della sottoscrizione come best-effort (Chrome lo concede solo a siti con high engagement); la fix vera è il check Firestore al boot.
+
+**localStorage key:** `notifSubscribed` (`'true'`) — non è più la fonte di verità ma solo un **hint UX** per impostare lo stato iniziale ottimistico (evita il flash dell'icona campanella) e per decidere se attivare l'auto-recovery. Documentato nella Cookie Policy.
 
 **Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home). Su Android e desktop funziona da browser.
 

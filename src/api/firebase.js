@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, setDoc, deleteDoc } from 'firebase/firestore'
+import { getFirestore, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore'
 import { getMessaging, getToken, deleteToken } from 'firebase/messaging'
 
 const app = initializeApp({
@@ -17,6 +17,15 @@ export function notificationsSupported() {
   return 'Notification' in window && 'serviceWorker' in navigator
 }
 
+async function fetchFcmToken() {
+  const sw = await navigator.serviceWorker.ready
+  const messaging = getMessaging(app)
+  return getToken(messaging, {
+    vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+    serviceWorkerRegistration: sw,
+  })
+}
+
 export async function subscribeToNotifications() {
   if (!notificationsSupported()) return 'unsupported'
 
@@ -25,13 +34,7 @@ export async function subscribeToNotifications() {
 
   navigator.storage?.persist?.()
 
-  const sw = await navigator.serviceWorker.ready
-  const messaging = getMessaging(app)
-  const token = await getToken(messaging, {
-    vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-    serviceWorkerRegistration: sw,
-  })
-
+  const token = await fetchFcmToken()
   if (!token) return 'error'
 
   await setDoc(doc(db, 'subscriptions', token), {
@@ -43,14 +46,40 @@ export async function subscribeToNotifications() {
 }
 
 export async function unsubscribeFromNotifications() {
-  const sw = await navigator.serviceWorker.ready
   const messaging = getMessaging(app)
   try {
-    const token = await getToken(messaging, {
-      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-      serviceWorkerRegistration: sw,
-    })
+    const token = await fetchFcmToken()
     if (token) await deleteDoc(doc(db, 'subscriptions', token))
   } catch { /* token già scaduto o assente, procedi comunque */ }
   await deleteToken(messaging)
+}
+
+// Source-of-truth detection: queries Firestore for the actual subscription instead of
+// the fragile localStorage flag. Self-heals when localStorage is evicted (Android Chrome
+// memory pressure, Safari ITP, manual data clear). With autoRecover, re-registers a new
+// FCM token in Firestore if the user previously expressed subscription intent but the
+// IndexedDB-backed token was rotated/cleared.
+// Returns 'unsupported' | 'denied' | 'subscribed' | 'idle', or null on transient errors
+// (caller should keep the current optimistic state).
+export async function detectNotificationState({ autoRecover = false } = {}) {
+  if (!notificationsSupported())              return 'unsupported'
+  if (Notification.permission === 'denied')   return 'denied'
+  if (Notification.permission !== 'granted')  return 'idle'
+
+  try {
+    const token = await fetchFcmToken()
+    if (!token) return 'idle'
+
+    const ref  = doc(db, 'subscriptions', token)
+    const snap = await getDoc(ref)
+    if (snap.exists()) return 'subscribed'
+
+    if (autoRecover) {
+      await setDoc(ref, { token, createdAt: new Date().toISOString() })
+      return 'subscribed'
+    }
+    return 'idle'
+  } catch {
+    return null
+  }
 }

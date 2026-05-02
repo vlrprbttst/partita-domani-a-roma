@@ -2,7 +2,7 @@
 import { ref, inject, onMounted, nextTick } from 'vue'
 import { getMatchForDate, getNextMatch } from '../api/football.js'
 import { trackEvent } from '../utils/analytics.js'
-import { notificationsSupported, subscribeToNotifications, unsubscribeFromNotifications } from '../api/firebase.js'
+import { notificationsSupported, subscribeToNotifications, unsubscribeFromNotifications, detectNotificationState } from '../api/firebase.js'
 
 const props = defineProps({
   dayOffset: { type: Number, default: 1 },
@@ -61,11 +61,22 @@ function fireConfetti() {
 }
 
 
+// Optimistic init from localStorage hint (avoids flash); the real state is verified
+// asynchronously in onMounted via detectNotificationState() against Firestore.
 const notifState     = ref(
   !notificationsSupported()                                                                    ? 'unsupported' :
   Notification.permission === 'denied'                                                         ? 'denied'      :
   Notification.permission === 'granted' && localStorage.getItem('notifSubscribed') === 'true' ? 'subscribed'  : 'idle'
 )
+
+async function syncNotifState() {
+  const hint = localStorage.getItem('notifSubscribed') === 'true'
+  const real = await detectNotificationState({ autoRecover: hint })
+  if (real === null) return
+  notifState.value = real
+  if (real === 'subscribed') localStorage.setItem('notifSubscribed', 'true')
+  else                        localStorage.removeItem('notifSubscribed')
+}
 
 async function avvisami() {
   state.loaded = false
@@ -216,7 +227,10 @@ async function onTouchEnd() {
   }
 }
 
-onMounted(load)
+onMounted(() => {
+  load()
+  syncNotifState()
+})
 </script>
 
 <template>

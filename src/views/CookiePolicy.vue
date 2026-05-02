@@ -56,9 +56,11 @@ function resetConsent() {
         </li>
         <li>
           <p>
-            <strong>notifSubscribed</strong> — localStorage — Scopo: memorizzare lo stato di
-            iscrizione alle notifiche push — Durata: persistente fino alla disattivazione delle
-            notifiche o alla cancellazione manuale — Terze parti: nessuna
+            <strong>notifSubscribed</strong> — localStorage — Scopo: hint locale dell'intento
+            dell'utente di ricevere notifiche, usato per evitare flash dell'icona al
+            caricamento della pagina; lo stato effettivo dell'iscrizione è memorizzato su
+            Firebase Firestore — Durata: persistente fino alla disattivazione delle notifiche
+            o alla cancellazione manuale — Terze parti: nessuna
           </p>
         </li>
       </ul>
