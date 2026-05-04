@@ -10,15 +10,10 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging()
 
-messaging.onBackgroundMessage((payload) => {
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
-    icon: '/partita-domani-a-roma/icons/android-chrome-192x192.png',
-    data: { url: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
-    tag:  'partita-domani-a-roma',
-    renotify: true,
-  })
-})
+// FCM auto-displays the notification using webpush.notification config (set
+// in scripts/send-notifications.js). Calling showNotification here would
+// produce a second notification on top of the auto-display.
+messaging.onBackgroundMessage(() => {})
 
 self.addEventListener('notificationclick', (e) => {
   e.notification.close()
