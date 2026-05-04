@@ -76,7 +76,6 @@ for (const chunk of chunks) {
     tokens: chunk,
     notification: { title, body },
     webpush: {
-      notification: { tag: 'partita-domani-a-roma' },
       fcmOptions: { link: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
     },
   })
