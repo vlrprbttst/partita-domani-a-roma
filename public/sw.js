@@ -11,8 +11,8 @@ firebase.initializeApp({
 const messaging = firebase.messaging()
 
 messaging.onBackgroundMessage((payload) => {
-  self.registration.showNotification(payload.data.title, {
-    body: payload.data.body,
+  self.registration.showNotification(payload.notification.title, {
+    body: payload.notification.body,
     icon: '/partita-domani-a-roma/icons/android-chrome-192x192.png',
     data: { url: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
     tag:  'partita-domani-a-roma',
