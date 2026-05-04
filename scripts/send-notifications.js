@@ -76,6 +76,10 @@ for (const chunk of chunks) {
     tokens: chunk,
     notification: { title, body },
     webpush: {
+      notification: {
+        icon: '/partita-domani-a-roma/icons/android-chrome-192x192.png',
+        tag:  'partita-domani-a-roma',
+      },
       fcmOptions: { link: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
     },
   })
