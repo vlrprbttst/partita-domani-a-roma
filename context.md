@@ -171,7 +171,7 @@ Implementate con **Firebase Cloud Messaging (FCM)** + Firestore.
 
 **Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home). Su Android e desktop funziona da browser.
 
-**Deduplicazione lato client:** `public/sw.js` mostra le notifiche con `tag: 'partita-domani-a-roma'` e `renotify: true`. Questo previene la visualizzazione di notifiche duplicate sul dispositivo quando lo stesso utente è iscritto sia da browser che da PWA installata (FCM tratta i due come token distinti, ma il SW condiviso ne mostra solo una grazie al tag).
+**Display notifica (single notification):** quando il payload FCM contiene il campo `notification`, il browser web SDK auto-mostra la notifica E chiama `onBackgroundMessage` nel SW — questo produceva una notifica doppia. Fix: `webpush.notification.icon` e `webpush.notification.tag` configurati lato admin SDK in `send-notifications.js` (così l'auto-display usa l'icona corretta); `onBackgroundMessage` nel SW è un no-op. L'auto-display è l'unica sorgente di visualizzazione. Il `tag` previene anche duplicati quando lo stesso utente è iscritto da più token (browser + PWA installata).
 
 ---
 
