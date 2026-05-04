@@ -74,10 +74,7 @@ const stale = []
 for (const chunk of chunks) {
   const response = await messaging.sendEachForMulticast({
     tokens: chunk,
-    notification: { title, body },
-    webpush: {
-      fcmOptions: { link: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
-    },
+    data: { title, body },
   })
   response.responses.forEach((r, i) => {
     if (!r.success && r.error?.code === 'messaging/registration-token-not-registered') stale.push(chunk[i])
