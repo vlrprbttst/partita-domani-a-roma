@@ -17,6 +17,15 @@ export function notificationsSupported() {
   return 'Notification' in window && 'serviceWorker' in navigator
 }
 
+// Chrome auto-grants persistent storage to PWAs that have notification permission,
+// but only evaluates the criteria at the moment of the call. Calling on every page
+// load (not just on subscribe) maximises the chance of being granted before Android
+// decides to evict the PWA's storage.
+export async function requestPersistentStorage() {
+  if (!navigator.storage?.persist) return false
+  try { return await navigator.storage.persist() } catch { return false }
+}
+
 async function fetchFcmToken() {
   const sw = await navigator.serviceWorker.ready
   const messaging = getMessaging(app)
@@ -32,7 +41,7 @@ export async function subscribeToNotifications() {
   const permission = await Notification.requestPermission()
   if (permission !== 'granted') return 'denied'
 
-  navigator.storage?.persist?.()
+  await requestPersistentStorage()
 
   const token = await fetchFcmToken()
   if (!token) return 'error'
@@ -42,6 +51,7 @@ export async function subscribeToNotifications() {
     createdAt: new Date().toISOString(),
   })
 
+  localStorage.removeItem('notifUnsubscribed')
   return 'granted'
 }
 
@@ -52,16 +62,18 @@ export async function unsubscribeFromNotifications() {
     if (token) await deleteDoc(doc(db, 'subscriptions', token))
   } catch { /* token già scaduto o assente, procedi comunque */ }
   await deleteToken(messaging)
+  localStorage.setItem('notifUnsubscribed', 'true')
 }
 
-// Source-of-truth detection: queries Firestore for the actual subscription instead of
-// the fragile localStorage flag. Self-heals when localStorage is evicted (Android Chrome
-// memory pressure, Safari ITP, manual data clear). With autoRecover, re-registers a new
-// FCM token in Firestore if the user previously expressed subscription intent but the
-// IndexedDB-backed token was rotated/cleared.
-// Returns 'unsupported' | 'denied' | 'subscribed' | 'idle', or null on transient errors
-// (caller should keep the current optimistic state).
-export async function detectNotificationState({ autoRecover = false } = {}) {
+// Notification.permission is the only signal that survives Android Chrome's
+// aggressive storage eviction (which clears localStorage AND IndexedDB on
+// low-engagement PWAs every few hours). When permission is granted, we treat the
+// user as subscribed unless they have explicitly clicked unsubscribe (tracked in
+// localStorage as 'notifUnsubscribed' — also evictable, but the trade-off favours
+// accidental re-subscribe over silent loss of subscription on every Android purge).
+// Returns 'unsupported' | 'denied' | 'subscribed' | 'idle', or null on transient
+// errors (caller keeps the current optimistic state).
+export async function detectNotificationState() {
   if (!notificationsSupported())              return 'unsupported'
   if (Notification.permission === 'denied')   return 'denied'
   if (Notification.permission !== 'granted')  return 'idle'
@@ -74,11 +86,12 @@ export async function detectNotificationState({ autoRecover = false } = {}) {
     const snap = await getDoc(ref)
     if (snap.exists()) return 'subscribed'
 
-    if (autoRecover) {
-      await setDoc(ref, { token, createdAt: new Date().toISOString() })
-      return 'subscribed'
-    }
-    return 'idle'
+    // Token not registered for this context. Auto-recover unless the user has
+    // explicitly chosen to unsubscribe.
+    if (localStorage.getItem('notifUnsubscribed') === 'true') return 'idle'
+
+    await setDoc(ref, { token, createdAt: new Date().toISOString() })
+    return 'subscribed'
   } catch {
     return null
   }

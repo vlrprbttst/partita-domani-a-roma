@@ -161,13 +161,17 @@ Implementate con **Firebase Cloud Messaging (FCM)** + Firestore.
 - `subscriptions` — `{ token, createdAt }` — un doc per iscrizione (deduplicati server-side con `Set`)
 - `sentNotifications` — `{ sentAt, recipientCount }` — chiave = data partita (YYYY-MM-DD), previene duplicati
 
-**Rilevamento stato (self-healing):** la fonte di verità dell'iscrizione è **Firestore** (`subscriptions/{token}`), non `localStorage`. Al mount di `HomeView`, `detectNotificationState()` (in `src/api/firebase.js`) chiama `getToken()` e verifica via `getDoc` se il token è registrato; se sì → `subscribed`, se no → `idle`. Su errore di rete restituisce `null` e mantiene lo stato ottimistico iniziale. Questo recupera automaticamente lo stato dopo eviction di `localStorage` (Android Chrome sotto pressione di memoria, Safari ITP 7-day, cancellazione manuale dei dati del sito).
+**Rilevamento stato (permission-grounded):** la fonte di verità dell'iscrizione è **`Notification.permission`** + Firestore (`subscriptions/{token}`), MAI `localStorage`. Motivo: Android Chrome fa eviction aggressiva (localStorage + IndexedDB combinata) sui PWA con bassa engagement, ogni 4-6 ore — quindi qualsiasi cosa salvata nello storage del sito è inaffidabile come segnale durevole. `Notification.permission`, invece, vive nelle preferenze del browser e sopravvive all'eviction.
 
-**Auto-recovery:** se al boot `Notification.permission === 'granted'`, `localStorage.notifSubscribed === 'true'` e `getToken()` restituisce un token NON presente in Firestore (caso IndexedDB pulito ma localStorage intatto), il token viene **ri-salvato automaticamente su Firestore**. Risultato: una volta iscritto, l'utente rimane iscritto finché non clicca esplicitamente la campanella o revoca il permesso dal browser.
+**Auto-recovery:** al mount di `HomeView`, `detectNotificationState()` chiama `getToken()` e verifica con `getDoc` se il token è in Firestore. Se NON c'è e l'utente non ha esplicitamente disattivato (`localStorage.notifUnsubscribed !== 'true'`), il token viene **ri-salvato automaticamente** in Firestore. Quindi: se hai concesso il permesso una volta, rimani iscritto finché non clicchi esplicitamente la campanella o revochi il permesso dal browser, anche dopo eviction dello storage.
 
-**Persistenza storage:** `navigator.storage.persist()` viene chiamato al momento della sottoscrizione come best-effort (Chrome lo concede solo a siti con high engagement); la fix vera è il check Firestore al boot.
+**Trade-off accettato:** il flag `notifUnsubscribed` può essere evicted insieme allo storage. In quel caso, alla prossima apertura l'utente verrebbe ri-iscritto automaticamente (perché il segnale "non voglio notifiche" è perso ma `Notification.permission === 'granted'` è ancora vivo). È preferibile a essere disiscritti silenziosamente ogni 4-6 ore.
 
-**localStorage key:** `notifSubscribed` (`'true'`) — non è più la fonte di verità ma solo un **hint UX** per impostare lo stato iniziale ottimistico (evita il flash dell'icona campanella) e per decidere se attivare l'auto-recovery. Documentato nella Cookie Policy.
+**Persistenza storage:** `navigator.storage.persist()` viene chiamato a ogni page load (in `onMounted` di `HomeView`), non solo al subscribe. Chrome lo concede automaticamente alle PWA installate con permesso notifiche granted; chiamarlo spesso massimizza la chance di concessione e riduce frequenza di eviction.
+
+**Stato 'denied':** la campanella resta visibile con icona sbarrata e label "notifiche bloccate"; click → alert con istruzioni per riattivare dalle impostazioni del browser. (Prima era nascosta del tutto, generando confusione quando Android auto-revocava il permesso.)
+
+**localStorage key:** `notifUnsubscribed` (`'true'`) — settato in `unsubscribeFromNotifications`, rimosso in `subscribeToNotifications`. Documentato nella Cookie Policy.
 
 **Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home). Su Android e desktop funziona da browser.
 
