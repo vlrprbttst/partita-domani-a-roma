@@ -1,16 +1,23 @@
-// Fetches matches from deployed GitHub Pages and sends FCM push notifications if tomorrow has a match.
-// Runs daily at 10:00 UTC (12:00 Rome CEST) via notify.yml. Uses Firestore to avoid duplicate sends.
-// FORCE_SEND=true bypasses the match check + dedup and emits a generic test notification — used by
-// notify.yml's workflow_dispatch input for manual end-to-end verification.
+// Sends Web Push notifications to all subscribers if tomorrow has a Roma/Lazio home match.
+// Runs daily at 10:00 UTC (12:00 Rome CEST / 11:00 CET) via notify.yml.
+// FORCE_SEND=true bypasses the match check + dedup and emits a generic test notification —
+// used by notify.yml's workflow_dispatch input for manual end-to-end verification.
+//
+// Subscriptions are raw Web Push (not FCM) — see src/api/firebase.js for the rationale.
+import webpush from 'web-push'
 import { initializeApp, cert } from 'firebase-admin/app'
-import { getMessaging }        from 'firebase-admin/messaging'
 import { getFirestore }        from 'firebase-admin/firestore'
+
+webpush.setVapidDetails(
+  'mailto:omegaiori@gmail.com',
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY,
+)
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
 initializeApp({ credential: cert(serviceAccount) })
 
-const db        = getFirestore()
-const messaging = getMessaging()
+const db = getFirestore()
 
 const forceSend = process.env.FORCE_SEND === 'true'
 
@@ -22,8 +29,8 @@ let title, body, dedupRef
 
 if (forceSend) {
   console.log('FORCE_SEND enabled: bypassing match check and dedup')
-  title = 'Test FCM end-to-end'
-  body  = 'Se vedi questa notifica, la catena Firestore→FCM→Service Worker funziona.'
+  title = 'Test Web Push end-to-end'
+  body  = 'Se vedi questa notifica, la catena Web Push funziona.'
 } else {
   const tomorrow    = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
@@ -59,45 +66,46 @@ if (forceSend) {
   body  = `Gioca ${homeTeam.article} ${name}. Apri l'app per l'orario.`
 }
 
-const snap   = await db.collection('subscriptions').get()
-const tokens = [...new Set(snap.docs.map(d => d.data().token).filter(Boolean))]
+const snap = await db.collection('subscriptions').get()
+// Filter for new-format docs (raw Web Push). Old FCM-token-only docs are
+// skipped silently — they should be cleaned up manually after the migration.
+const subs = snap.docs
+  .map(d => ({ id: d.id, ...d.data() }))
+  .filter(s => s.endpoint && s.keys?.p256dh && s.keys?.auth)
 
-if (tokens.length === 0) {
-  console.log('No subscribers, skipping')
+if (subs.length === 0) {
+  console.log('No subscribers (with valid Web Push payload), skipping')
   process.exit(0)
 }
 
-const chunks = []
-for (let i = 0; i < tokens.length; i += 500) chunks.push(tokens.slice(i, i + 500))
+const payload = JSON.stringify({ title, body })
 
 const stale = []
-for (const chunk of chunks) {
-  const response = await messaging.sendEachForMulticast({
-    tokens: chunk,
-    notification: { title, body },
-    webpush: {
-      notification: {
-        icon: '/partita-domani-a-roma/icons/android-chrome-192x192.png',
-        tag:  'partita-domani-a-roma',
-      },
-      fcmOptions: { link: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
-    },
-  })
-  response.responses.forEach((r, i) => {
-    if (!r.success && r.error?.code === 'messaging/registration-token-not-registered') stale.push(chunk[i])
-  })
+for (const sub of subs) {
+  try {
+    await webpush.sendNotification(
+      { endpoint: sub.endpoint, keys: sub.keys },
+      payload,
+    )
+  } catch (err) {
+    // 404 Not Found, 410 Gone → subscription has been revoked by the push service
+    if (err.statusCode === 404 || err.statusCode === 410) {
+      stale.push(sub.id)
+    } else {
+      console.log(`Push error for ${sub.id}: ${err.statusCode || ''} ${err.body || err.message}`)
+    }
+  }
 }
 
-// Remove stale tokens (Firestore 'in' limit: 30 per query)
+// Remove stale subscriptions
 if (stale.length > 0) {
   for (let i = 0; i < stale.length; i += 30) {
-    const staleDocs = await db.collection('subscriptions').where('token', 'in', stale.slice(i, i + 30)).get()
     const batch = db.batch()
-    staleDocs.forEach(doc => batch.delete(doc.ref))
+    stale.slice(i, i + 30).forEach(id => batch.delete(db.collection('subscriptions').doc(id)))
     await batch.commit()
   }
-  console.log(`Removed ${stale.length} stale tokens`)
+  console.log(`Removed ${stale.length} stale subscriptions`)
 }
 
-if (dedupRef) await dedupRef.set({ sentAt: new Date().toISOString(), recipientCount: tokens.length })
-console.log(`Sent to ${tokens.length} subscribers${forceSend ? ' (FORCE_SEND test)' : ''}`)
+if (dedupRef) await dedupRef.set({ sentAt: new Date().toISOString(), recipientCount: subs.length })
+console.log(`Sent to ${subs.length} subscribers${forceSend ? ' (FORCE_SEND test)' : ''}`)

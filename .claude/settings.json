@@ -11,7 +11,13 @@
       "Bash(npm outdated *)",
       "Bash(npm audit *)",
       "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(m['utcDate'], m['homeTeam']['name'], 'vs', m['awayTeam']['name'], '-', m['status']\\) for m in data.get\\('matches',[]\\)]\")",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Read(//home/user/partita-domani-a-roma/src/views/**)",
+      "PowerShell(npx vite build 2>&1)",
+      "Bash(npx vite *)",
+      "Bash(git checkout *)",
+      "Bash(git merge *)",
+      "Bash(curl -s \"https://vlrprbttst.github.io/partita-domani-a-roma/data/matches.json\")"
     ],
     "additionalDirectories": [
       "c:\\c\\Users\\Valerio\\Desktop\\claude workspace\\partita-domani-a-roma\\public\\icons"

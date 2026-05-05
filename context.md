@@ -130,52 +130,59 @@ Implementato:
 
 ## Notifiche Push
 
-Implementate con **Firebase Cloud Messaging (FCM)** + Firestore.
+Implementate con **raw Web Push (PushManager + libreria `web-push`)** + Firestore. **Non usiamo più `firebase/messaging`/FCM SDK lato client né `firebase-admin/messaging` lato server.**
+
+**Perché Web Push raw e non FCM**: il SDK FCM mantiene il proprio token in IndexedDB. Android Chrome fa eviction aggressiva di localStorage+IndexedDB sui PWA a bassa engagement (ogni 4-6 ore). Dopo eviction, il SDK FCM rigenera un nuovo token, abbandonando quello in Firestore — l'utente appare disiscritto ad ogni eviction, e Firestore accumula token orfani. Le **push subscription raw vivono sulla SW registration** (non in IndexedDB), sopravvivono all'eviction → l'endpoint resta stabile, niente churn.
 
 **Flusso utente:**
 - In home appare il bottone "Avvisami la prossima volta: Attiva le Notifiche" (solo se non ancora iscritto e notifiche non bloccate)
-- Al click → il browser chiede il permesso → se concesso, il token FCM viene salvato su Firestore
-- Compare l'icona campanella barrata in alto a destra → cliccandola si disiscrive (token rimosso da Firestore + `deleteToken()`)
+- Al click → il browser chiede il permesso → se concesso, viene chiamato `pushManager.subscribe()` con la chiave VAPID pubblica e la subscription (`{endpoint, keys: {p256dh, auth}}`) viene salvata su Firestore
+- Compare l'icona campanella in alto a destra → cliccandola si disiscrive (`subscription.unsubscribe()` + doc rimosso da Firestore)
 
 **Componenti:**
-- `src/api/firebase.js` — init Firebase client, `subscribeToNotifications()` e `unsubscribeFromNotifications()`
-- `public/sw.js` — importa Firebase compat via CDN, gestisce `onBackgroundMessage` e `notificationclick`
-- `scripts/send-notifications.js` — fetcha `matches.json` dall'URL GitHub Pages deployato (non da filesystem locale); se domani c'è partita, invia FCM a tutti i token; token chunked a 500 (limite FCM); stale token cleanup chunked a 30 (limite Firestore `in`)
+- `src/api/firebase.js` — init Firebase Firestore, `subscribeToNotifications()` / `unsubscribeFromNotifications()` / `detectNotificationState()` via `pushManager`
+- `public/sw.js` — handler nativo `push` event (no Firebase SDK), mostra notifica con `tag` per dedup
+- `scripts/send-notifications.js` — usa libreria `web-push` per inviare a ciascun endpoint, firma con VAPID; cleanup automatico delle subscription scadute (HTTP 404/410)
 
 **Timing invio:**
-- Workflow dedicato `notify.yml`, cron `0 10 * * *` → **12:00 ora di Roma** (CEST = UTC+2)
+- Workflow dedicato `notify.yml`, cron `0 10 * * *` UTC → **12:00 ora di Roma** in estate (CEST=UTC+2), **11:00** in inverno (CET=UTC+1)
 - Separato da `deploy.yml` che non esegue più notifiche
 
-**Deduplicazione:** Firestore `sentNotifications/{YYYY-MM-DD}` — se il doc esiste, skip. Evita invii doppi se il workflow gira più volte.
+**Deduplicazione invii (server):** Firestore `sentNotifications/{YYYY-MM-DD}` — se il doc esiste, skip. Evita invii doppi se il workflow gira più volte.
 
-**Test end-to-end manuale:** `notify.yml` accetta input `force_send` (workflow_dispatch) che, se true, imposta `FORCE_SEND=true` e fa partire `send-notifications.js` in modalità test: bypassa il check partita e la dedup, invia una notifica generica ("Test FCM end-to-end") a tutti gli iscritti. Utile per verificare la catena Firestore→FCM→Service Worker senza aspettare una partita reale.
+**Deduplicazione notifiche (client):** il SW mostra la notifica con `tag: 'partita-domani-a-roma'` e `renotify: true`. Se più push arrivano per lo stesso device (es. browser + PWA installata, due subscription distinte), la seconda sostituisce la prima a livello sistema → una sola notifica visibile, con suono.
+
+**Test end-to-end manuale:** `notify.yml` accetta input `force_send` (workflow_dispatch) che, se true, imposta `FORCE_SEND=true` e fa partire `send-notifications.js` in modalità test: bypassa il check partita e la dedup, invia una notifica generica ("Test Web Push end-to-end") a tutti gli iscritti.
 
 **Segreti GitHub necessari:**
-- `FIREBASE_SERVICE_ACCOUNT` — JSON del service account Firebase (per Admin SDK, usato da `notify.yml`)
-- `VITE_FIREBASE_VAPID_KEY` — chiave pubblica VAPID da Firebase Console → Cloud Messaging (usata da `deploy.yml` nel build)
+- `FIREBASE_SERVICE_ACCOUNT` — JSON del service account Firebase (Admin SDK accede a Firestore solo per leggere subscriptions e gestire dedup; NON usa più Messaging)
+- `VAPID_PUBLIC_KEY` — chiave pubblica VAPID del nostro key pair (usata da `deploy.yml` nel build, e da `notify.yml` per firmare i push)
+- `VAPID_PRIVATE_KEY` — chiave privata VAPID (usata SOLO da `notify.yml` per firmare i push lato server)
 
 **Segreti locali (.env):**
-- `VITE_FIREBASE_VAPID_KEY` — stessa chiave, per il build locale
+- `VITE_VAPID_PUBLIC_KEY` — stessa chiave pubblica, per il build locale
+
+**Generare le chiavi VAPID:** `npx web-push generate-vapid-keys` (output: publicKey + privateKey base64 url-safe). Le chiavi attuali sono state generate una tantum e configurate nei segreti.
 
 **Firestore collections:**
-- `subscriptions` — `{ token, createdAt }` — un doc per iscrizione (deduplicati server-side con `Set`)
-- `sentNotifications` — `{ sentAt, recipientCount }` — chiave = data partita (YYYY-MM-DD), previene duplicati
+- `subscriptions` — `{ endpoint, keys: { p256dh, auth }, createdAt }` — doc ID = base64 dell'endpoint URL (stabile attraverso eviction)
+- `sentNotifications` — `{ sentAt, recipientCount }` — chiave = data partita (YYYY-MM-DD)
 
-**Rilevamento stato (permission-grounded):** la fonte di verità dell'iscrizione è **`Notification.permission`** + Firestore (`subscriptions/{token}`), MAI `localStorage`. Motivo: Android Chrome fa eviction aggressiva (localStorage + IndexedDB combinata) sui PWA con bassa engagement, ogni 4-6 ore — quindi qualsiasi cosa salvata nello storage del sito è inaffidabile come segnale durevole. `Notification.permission`, invece, vive nelle preferenze del browser e sopravvive all'eviction.
+**Rilevamento stato (permission-grounded):** la fonte di verità è **`Notification.permission`** + Firestore. `Notification.permission` vive nelle preferenze del browser, sopravvive all'eviction. Al mount di `HomeView`, `detectNotificationState()` chiama `pushManager.getSubscription()`: se non c'è (eviction profonda) e l'utente non ha esplicitamente disattivato, ne crea una nuova con `pushManager.subscribe()`. La subscription viene salvata su Firestore col doc ID derivato dall'endpoint.
 
-**Auto-recovery:** al mount di `HomeView`, `detectNotificationState()` chiama `getToken()` e verifica con `getDoc` se il token è in Firestore. Se NON c'è e l'utente non ha esplicitamente disattivato (`localStorage.notifUnsubscribed !== 'true'`), il token viene **ri-salvato automaticamente** in Firestore. Quindi: se hai concesso il permesso una volta, rimani iscritto finché non clicchi esplicitamente la campanella o revochi il permesso dal browser, anche dopo eviction dello storage.
+**Auto-recovery:** se un'esistente push subscription è già presente sulla SW registration (caso normale dopo eviction del solo localStorage/IndexedDB), il doc ID è stabile (basato sull'endpoint), `getDoc` lo trova → state `'subscribed'` senza riscrittura. Se la subscription è proprio mancante (eviction estrema della SW registration), ne viene creata una nuova e salvata.
 
-**Trade-off accettato:** il flag `notifUnsubscribed` può essere evicted insieme allo storage. In quel caso, alla prossima apertura l'utente verrebbe ri-iscritto automaticamente (perché il segnale "non voglio notifiche" è perso ma `Notification.permission === 'granted'` è ancora vivo). È preferibile a essere disiscritti silenziosamente ogni 4-6 ore.
+**Trade-off accettato:** il flag `notifUnsubscribed` può essere evicted insieme allo storage. In quel caso, alla prossima apertura l'utente verrebbe ri-iscritto automaticamente. È preferibile a essere disiscritti silenziosamente.
 
-**Persistenza storage:** `navigator.storage.persist()` viene chiamato a ogni page load (in `onMounted` di `HomeView`), non solo al subscribe. Chrome lo concede automaticamente alle PWA installate con permesso notifiche granted; chiamarlo spesso massimizza la chance di concessione e riduce frequenza di eviction.
+**Persistenza storage:** `navigator.storage.persist()` viene chiamato a ogni page load (in `onMounted` di `HomeView`). Chrome lo concede automaticamente alle PWA installate con permesso notifiche granted.
 
-**Stato 'denied':** la campanella resta visibile con icona sbarrata e label "notifiche bloccate"; click → alert con istruzioni per riattivare dalle impostazioni del browser. (Prima era nascosta del tutto, generando confusione quando Android auto-revocava il permesso.)
+**Stato 'denied':** la campanella resta visibile con icona sbarrata e label "notifiche bloccate"; click → alert con istruzioni per riattivare dalle impostazioni del browser.
 
 **localStorage key:** `notifUnsubscribed` (`'true'`) — settato in `unsubscribeFromNotifications`, rimosso in `subscribeToNotifications`. Documentato nella Cookie Policy.
 
-**Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home). Su Android e desktop funziona da browser.
+**Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home), iOS 16.4+. Su Android e desktop funziona da browser.
 
-**Display notifica (single notification):** quando il payload FCM contiene il campo `notification`, il browser web SDK auto-mostra la notifica E chiama `onBackgroundMessage` nel SW — questo produceva una notifica doppia. Fix: `webpush.notification.icon` e `webpush.notification.tag` configurati lato admin SDK in `send-notifications.js` (così l'auto-display usa l'icona corretta); `onBackgroundMessage` nel SW è un no-op. L'auto-display è l'unica sorgente di visualizzazione. Il `tag` previene anche duplicati quando lo stesso utente è iscritto da più token (browser + PWA installata).
+**Migrazione da FCM**: il primo deploy di questa versione invalida le subscription FCM precedenti (formato `{token}` → `{endpoint, keys}` incompatibile). `send-notifications.js` filtra i doc per presenza di `endpoint` e ignora i vecchi. Gli utenti devono rifare iscrizione una volta. I doc legacy in Firestore possono essere eliminati a mano dalla Console.
 
 ---
 

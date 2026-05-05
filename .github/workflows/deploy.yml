@@ -25,7 +25,7 @@ jobs:
 
       - run: npm run build
         env:
-          VITE_FIREBASE_VAPID_KEY: ${{ secrets.VITE_FIREBASE_VAPID_KEY }}
+          VITE_VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
 
       - run: node scripts/fetch-matches.js dist/data
         env:
