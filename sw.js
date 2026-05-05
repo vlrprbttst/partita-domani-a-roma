@@ -1,19 +1,20 @@
-importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js')
-importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js')
+// Native Web Push handler (no Firebase SDK). Push subscriptions live on the
+// SW registration and survive Android Chrome's storage eviction, unlike the
+// IndexedDB-backed FCM tokens used previously.
 
-firebase.initializeApp({
-  apiKey:            'AIzaSyD_O5AAH6ESu1Lls8I9q8parzCEIuWCKts',
-  projectId:         'partita-domani-a-roma',
-  messagingSenderId: '31480853662',
-  appId:             '1:31480853662:web:71c40bb1c92ec7ee2e778f',
+self.addEventListener('push', (event) => {
+  let payload = {}
+  try { payload = event.data ? event.data.json() : {} } catch { payload = {} }
+  const title = payload.title || 'Partita domani a Roma'
+  const body  = payload.body  || ''
+  event.waitUntil(self.registration.showNotification(title, {
+    body,
+    icon: '/partita-domani-a-roma/icons/android-chrome-192x192.png',
+    data: { url: 'https://vlrprbttst.github.io/partita-domani-a-roma/' },
+    tag:  'partita-domani-a-roma',
+    renotify: true,
+  }))
 })
-
-const messaging = firebase.messaging()
-
-// FCM auto-displays the notification using webpush.notification config (set
-// in scripts/send-notifications.js). Calling showNotification here would
-// produce a second notification on top of the auto-display.
-messaging.onBackgroundMessage(() => {})
 
 self.addEventListener('notificationclick', (e) => {
   e.notification.close()
