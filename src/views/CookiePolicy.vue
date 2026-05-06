@@ -97,22 +97,26 @@ function resetConsent() {
       <h1>3. Notifiche push (solo su consenso esplicito)</h1>
       <p>
         Se l'utente sceglie di attivare le notifiche push tramite l'apposito bottone, il sito utilizza
-        <strong>Firebase Cloud Messaging</strong> (Google LLC, USA) per inviare notifiche il giorno
+        la <strong>Web Push API</strong> del browser (standard W3C) per inviare notifiche il giorno
         prima di una partita a Roma. L'attivazione richiede il consenso esplicito del browser e può
         essere revocata in qualsiasi momento tramite l'icona campanella presente nell'app.
       </p>
       <ul>
         <li>
           <p>
-            <strong>Token FCM</strong> — Identificativo anonimo generato dal browser —
-            Scopo: recapitare le notifiche push — Conservato su: Firebase Firestore (Google LLC, USA) —
-            Durata: fino alla disattivazione da parte dell'utente — Terze parti: Google LLC
+            <strong>Push subscription</strong> — Endpoint URL anonimo generato dal browser —
+            Scopo: recapitare le notifiche push al dispositivo — Conservato su: Firebase Firestore
+            (Google LLC, USA) — Durata: fino alla disattivazione da parte dell'utente —
+            Terze parti: Google LLC (Firestore), provider push del browser (es. Google per Chrome,
+            Mozilla per Firefox)
           </p>
         </li>
       </ul>
       <p>
-        Il token FCM non contiene dati personali identificativi (nome, email, IP). Viene eliminato
-        da Firestore non appena l'utente disattiva le notifiche. Per maggiori informazioni:
+        La push subscription non contiene dati personali identificativi (nome, email, IP). È composta
+        da un endpoint URL opaco generato dal browser e da chiavi crittografiche utilizzate per cifrare
+        i messaggi. Viene eliminata da Firestore non appena l'utente disattiva le notifiche. Per
+        maggiori informazioni:
         <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">Privacy e sicurezza in Firebase</a>.
       </p>
 
@@ -145,11 +149,29 @@ function resetConsent() {
         <a href="https://www.allaboutcookies.org" target="_blank" rel="noopener noreferrer">www.allaboutcookies.org</a>.
       </p>
 
+      <h1>Diritti dell'interessato</h1>
+      <p>
+        Ai sensi degli artt. 15–22 del Reg. UE 2016/679, l'utente ha diritto di:
+      </p>
+      <ul>
+        <li><p><strong>Accesso</strong> (art. 15) — ottenere conferma che siano o meno in corso trattamenti di dati personali che lo riguardano e, in tal caso, ricevere una copia degli stessi.</p></li>
+        <li><p><strong>Rettifica</strong> (art. 16) — ottenere la correzione di dati personali inesatti.</p></li>
+        <li><p><strong>Cancellazione</strong> (art. 17) — ottenere la cancellazione dei dati personali nei casi previsti dalla norma. Per le notifiche push, è sufficiente disattivare le notifiche tramite l'app: la push subscription viene rimossa immediatamente da Firestore.</p></li>
+        <li><p><strong>Limitazione del trattamento</strong> (art. 18) — ottenere la limitazione del trattamento nei casi previsti dalla norma.</p></li>
+        <li><p><strong>Portabilità</strong> (art. 20) — ricevere in formato strutturato i dati forniti consapevolmente e attivamente.</p></li>
+        <li><p><strong>Opposizione</strong> (art. 21) — opporsi in qualsiasi momento al trattamento dei dati personali, anche per finalità di marketing diretto.</p></li>
+      </ul>
+      <p>
+        Per esercitare i propri diritti, l'utente può contattare il Titolare all'indirizzo
+        <a href="mailto:omegaiori@gmail.com">omegaiori@gmail.com</a>. Ha inoltre diritto di proporre
+        reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">www.garanteprivacy.it</a>).
+      </p>
+
       <h1>Modifiche alla presente informativa</h1>
       <p>
         Il Titolare si riserva di modificare la presente Cookie Policy in qualsiasi momento.
         Le modifiche hanno efficacia dal momento della pubblicazione sul sito.
-        <br><strong>Ultimo aggiornamento: maggio 2026</strong>
+        <br><strong>Ultimo aggiornamento: 6 maggio 2026</strong>
       </p>
 
     </div>
