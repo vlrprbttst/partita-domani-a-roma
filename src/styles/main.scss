@@ -431,9 +431,9 @@ p {
   top: 20px;
   z-index: 3;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 16px;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
   @include respond-to(375) { right: 10px; top: 10px; }
 }
 
@@ -441,7 +441,7 @@ p {
 .notify-wrap {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 6px;
 }
 
@@ -663,6 +663,11 @@ ul {
   padding: 0;
 
   svg { width: 30px; height: 30px; }
+
+  &--denied {
+    background: rgba(180, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
 }
 
 .notify-label {

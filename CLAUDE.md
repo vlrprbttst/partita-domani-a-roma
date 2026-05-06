@@ -143,7 +143,7 @@ Implementate con **raw Web Push (PushManager + libreria `web-push`)** + Firestor
 **Perché Web Push raw e non FCM**: il SDK FCM mantiene il proprio token in IndexedDB. Android Chrome fa eviction aggressiva di localStorage+IndexedDB sui PWA a bassa engagement (ogni 4-6 ore). Dopo eviction, il SDK FCM rigenera un nuovo token, abbandonando quello in Firestore — l'utente appare disiscritto ad ogni eviction, e Firestore accumula token orfani. Le **push subscription raw vivono sulla SW registration** (non in IndexedDB), sopravvivono all'eviction → l'endpoint resta stabile, niente churn.
 
 **Flusso utente:**
-- In alto a destra è sempre visibile il `.controls-wrap`: bottone share (sopra) + bottone campanella (sotto), ciascuno con label testuale sotto l'icona
+- In alto a destra è sempre visibile il `.controls-wrap`: bottone share (sinistra) + bottone campanella (destra), layout orizzontale, ciascuno con label testuale centrata sotto l'icona
 - La campanella mostra stati diversi: bell senza slash = idle/denied, bell con slash = subscribed
 - Al click su campanella (stato idle) → il browser chiede il permesso → se concesso, `pushManager.subscribe()` viene chiamato con la chiave VAPID pubblica e la subscription (`{endpoint, keys: {p256dh, auth}}`) viene salvata su Firestore → label diventa "disattiva le notifiche"
 - Al click su campanella (stato subscribed) → `subscription.unsubscribe()` + doc rimosso da Firestore → label torna "attiva le notifiche"
@@ -203,7 +203,7 @@ Implementate con **raw Web Push (PushManager + libreria `web-push`)** + Firestor
 ## Note CSS importanti
 
 - Le classi CSS della pagina cookie policy si chiamano `.policy-page` e `.policy-content` (non `cookie-*`): i filtri degli ad blocker (EasyPrivacy/uBlock) nascondono via CSS qualsiasi elemento con classe contenente "cookie", rendendo la pagina invisibile su desktop con ad blocker attivo.
-- I controlli in alto a destra (share + notifiche) sono in un unico `.controls-wrap` assoluto (`top: 20px, right: 20px`). Al suo interno: `.share-wrap` (sopra) e `.notify-wrap` (sotto), entrambi flex-column con la label sotto il bottone. Non assegnare `position: absolute` ai due wrap interni — il posizionamento è solo sul wrapper esterno.
+- I controlli in alto a destra (share + notifiche) sono in un unico `.controls-wrap` assoluto (`top: 20px, right: 20px`), layout **orizzontale** (`flex-direction: row`). Al suo interno: `.share-wrap` (sinistra) e `.notify-wrap` (destra), entrambi flex-column con la label centrata sotto il bottone. Non assegnare `position: absolute` ai due wrap interni — il posizionamento è solo sul wrapper esterno.
 
 ---
 
