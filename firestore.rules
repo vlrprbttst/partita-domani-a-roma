@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Push subscriptions written by the browser client (unauthenticated).
+    // - 'get' is allowed because detectNotificationState() checks doc existence.
+    // - 'list' is intentionally omitted to prevent enumeration of all subscribers.
+    // - Doc IDs are base64(endpoint).slice(0,200) — effectively unguessable.
+    // - create/update require valid Web Push document structure to block spam writes.
+    match /subscriptions/{token} {
+      allow get: if true;
+      allow delete: if true;
+      allow create, update: if request.resource.data.keys().hasAll(['endpoint', 'keys', 'createdAt'])
+        && request.resource.data.keys().hasOnly(['endpoint', 'keys', 'createdAt'])
+        && request.resource.data.endpoint is string
+        && request.resource.data.keys.p256dh is string
+        && request.resource.data.keys.auth is string
+        && request.resource.data.createdAt is string;
+    }
+
+    // Deduplication state for daily notifications.
+    // Written exclusively by the Admin SDK in notify.yml (bypasses these rules).
+    // The client must never read or write this collection.
+    match /sentNotifications/{date} {
+      allow read, write: if false;
+    }
+  }
+}

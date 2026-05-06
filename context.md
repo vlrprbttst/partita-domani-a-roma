@@ -63,6 +63,9 @@ Il token API (`VITE_FOOTBALL_API_TOKEN`) è in `.env` locale e come GitHub Secre
 | `public/icons/manifest.json` | PWA manifest |
 | `public/sw.js` | Service worker minimale (PWA launcher, no cache) |
 | `index.html` | GA4 snippet con Consent Mode v2 default denied, skip link target |
+| `firestore.rules` | Firestore Security Rules versionate nel repo — deployate con `npx firebase-tools deploy --only firestore:rules` |
+| `firebase.json` | Config Firebase CLI (punta a `firestore.rules`) |
+| `.firebaserc` | Progetto Firebase default: `partita-domani-a-roma` |
 
 ---
 
@@ -127,6 +130,8 @@ Implementato:
 - `cache: 'no-cache'` sul fetch di `matches.json` per evitare dati stantii nella PWA
 - GA4 disabilitato di default (Consent Mode v2)
 - Localhost escluso da GA4
+- Firebase API key ristretta al dominio `https://vlrprbttst.github.io/*` in Google Cloud Console
+- Firestore Security Rules versionate in `firestore.rules`: `subscriptions` aperto in scrittura ma con validazione schema (blocca spam), nessun `list`, `sentNotifications` inaccessibile al client
 
 ## Notifiche Push
 
@@ -178,9 +183,13 @@ Implementate con **raw Web Push (PushManager + libreria `web-push`)** + Firestor
 
 **Stato 'denied':** la campanella resta visibile con icona sbarrata e label "notifiche bloccate"; click → alert con istruzioni per riattivare dalle impostazioni del browser.
 
+**Icone campanella:** bell (senza slash) = stato idle/denied; bell-slash (con linea diagonale) = stato subscribed. La label testuale è sempre visibile indipendentemente dallo stato ("attiva le notifiche" / "disattiva le notifiche" / "notifiche bloccate").
+
 **localStorage key:** `notifUnsubscribed` (`'true'`) — settato in `unsubscribeFromNotifications`, rimosso in `subscribeToNotifications`. Documentato nella Cookie Policy.
 
 **Nota iOS**: le notifiche push funzionano solo se l'app è installata come PWA (aggiunta alla schermata home), iOS 16.4+. Su Android e desktop funziona da browser.
+
+**Gotcha: origin condivisa con altre GitHub Pages PWA.** Tutte le PWA pubblicate su `vlrprbttst.github.io` (es. `kcalTracker`) condividono la stessa origin e di conseguenza lo stesso permesso notifiche a livello OS. Su Android Chrome, la sezione Impostazioni → Notifiche del sito mostra "Gestite da [prima PWA installata]". Se quella PWA ha le notifiche disattivate, **tutte** le PWA sulla stessa origin risultano silenziate — inclusa `partita-domani-a-roma`. Se le notifiche non arrivano pur con lo stato `subscribed`, verificare che il toggle notifiche per `vlrprbttst.github.io` sia ON nelle impostazioni di Chrome/Android.
 
 **Migrazione da FCM**: il primo deploy di questa versione invalida le subscription FCM precedenti (formato `{token}` → `{endpoint, keys}` incompatibile). `send-notifications.js` filtra i doc per presenza di `endpoint` e ignora i vecchi. Gli utenti devono rifare iscrizione una volta. I doc legacy in Firestore possono essere eliminati a mano dalla Console.
 
