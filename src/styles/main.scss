@@ -425,7 +425,7 @@ p {
 }
 
 // ─── Share button ────────────────────────────────────────────────────────────
-.share-wrap {
+.controls-wrap {
   position: absolute;
   right: 20px;
   top: 20px;
@@ -433,8 +433,16 @@ p {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 6px;
+  gap: 16px;
   @include respond-to(375) { right: 10px; top: 10px; }
+}
+
+.share-wrap,
+.notify-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
 }
 
 .share-btn {
@@ -640,17 +648,6 @@ ul {
 }
 
 // ─── Notify button ───────────────────────────────────────────────────────────
-.notify-wrap {
-  position: absolute;
-  right: 20px;
-  top: 80px;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-  @include respond-to(375) { right: 10px; top: 70px; }
-}
 
 .notify-btn {
   width: 50px;
