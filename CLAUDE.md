@@ -107,7 +107,7 @@ Tutti i componenti figli usano `inject('appState')`.
 
 - Icona unica: `public/icons/android-chrome-192x192.png` (usata anche per iOS) e `android-chrome-512x512.png`
 - Install prompt: catturato con `beforeinstallprompt` in App.vue, mostrato come banner in cima
-- Service worker: `public/sw.js` — network-first per asset; navigazione (`index.html`) fetchata con `cache: 'no-store'` per garantire sempre il bundle JS più recente dopo ogni deploy
+- Service worker: `public/sw.js` — tutti i fetch usano `cache: 'no-store'` (nessuna dipendenza dall'HTTP cache). Il workflow di deploy appende un commento timestamp a `dist/sw.js` ad ogni build, forzando il browser a reinstallare il SW e garantire aggiornamenti dopo chiudi+riapri
 
 ---
 
@@ -144,7 +144,7 @@ Implementate con **raw Web Push (PushManager + libreria `web-push`)** + Firestor
 
 **Flusso utente:**
 - In alto a destra è sempre visibile il `.controls-wrap`: bottone share (sinistra) + bottone campanella (destra), layout orizzontale, ciascuno con label testuale centrata sotto l'icona
-- La campanella mostra stati diversi: bell senza slash = idle/denied, bell con slash = subscribed
+- La campanella mostra stati diversi: bell senza slash = idle; bell-slash + sfondo rosso = denied; bell-slash = subscribed
 - Al click su campanella (stato idle) → il browser chiede il permesso → se concesso, `pushManager.subscribe()` viene chiamato con la chiave VAPID pubblica e la subscription (`{endpoint, keys: {p256dh, auth}}`) viene salvata su Firestore → label diventa "disattiva le notifiche"
 - Al click su campanella (stato subscribed) → `subscription.unsubscribe()` + doc rimosso da Firestore → label torna "attiva le notifiche"
 - Se le notifiche sono bloccate dal browser → label "notifiche bloccate", click → alert con istruzioni
@@ -186,9 +186,9 @@ Implementate con **raw Web Push (PushManager + libreria `web-push`)** + Firestor
 
 **Persistenza storage:** `navigator.storage.persist()` viene chiamato a ogni page load (in `onMounted` di `HomeView`). Chrome lo concede automaticamente alle PWA installate con permesso notifiche granted.
 
-**Stato 'denied':** la campanella resta visibile con icona sbarrata e label "notifiche bloccate"; click → alert con istruzioni per riattivare dalle impostazioni del browser.
+**Stato 'denied':** la campanella resta visibile con icona bell-slash e sfondo rosso (`notify-btn--denied`) e label "bloccate"; click → alert con istruzioni per riattivare dalle impostazioni del browser.
 
-**Icone campanella:** bell (senza slash) = stato idle/denied; bell-slash (con linea diagonale) = stato subscribed. La label testuale è sempre visibile indipendentemente dallo stato ("attiva le notifiche" / "disattiva le notifiche" / "notifiche bloccate").
+**Icone campanella:** bell (senza slash) = stato idle; bell-slash (con linea diagonale) = stato subscribed o denied. La label testuale è sempre visibile indipendentemente dallo stato ("attiva" / "disattiva" / "bloccate").
 
 **localStorage key:** `notifUnsubscribed` (`'true'`) — settato in `unsubscribeFromNotifications`, rimosso in `subscribeToNotifications`. Documentato nella Cookie Policy.
 
