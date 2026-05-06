@@ -27,6 +27,8 @@ jobs:
         env:
           VITE_VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
 
+      - run: echo "// build $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> dist/sw.js
+
       - run: node scripts/fetch-matches.js dist/data
         env:
           VITE_FOOTBALL_API_TOKEN: ${{ secrets.VITE_FOOTBALL_API_TOKEN }}
