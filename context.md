@@ -56,13 +56,15 @@ Il token API (`VITE_FOOTBALL_API_TOKEN`) è in `.env` locale e come GitHub Secre
 | `src/router/index.js` | Route: `/`, `/oggi`, `/si`, `/no`, `/cookie-policy` |
 | `src/api/firebase.js` | Init Firebase client, subscribe/unsubscribe notifiche push |
 | `scripts/fetch-matches.js` | Script Node.js per GitHub Actions: chiama API, scrive matches.json |
-| `scripts/send-notifications.js` | Fetcha matches.json dal URL GitHub Pages deployato, invia FCM push se domani c'è partita |
+| `scripts/send-notifications.js` | Fetcha matches.json dal URL GitHub Pages deployato, invia Web Push raw a ciascun endpoint se domani c'è partita |
 | `.github/workflows/deploy.yml` | CI/CD: build + fetch + deploy. Trigger: push, cron `0 */6 * * *`, workflow_dispatch |
 | `.github/workflows/notify.yml` | Invia notifiche push. Cron `0 10 * * *` (12:00 ora di Roma). Trigger: workflow_dispatch |
 | `public/404.html` | Redirect SPA per GitHub Pages (spa-github-pages trick) |
 | `public/icons/manifest.json` | PWA manifest |
 | `public/sw.js` | Service worker minimale (PWA launcher, no cache) |
-| `index.html` | GA4 snippet con Consent Mode v2 default denied, skip link target |
+| `public/analytics-init.js` | Init GA4 (dataLayer, gtag, Consent Mode v2) — estratto da index.html per permettere CSP senza `unsafe-inline` |
+| `public/spa-redirect.js` | Decodifica il path dalla redirect di 404.html (spa-github-pages trick) — estratto da index.html per la stessa ragione |
+| `index.html` | CSP meta tag, riferimenti a analytics-init.js e spa-redirect.js, skip link target |
 | `firestore.rules` | Firestore Security Rules versionate nel repo — deployate con `npx firebase-tools deploy --only firestore:rules` |
 | `firebase.json` | Config Firebase CLI (punta a `firestore.rules`) |
 | `.firebaserc` | Progetto Firebase default: `partita-domani-a-roma` |
@@ -132,6 +134,7 @@ Implementato:
 - Localhost escluso da GA4
 - Firebase API key ristretta al dominio `https://vlrprbttst.github.io/*` in Google Cloud Console
 - Firestore Security Rules versionate in `firestore.rules`: `subscriptions` aperto in scrittura ma con validazione schema (blocca spam), nessun `list`, `sentNotifications` inaccessibile al client
+- Content Security Policy via `<meta http-equiv>` in `index.html`: `script-src 'self'` + GA4/GTM (niente `unsafe-inline` per script); `style-src` con `unsafe-inline` (necessario per Vue `:style` binding); `connect-src` copre Firebase + GA4
 
 ## Notifiche Push
 
@@ -140,9 +143,11 @@ Implementate con **raw Web Push (PushManager + libreria `web-push`)** + Firestor
 **Perché Web Push raw e non FCM**: il SDK FCM mantiene il proprio token in IndexedDB. Android Chrome fa eviction aggressiva di localStorage+IndexedDB sui PWA a bassa engagement (ogni 4-6 ore). Dopo eviction, il SDK FCM rigenera un nuovo token, abbandonando quello in Firestore — l'utente appare disiscritto ad ogni eviction, e Firestore accumula token orfani. Le **push subscription raw vivono sulla SW registration** (non in IndexedDB), sopravvivono all'eviction → l'endpoint resta stabile, niente churn.
 
 **Flusso utente:**
-- In home appare il bottone "Avvisami la prossima volta: Attiva le Notifiche" (solo se non ancora iscritto e notifiche non bloccate)
-- Al click → il browser chiede il permesso → se concesso, viene chiamato `pushManager.subscribe()` con la chiave VAPID pubblica e la subscription (`{endpoint, keys: {p256dh, auth}}`) viene salvata su Firestore
-- Compare l'icona campanella in alto a destra → cliccandola si disiscrive (`subscription.unsubscribe()` + doc rimosso da Firestore)
+- In alto a destra è sempre visibile il `.controls-wrap`: bottone share (sopra) + bottone campanella (sotto), ciascuno con label testuale sotto l'icona
+- La campanella mostra stati diversi: bell senza slash = idle/denied, bell con slash = subscribed
+- Al click su campanella (stato idle) → il browser chiede il permesso → se concesso, `pushManager.subscribe()` viene chiamato con la chiave VAPID pubblica e la subscription (`{endpoint, keys: {p256dh, auth}}`) viene salvata su Firestore → label diventa "disattiva le notifiche"
+- Al click su campanella (stato subscribed) → `subscription.unsubscribe()` + doc rimosso da Firestore → label torna "attiva le notifiche"
+- Se le notifiche sono bloccate dal browser → label "notifiche bloccate", click → alert con istruzioni
 
 **Componenti:**
 - `src/api/firebase.js` — init Firebase Firestore, `subscribeToNotifications()` / `unsubscribeFromNotifications()` / `detectNotificationState()` via `pushManager`
@@ -198,6 +203,7 @@ Implementate con **raw Web Push (PushManager + libreria `web-push`)** + Firestor
 ## Note CSS importanti
 
 - Le classi CSS della pagina cookie policy si chiamano `.policy-page` e `.policy-content` (non `cookie-*`): i filtri degli ad blocker (EasyPrivacy/uBlock) nascondono via CSS qualsiasi elemento con classe contenente "cookie", rendendo la pagina invisibile su desktop con ad blocker attivo.
+- I controlli in alto a destra (share + notifiche) sono in un unico `.controls-wrap` assoluto (`top: 20px, right: 20px`). Al suo interno: `.share-wrap` (sopra) e `.notify-wrap` (sotto), entrambi flex-column con la label sotto il bottone. Non assegnare `position: absolute` ai due wrap interni — il posizionamento è solo sul wrapper esterno.
 
 ---
 
