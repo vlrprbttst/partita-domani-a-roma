@@ -25,6 +25,6 @@ self.addEventListener('install', () => self.skipWaiting())
 self.addEventListener('activate', e => e.waitUntil(clients.claim()))
 
 self.addEventListener('fetch', e => {
-  e.respondWith(fetch(e.request, { cache: 'no-store' }).catch(() => caches.match(e.request)))
+  e.respondWith(fetch(e.request, { cache: 'no-store' }).catch(() => caches.match(e.request).then(r => r ?? Response.error())))
 })
-// build 2026-05-07T14:50:45Z
+// build 2026-05-07T15:00:38Z
