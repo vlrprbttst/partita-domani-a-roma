@@ -13,9 +13,16 @@ service cloud.firestore {
       allow create, update: if request.resource.data.keys().hasAll(['endpoint', 'keys', 'createdAt'])
         && request.resource.data.keys().hasOnly(['endpoint', 'keys', 'createdAt'])
         && request.resource.data.endpoint is string
+        && request.resource.data.endpoint.size() > 0
+        && request.resource.data.endpoint.size() <= 500
         && request.resource.data.keys.p256dh is string
+        && request.resource.data.keys.p256dh.size() > 0
+        && request.resource.data.keys.p256dh.size() <= 200
         && request.resource.data.keys.auth is string
-        && request.resource.data.createdAt is string;
+        && request.resource.data.keys.auth.size() > 0
+        && request.resource.data.keys.auth.size() <= 100
+        && request.resource.data.createdAt is string
+        && request.resource.data.createdAt.size() <= 30;
     }
 
     // Deduplication state for daily notifications.

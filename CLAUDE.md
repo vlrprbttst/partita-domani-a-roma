@@ -133,7 +133,7 @@ Implementato:
 - GA4 disabilitato di default (Consent Mode v2)
 - Localhost escluso da GA4
 - Firebase API key ristretta al dominio `https://vlrprbttst.github.io/*` in Google Cloud Console
-- Firestore Security Rules versionate in `firestore.rules`: `subscriptions` aperto in scrittura ma con validazione schema (blocca spam), nessun `list`, `sentNotifications` inaccessibile al client
+- Firestore Security Rules versionate in `firestore.rules`: `subscriptions` aperto in scrittura ma con validazione schema (blocca spam) — `hasAll`/`hasOnly` sui campi, type check, limiti di lunghezza (`endpoint` ≤500, `p256dh` ≤200, `auth` ≤100, `createdAt` ≤30); nessun `list`; `sentNotifications` inaccessibile al client
 - Content Security Policy via `<meta http-equiv>` in `index.html`: `script-src 'self'` + GA4/GTM (niente `unsafe-inline` per script); `style-src` con `unsafe-inline` (necessario per Vue `:style` binding); `connect-src` copre Firebase + GA4
 
 ## Notifiche Push
