@@ -23,14 +23,14 @@ function resetConsent() {
         del 10 giugno 2021 in materia di cookie e altri strumenti di tracciamento.
       </p>
 
-      <h1>Titolare del trattamento</h1>
+      <h2>Titolare del trattamento</h2>
       <p>
         Valerio Pierbattista<br>
         Email: <a href="mailto:omegaiori@gmail.com">omegaiori@gmail.com</a><br>
         Sito: <strong>vlrprbttst.github.io/partita-domani-a-roma</strong>
       </p>
 
-      <h1>Cosa sono i cookie</h1>
+      <h2>Cosa sono i cookie</h2>
       <p>
         I cookie sono piccoli file di testo che i siti visitati inviano al dispositivo dell'utente,
         dove vengono memorizzati per essere poi ritrasmessi agli stessi siti alla visita successiva.
@@ -38,9 +38,9 @@ function resetConsent() {
         presente informativa.
       </p>
 
-      <h1>Cookie e strumenti utilizzati</h1>
+      <h2>Cookie e strumenti utilizzati</h2>
 
-      <h1>1. Strumenti tecnici (senza consenso)</h1>
+      <h3>1. Strumenti tecnici (senza consenso)</h3>
       <p>
         Il sito utilizza il <strong>localStorage</strong> del browser per memorizzare la preferenza
         dell'utente in merito ai cookie analitici. Non si tratta di un cookie ma di un dato locale
@@ -65,7 +65,7 @@ function resetConsent() {
         </li>
       </ul>
 
-      <h1>2. Cookie analitici (solo con consenso)</h1>
+      <h3>2. Cookie analitici (solo con consenso)</h3>
       <p>
         Previa accettazione da parte dell'utente, il sito utilizza <strong>Google Analytics 4</strong>
         (Google LLC, USA) per raccogliere dati statistici anonimi sull'utilizzo del sito.
@@ -94,7 +94,7 @@ function resetConsent() {
         e <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">opt-out da Google Analytics</a>.
       </p>
 
-      <h1>3. Notifiche push (solo su consenso esplicito)</h1>
+      <h3>3. Notifiche push (solo su consenso esplicito)</h3>
       <p>
         Se l'utente sceglie di attivare le notifiche push tramite l'apposito bottone, il sito utilizza
         la <strong>Web Push API</strong> del browser (standard W3C) per inviare notifiche il giorno
@@ -120,20 +120,20 @@ function resetConsent() {
         <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">Privacy e sicurezza in Firebase</a>.
       </p>
 
-      <h1>Cookie di terze parti</h1>
+      <h2>Cookie di terze parti</h2>
       <p>
         Questo sito <strong>non utilizza</strong> cookie di social network (Facebook, Instagram,
         X/Twitter, TikTok), cookie pubblicitari né cookie di profilazione di alcun tipo.
       </p>
 
-      <h1>Gestione del consenso</h1>
+      <h2>Gestione del consenso</h2>
       <p>
         Al primo accesso viene mostrato un banner che consente di accettare o rifiutare i cookie
         analitici. La scelta può essere modificata in qualsiasi momento tramite il bottone qui sotto.
       </p>
       <button class="reset-btn" @click="resetConsent">Modifica preferenze cookie</button>
 
-      <h1>Gestione tramite browser</h1>
+      <h2>Gestione tramite browser</h2>
       <p>
         È possibile bloccare, cancellare o limitare i cookie direttamente dalle impostazioni del
         proprio browser. Le istruzioni variano a seconda del browser utilizzato:
@@ -149,7 +149,7 @@ function resetConsent() {
         <a href="https://www.allaboutcookies.org" target="_blank" rel="noopener noreferrer">www.allaboutcookies.org</a>.
       </p>
 
-      <h1>Diritti dell'interessato</h1>
+      <h2>Diritti dell'interessato</h2>
       <p>
         Ai sensi degli artt. 15–22 del Reg. UE 2016/679, l'utente ha diritto di:
       </p>
@@ -167,7 +167,7 @@ function resetConsent() {
         reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">www.garanteprivacy.it</a>).
       </p>
 
-      <h1>Modifiche alla presente informativa</h1>
+      <h2>Modifiche alla presente informativa</h2>
       <p>
         Il Titolare si riserva di modificare la presente Cookie Policy in qualsiasi momento.
         Le modifiche hanno efficacia dal momento della pubblicazione sul sito.

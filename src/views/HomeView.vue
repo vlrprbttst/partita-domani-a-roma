@@ -230,8 +230,6 @@ async function onTouchEnd() {
   if (wasReady) {
     trackEvent('pull_to_refresh')
     await load()
-  } else {
-    state.loaded = true
   }
 }
 

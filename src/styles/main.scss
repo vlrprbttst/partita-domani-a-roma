@@ -545,7 +545,9 @@ p {
   padding: 0;
 }
 
-.menu-cont h1, .policy-page h1 {
+.menu-cont h1, .policy-page h1,
+.menu-cont h2, .policy-page h2,
+.menu-cont h3, .policy-page h3 {
   @include reset;
   text-transform: uppercase;
   font-size: 24px;
@@ -556,6 +558,11 @@ p {
   clear: both;
   display: inline-block;
   border-bottom: 3px solid #fcff00;
+}
+
+.policy-page h3 {
+  font-size: 18px;
+  line-height: 26px;
 }
 
 .menu-cont p, .policy-page p {
@@ -600,7 +607,7 @@ ul {
   padding: 40px 40px 120px;
   @include respond-to(414) { padding: 40px 20px 120px; }
 
-  h1 { display: block; width: fit-content; }
+  h1, h2, h3 { display: block; width: fit-content; }
 }
 
 .policy-bar {
