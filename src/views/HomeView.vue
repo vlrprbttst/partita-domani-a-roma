@@ -160,7 +160,7 @@ async function load() {
       target.setDate(target.getDate() + props.dayOffset)
       match.value = await getMatchForDate(target)
     }
-    if (!match.value && props.testMode == null) {
+    if (!match.value && props.testMode === null) {
       // On "oggi" page, don't show next match if tomorrow already has one
       if (props.dayOffset === 0) {
         const tomorrow = new Date()
@@ -209,7 +209,6 @@ function onTouchStart(e) {
 }
 
 function onTouchMove(e) {
-  e.preventDefault()
   if (state.menuOpen) return
   const delta = e.touches[0].clientY - startY
   if (delta > 0) {
