@@ -269,8 +269,18 @@ p {
   @media all and (min-height: 700px) and (max-height: 800px) { margin-right: 8px; }
 }
 
-.lazio { background: #88D8F1; color: black; }
+.lazio { background: #87d8f7; color: black; }
 .roma  { background: #8C1A2E; color: #fff; }
+
+.derby-pill {
+  display: inline-block;
+  background: #000;
+  color: #fff;
+  font-weight: 700;
+  padding: 0 10px;
+  border-radius: 2px;
+  @include respond-to(600) { padding: 0 5px; }
+}
 
 // ─── Switch button ────────────────────────────────────────────────────────────
 .switch {

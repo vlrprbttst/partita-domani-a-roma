@@ -9,6 +9,7 @@ export default createRouter({
     { path: '/oggi',          component: HomeView,    props: { dayOffset: 0 } },
     { path: '/si',            component: HomeView,    props: { testMode: 'si' } },
     { path: '/no',            component: HomeView,    props: { testMode: 'no' } },
+    { path: '/derby',         component: HomeView,    props: { testMode: 'derby' } },
     { path: '/cookie-policy', component: CookiePolicy },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],

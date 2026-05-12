@@ -134,10 +134,22 @@ function formatTime(date) {
   })
 }
 
-function preloadBackground(hasMatch) {
-  const idx  = Math.floor(Math.random() * 10) + 1
-  const type = hasMatch ? 'si' : 'no'
-  const url  = `${import.meta.env.BASE_URL}images/${type}-sfondo${idx}.jpg`
+// football-data.org uses 00:00:00Z when kickoff time is TBD
+function hasKnownTime(date) {
+  return date.getUTCHours() !== 0 || date.getUTCMinutes() !== 0
+}
+
+function isDerby(m) {
+  if (!m) return false
+  const away = m.awayTeamName.toLowerCase()
+  return (m.homeTeam.name === 'roma'  && away.includes('lazio')) ||
+         (m.homeTeam.name === 'lazio' && away.includes('roma'))
+}
+
+function preloadBackground(hasMatch, derby = false) {
+  const url = derby
+    ? `${import.meta.env.BASE_URL}images/derby-sfondo.png`
+    : `${import.meta.env.BASE_URL}images/${hasMatch ? 'si' : 'no'}-sfondo${Math.floor(Math.random() * 10) + 1}.jpg`
   background.value = url
   return new Promise(resolve => {
     const img = new Image()
@@ -155,6 +167,12 @@ async function load() {
         homeTeam: { name: 'roma', article: 'la' },
         awayTeamName: 'Test FC',
       }
+    } else if (props.testMode === 'derby') {
+      match.value = {
+        timestamp: new Date(),
+        homeTeam: { name: 'roma', article: 'la' },
+        awayTeamName: 'SS Lazio',
+      }
     } else if (props.testMode !== 'no') {
       const target = new Date()
       target.setDate(target.getDate() + props.dayOffset)
@@ -171,7 +189,7 @@ async function load() {
         nextMatch.value = await getNextMatch()
       }
     }
-    await preloadBackground(!!match.value)
+    await preloadBackground(!!match.value, isDerby(match.value))
     trackEvent('result_viewed', { result: match.value ? 'si' : 'no', day: location })
   } finally {
     state.loaded = true
@@ -302,13 +320,14 @@ onMounted(() => {
       <h2>{{ match ? 'SI' : 'No' }}</h2>
       <p v-if="!match && nextMatch" class="next-match">
         <b>Prossima partita:</b> {{ formatNextDate(nextMatch.date) }} &middot;
-        <span :class="nextMatch.homeTeam.name">{{ nextMatch.homeTeam.name }}</span>
-        <template v-if="nextMatch.timestamp"> &middot; ore {{ formatTime(nextMatch.timestamp) }}</template>
+        <span v-if="isDerby(nextMatch)" class="derby-pill">derby</span>
+        <span v-else :class="nextMatch.homeTeam.name">{{ nextMatch.homeTeam.name }}</span>
+        <template v-if="nextMatch.timestamp && hasKnownTime(nextMatch.timestamp)"> &middot; ore {{ formatTime(nextMatch.timestamp) }}</template>
       </p>
       <h3 v-if="match">
-        Gioca {{ match.homeTeam.article }}
-        <span :class="match.homeTeam.name">{{ match.homeTeam.name }}</span><br>
-        alle <span class="orario">{{ formatTime(match.timestamp) }}</span>
+        <template v-if="isDerby(match)">È il <span class="derby-pill">derby</span>!</template>
+        <template v-else>Gioca {{ match.homeTeam.article }} <span :class="match.homeTeam.name">{{ match.homeTeam.name }}</span></template>
+        <template v-if="hasKnownTime(match.timestamp)"><br>alle <span class="orario">{{ formatTime(match.timestamp) }}</span></template>
       </h3>
 
     </div>
