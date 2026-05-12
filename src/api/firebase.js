@@ -160,10 +160,17 @@ export async function detectNotificationState() {
 
     if (!subscription) {
       if (localStorage.getItem('notifUnsubscribed') === 'true') return 'idle'
-      subscription = await sw.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
-      })
+      try {
+        subscription = await sw.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC),
+        })
+      } catch {
+        // subscribe() failed without user gesture (iOS after SW update, etc.).
+        // Return idle so the user can re-tap the bell rather than silently
+        // appearing subscribed while never receiving pushes.
+        return 'idle'
+      }
     }
 
     const docId = subscriptionDocId(subscription)
