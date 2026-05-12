@@ -75,10 +75,16 @@ const matchTitle = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+@keyframes ticket-slide-up {
+  from { transform: translateY(70px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
 .match-ticket-wrap {
   display: inline-block;
   filter: drop-shadow(0 14px 40px rgba(0, 0, 0, 0.55));
   margin-top: 12px;
+  animation: ticket-slide-up 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
 }
 
 .match-ticket {
