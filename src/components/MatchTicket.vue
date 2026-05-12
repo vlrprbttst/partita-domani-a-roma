@@ -133,7 +133,7 @@ const matchTitle = computed(() => {
 }
 
 .match-ticket__stub {
-  padding: 14px 16px;
+  padding: 12px 18px;
   background: var(--stub-bg);
   color: var(--stub-ink);
   display: flex;
@@ -141,10 +141,11 @@ const matchTitle = computed(() => {
   align-items: center;
   justify-content: center;
   font-family: 'Anton', sans-serif;
-  min-width: 64px;
+  min-width: 84px;
+  box-sizing: border-box;
 
   b {
-    font-size: 36px;
+    font-size: 32px;
     line-height: 1;
     letter-spacing: 0.01em;
     font-weight: 400;
@@ -155,7 +156,8 @@ const matchTitle = computed(() => {
     letter-spacing: 0.22em;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
-    margin-top: 4px;
+    margin-top: 0;
+    line-height: 1;
   }
 }
 
@@ -219,9 +221,9 @@ const matchTitle = computed(() => {
 
 @media (max-width: 540px) {
   .match-ticket__stub {
-    padding: 10px 12px;
-    min-width: 52px;
-    b { font-size: 28px; }
+    padding: 10px 14px;
+    min-width: 72px;
+    b { font-size: 26px; }
     i { font-size: 10px; }
   }
   .match-ticket__body {
