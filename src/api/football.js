@@ -32,6 +32,7 @@ async function fetchTeamMatchesDev(teamId, from, to = from) {
     timestamp:    new Date(m.utcDate),
     homeTeam:     normalizeTeam(m.homeTeam.name),
     awayTeamName: m.awayTeam.name,
+    competition:  m.competition?.name ?? null,
   }))
 }
 
@@ -58,7 +59,7 @@ export async function getMatchForDate(date) {
     const data = await fetchStatic()
     const m    = data[dateStr]
     if (!m) return null
-    return { timestamp: new Date(m.timestamp), homeTeam: m.homeTeam, awayTeamName: m.awayTeamName }
+    return { timestamp: new Date(m.timestamp), homeTeam: m.homeTeam, awayTeamName: m.awayTeamName, competition: m.competition ?? null }
   } catch {
     return null
   }
@@ -84,7 +85,7 @@ export async function getNextMatch() {
     const data = await fetchStatic()
     const m    = data.nextMatch
     if (!m) return null
-    return { date: m.date, timestamp: new Date(m.timestamp), homeTeam: m.homeTeam, awayTeamName: m.awayTeamName }
+    return { date: m.date, timestamp: new Date(m.timestamp), homeTeam: m.homeTeam, awayTeamName: m.awayTeamName, competition: m.competition ?? null }
   } catch {
     return null
   }

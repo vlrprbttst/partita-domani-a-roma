@@ -18,11 +18,12 @@ L'app **non chiama l'API direttamente dal browser in produzione**.
 - Il browser legge solo quel JSON statico (`cache: 'no-cache'` per evitare dati stantii)
 - In dev: proxy Vite `/football-api/...` per evitare CORS
 - Token API (`VITE_FOOTBALL_API_TOKEN`): in `.env` locale e GitHub Secret — mai nel bundle
-- `00:00:00Z` da football-data.org = orario TBD → `hasKnownTime()` lo nasconde
+- `00:00:00Z` da football-data.org = orario TBD → `hasKnownTime()` lo nasconde (in `MatchTicket.vue` mostra `TBD`)
+- `matches.json` include `competition` (es. `"Serie A"`, `"UEFA Champions League"`) usato come subtitle da `MatchTicket.vue`
 
 ## Route alternative (oltre `/` e `/oggi`)
 
-`/si`, `/no`, `/derby` sono test mode (forzano il risultato senza chiamare l'API).
+`/si`, `/no`, `/derby` sono test mode (forzano il risultato senza chiamare l'API). `/next-roma`, `/next-lazio`, `/next-derby`, `/next-tbd` forzano lo stato "nessuna partita oggi/domani + prossima futura" per testare le varianti di `MatchTicket.vue` (data +10gg, 18:30 o 00:00Z per TBD).
 
 ## Notifiche push — punti non-ovvi
 

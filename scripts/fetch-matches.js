@@ -35,6 +35,7 @@ async function fetchTeamMatches(teamId, from, to) {
     timestamp:    m.utcDate,
     homeTeam:     normalizeTeam(m.homeTeam.name),
     awayTeamName: m.awayTeam.name,
+    competition:  m.competition?.name ?? null,
   }))
 }
 
@@ -68,6 +69,7 @@ for (const match of all) {
         timestamp:    match.timestamp,
         homeTeam:     match.homeTeam,
         awayTeamName: match.awayTeamName,
+        competition:  match.competition,
       }
     }
   } else if (!nextMatch) {
@@ -76,6 +78,7 @@ for (const match of all) {
       timestamp:    match.timestamp,
       homeTeam:     match.homeTeam,
       awayTeamName: match.awayTeamName,
+      competition:  match.competition,
     }
   }
 }

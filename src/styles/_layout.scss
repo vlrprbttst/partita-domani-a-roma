@@ -50,21 +50,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-
-  .next-match {
-    b {
-      @media (max-width:767px) { display: block; }
-    }
-    font-family: $font2;
-    font-size: 13px;
-    color: #fff;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 12px 0 0 0;
-    padding: 6px 12px;
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.5);
-  }
 }
 
 .screen {

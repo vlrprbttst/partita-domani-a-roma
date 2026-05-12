@@ -7,6 +7,7 @@ import { requestPersistentStorage } from '../api/firebase.js'
 import { useConfetti } from '../composables/useConfetti.js'
 import { useNotifications } from '../composables/useNotifications.js'
 import { usePullToRefresh } from '../composables/usePullToRefresh.js'
+import MatchTicket from '../components/MatchTicket.vue'
 
 const props = defineProps({
   dayOffset: { type: Number, default: 1 },
@@ -36,11 +37,6 @@ const {
     setTimeout(fireConfetti, 300)
   },
 })
-
-function formatNextDate(dateStr) {
-  const d = new Date(dateStr + 'T12:00:00')
-  return d.toLocaleDateString('it-IT', { weekday: 'long', day: 'numeric', month: 'long' })
-}
 
 function formatTime(date) {
   return date.toLocaleTimeString('it-IT', {
@@ -88,6 +84,19 @@ async function load() {
         homeTeam: { name: 'roma', article: 'la' },
         awayTeamName: 'SS Lazio',
       }
+    } else if (props.testMode?.startsWith('next-')) {
+      const future = new Date()
+      future.setDate(future.getDate() + 10)
+      const dateStr = future.toLocaleDateString('sv', { timeZone: 'Europe/Rome' })
+      const tbd = props.testMode === 'next-tbd'
+      const ts  = new Date(`${dateStr}T${tbd ? '00:00:00' : '18:30:00'}Z`)
+      const teams = {
+        'next-roma':  { homeTeam: { name: 'roma',  article: 'la' }, awayTeamName: 'Test FC' },
+        'next-lazio': { homeTeam: { name: 'lazio', article: 'la' }, awayTeamName: 'Test FC' },
+        'next-derby': { homeTeam: { name: 'roma',  article: 'la' }, awayTeamName: 'SS Lazio' },
+        'next-tbd':   { homeTeam: { name: 'roma',  article: 'la' }, awayTeamName: 'Test FC' },
+      }[props.testMode]
+      nextMatch.value = { date: dateStr, timestamp: ts, ...teams, competition: 'Serie A' }
     } else if (props.testMode !== 'no') {
       const target = new Date()
       target.setDate(target.getDate() + props.dayOffset)
@@ -215,12 +224,7 @@ onMounted(() => {
     <div class="center" aria-live="polite" aria-atomic="true">
       <h1>C'è la partita<br>{{ location }} a Roma?</h1>
       <h2>{{ match ? 'SI' : 'No' }}</h2>
-      <p v-if="!match && nextMatch" class="next-match">
-        <b>Prossima partita:</b> {{ formatNextDate(nextMatch.date) }} &middot;
-        <span v-if="isDerby(nextMatch)" class="derby-pill">derby</span>
-        <span v-else :class="nextMatch.homeTeam.name">{{ nextMatch.homeTeam.name }}</span>
-        <template v-if="nextMatch.timestamp && hasKnownTime(nextMatch.timestamp)"> &middot; ore {{ formatTime(nextMatch.timestamp) }}</template>
-      </p>
+      <MatchTicket v-if="!match && nextMatch" :match="nextMatch" />
       <h3 v-if="match">
         <template v-if="isDerby(match)">È il <span class="derby-pill">derby</span>!</template>
         <template v-else>Gioca {{ match.homeTeam.article }} <span :class="match.homeTeam.name">{{ match.homeTeam.name }}</span></template>
