@@ -20,9 +20,20 @@ initializeApp({ credential: cert(serviceAccount) })
 const db = getFirestore()
 
 const forceSend = process.env.FORCE_SEND === 'true'
+const todayMode = process.env.TODAY_MODE === 'true'
 
 function dateRome(date) {
   return date.toLocaleDateString('sv', { timeZone: 'Europe/Rome' })
+}
+
+function hasKnownTime(date) {
+  return date.getUTCHours() !== 0 || date.getUTCMinutes() !== 0
+}
+
+async function fetchMatchesJson() {
+  const res = await fetch('https://vlrprbttst.github.io/partita-domani-a-roma/data/matches.json')
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  return res.json()
 }
 
 let title, body, dedupRef
@@ -31,6 +42,51 @@ if (forceSend) {
   console.log('FORCE_SEND enabled: bypassing match check and dedup')
   title = 'Test Web Push end-to-end'
   body  = 'Se vedi questa notifica, la catena Web Push funziona.'
+} else if (todayMode) {
+  const today    = new Date()
+  const todayStr = dateRome(today)
+
+  let matchesData
+  try {
+    matchesData = await fetchMatchesJson()
+  } catch (err) {
+    console.log('Failed to fetch matches.json:', err.message)
+    process.exit(0)
+  }
+
+  const todayMatch = matchesData[todayStr]
+  if (!todayMatch) {
+    console.log(`No match today (${todayStr}), skipping`)
+    process.exit(0)
+  }
+
+  const kickoff = new Date(todayMatch.timestamp)
+  if (!hasKnownTime(kickoff)) {
+    console.log(`Match on ${todayStr} has TBD kickoff time, skipping`)
+    process.exit(0)
+  }
+
+  // Check if current time is within ±35min of (kickoff - 4h)
+  const target  = new Date(kickoff.getTime() - 4 * 60 * 60 * 1000)
+  const diffMin = Math.abs(Date.now() - target.getTime()) / 60000
+  if (diffMin > 35) {
+    console.log(`${diffMin.toFixed(0)}min from target ${target.toISOString()}, outside 35min window`)
+    process.exit(0)
+  }
+
+  const dedupKey = `${todayStr}-4h`
+  dedupRef = db.collection('sentNotifications').doc(dedupKey)
+  const sentDoc = await dedupRef.get()
+  if (sentDoc.exists) {
+    console.log(`Oggi-4h notification already sent for ${todayStr}`)
+    process.exit(0)
+  }
+
+  const { homeTeam } = todayMatch
+  const name        = homeTeam.name.charAt(0).toUpperCase() + homeTeam.name.slice(1)
+  const kickoffTime = kickoff.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Rome' })
+  title = 'Partita oggi a Roma!'
+  body  = `${name} gioca alle ${kickoffTime}. Mancano circa 4 ore!`
 } else {
   const tomorrow    = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
@@ -38,9 +94,7 @@ if (forceSend) {
 
   let matchesData
   try {
-    const res = await fetch('https://vlrprbttst.github.io/partita-domani-a-roma/data/matches.json')
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    matchesData = await res.json()
+    matchesData = await fetchMatchesJson()
   } catch (err) {
     console.log('Failed to fetch matches.json:', err.message)
     process.exit(0)

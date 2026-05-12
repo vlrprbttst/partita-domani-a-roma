@@ -1,5 +1,6 @@
 <script setup>
 import { ref, inject, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import { getMatchForDate, getNextMatch } from '../api/football.js'
 import { trackEvent } from '../utils/analytics.js'
 import { requestPersistentStorage } from '../api/firebase.js'
@@ -12,6 +13,7 @@ const props = defineProps({
   testMode:  { type: String, default: null },
 })
 
+const router = useRouter()
 const state = inject('appState')
 
 const match      = ref(null)
@@ -72,6 +74,7 @@ function preloadBackground(hasMatch, derby = false) {
 
 async function load() {
   state.loaded = false
+  let redirected = false
   try {
     if (props.testMode === 'si') {
       match.value = {
@@ -90,6 +93,15 @@ async function load() {
       target.setDate(target.getDate() + props.dayOffset)
       match.value = await getMatchForDate(target)
     }
+    // If checking domani and it's empty, check if there's a match today instead
+    if (props.dayOffset === 1 && !props.testMode && !match.value) {
+      const todayMatch = await getMatchForDate(new Date())
+      if (todayMatch) {
+        router.replace('/oggi')
+        redirected = true
+        return
+      }
+    }
     if (!match.value && props.testMode === null) {
       // On "oggi" page, don't show next match if tomorrow already has one
       if (props.dayOffset === 0) {
@@ -104,7 +116,7 @@ async function load() {
     await preloadBackground(!!match.value, isDerby(match.value))
     trackEvent('result_viewed', { result: match.value ? 'si' : 'no', day: location })
   } finally {
-    state.loaded = true
+    if (!redirected) state.loaded = true
   }
 }
 

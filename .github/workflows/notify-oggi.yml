@@ -1,0 +1,26 @@
+name: Send Same-Day Match Notification (4h before kickoff)
+
+on:
+  schedule:
+    - cron: '0 6-16 * * *'  # hourly 06:00–16:00 UTC = 08:00–18:00 Rome CEST
+  workflow_dispatch:
+
+jobs:
+  notify-oggi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: node scripts/send-notifications.js
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          VAPID_PUBLIC_KEY:         ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY:        ${{ secrets.VAPID_PRIVATE_KEY }}
+          TODAY_MODE: 'true'
