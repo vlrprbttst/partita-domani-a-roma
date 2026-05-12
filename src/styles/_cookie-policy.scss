@@ -1,0 +1,65 @@
+@use 'vars' as *;
+
+// Classes are deliberately named `.policy-*` (not `.cookie-*`) so ad-blocker
+// filter lists (EasyPrivacy/uBlock) don't hide the page.
+.policy-page {
+  height: 100%;
+  background: #000;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  z-index: 2;
+
+  a, a:visited, a:hover { color: #fcff00; }
+}
+
+.policy-content {
+  padding: 40px 40px 120px;
+  @include respond-to(414) { padding: 40px 20px 120px; }
+
+  h1, h2, h3 { display: block; width: fit-content; }
+}
+
+.policy-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.back-btn {
+  display: inline-block;
+  border: 1px solid #fcff00;
+  color: #fcff00;
+  font-family: $font2;
+  font-size: 14px;
+  border-radius: 4px;
+  padding: 10px 20px;
+  text-decoration: none;
+  letter-spacing: 1px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.reset-btn {
+  display: inline-flex;
+  align-items: center;
+  margin: 10px 0 30px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+  background: none;
+  font-family: $font2;
+  font-size: 13px;
+  border-radius: 4px;
+  min-height: 44px;
+  padding: 0 16px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}

@@ -1,0 +1,51 @@
+@use 'vars' as *;
+
+.rotate-device { display: none; }
+
+.page.isMobile {
+  @media (orientation: landscape) {
+    .rotate-device {
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      z-index: 1001;
+      background: url(/images/rotate.png) center center no-repeat #333;
+      display: block;
+      background-size: auto 89px;
+    }
+  }
+}
+
+@keyframes clockwise {
+  to { transform: rotate(360deg) translateZ(0); }
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: black;
+}
+
+.message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spin {
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  box-shadow:
+    12px -12px  hsla(0, 0%, 100%, 0.125),
+    17px 0      hsla(0, 0%, 100%, 0.25),
+    12px 12px   hsla(0, 0%, 100%, 0.375),
+    0 17px      hsla(0, 0%, 100%, 0.5),
+    -12px 12px  hsla(0, 0%, 100%, 0.625),
+    -17px 0     hsla(0, 0%, 100%, 0.75),
+    -12px -12px hsla(0, 0%, 100%, 0.875),
+    0 -17px     hsla(0, 0%, 100%, 1);
+  animation: clockwise 0.75s steps(8, end) infinite;
+}

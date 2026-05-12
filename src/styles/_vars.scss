@@ -1,0 +1,9 @@
+$font:        'Oswald', sans-serif;
+$font2:       'Roboto', sans-serif;
+$transition:  all 600ms cubic-bezier(0.86, 0, 0.07, 1);
+$bigness:     400px;
+$menu-offset: 500px;
+
+@mixin reset { margin: 0; padding: 0; }
+@mixin clearfix { &::after { content: ''; display: table; clear: both; } }
+@mixin respond-to($bp) { @media all and (max-width: #{$bp}px) { @content; } }

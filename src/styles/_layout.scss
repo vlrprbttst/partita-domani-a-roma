@@ -1,0 +1,75 @@
+@use 'vars' as *;
+
+.page {
+  height: 100%;
+  overflow: hidden;
+}
+
+.cont {
+  height: 100%;
+  transform: translateX(0);
+  position: relative;
+  z-index: 2;
+  transition: $transition;
+}
+
+.cont-inner {
+  height: 100%;
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  transition: $transition;
+  transform: translateX(0);
+  position: relative;
+
+  &.menu_opened {
+    transform: translateX($menu-offset);
+    transition: $transition;
+    @include respond-to(414) { transform: translateX(320px); }
+  }
+
+  &::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1;
+  }
+}
+
+.center {
+  position: absolute;
+  text-align: center;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+
+  .next-match {
+    b {
+      @media (max-width:767px) { display: block; }
+    }
+    font-family: $font2;
+    font-size: 13px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 12px 0 0 0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.screen {
+  max-width: 100%;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 2px solid #fff;
+}
