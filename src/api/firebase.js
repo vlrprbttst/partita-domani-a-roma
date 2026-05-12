@@ -1,24 +1,18 @@
-import { initializeApp } from 'firebase/app'
-import { getFirestore, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore'
+// Firestore access via raw REST API — no firebase/firestore SDK (saves ~100KB
+// bundle). Security Rules in firestore.rules govern access; the API key only
+// identifies the project. Same on-disk doc shape as before.
 
-const app = initializeApp({
-  apiKey:            'AIzaSyD_O5AAH6ESu1Lls8I9q8parzCEIuWCKts',
-  authDomain:        'partita-domani-a-roma.firebaseapp.com',
-  projectId:         'partita-domani-a-roma',
-  storageBucket:     'partita-domani-a-roma.firebasestorage.app',
-  messagingSenderId: '31480853662',
-  appId:             '1:31480853662:web:71c40bb1c92ec7ee2e778f',
-})
-
-const db = getFirestore(app)
+const PROJECT_ID = 'partita-domani-a-roma'
+const API_KEY    = 'AIzaSyD_O5AAH6ESu1Lls8I9q8parzCEIuWCKts'
+const FIRESTORE  = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`
 
 const VAPID_PUBLIC = import.meta.env.VITE_VAPID_PUBLIC_KEY
 
 // Web Push subscriptions live on the SW registration (not in IndexedDB), so
 // they survive the aggressive storage eviction Android Chrome inflicts on
-// PWAs. This is the primary reason for using raw PushManager instead of
-// firebase/messaging — the FCM SDK's IndexedDB-backed token gets recreated
-// on every eviction, churning the Firestore subscription records.
+// PWAs. This is the primary reason for using raw PushManager — the FCM SDK's
+// IndexedDB-backed token gets recreated on every eviction, churning the
+// Firestore subscription records.
 
 export function notificationsSupported() {
   return 'Notification' in window && 'serviceWorker' in navigator && 'PushManager' in window
@@ -44,6 +38,10 @@ function subscriptionDocId(subscription) {
   return btoa(endpoint).replace(/[^A-Za-z0-9]/g, '_').slice(0, 200)
 }
 
+function subscriptionDocUrl(docId) {
+  return `${FIRESTORE}/subscriptions/${docId}?key=${API_KEY}`
+}
+
 function serializeSubscription(subscription) {
   const json = subscription.toJSON()
   return {
@@ -51,6 +49,41 @@ function serializeSubscription(subscription) {
     keys:      { p256dh: json.keys.p256dh, auth: json.keys.auth },
     createdAt: new Date().toISOString(),
   }
+}
+
+// Firestore REST docs wrap each value in a typed envelope.
+function toFirestoreFields(data) {
+  return {
+    fields: {
+      endpoint: { stringValue: data.endpoint },
+      keys: {
+        mapValue: {
+          fields: {
+            p256dh: { stringValue: data.keys.p256dh },
+            auth:   { stringValue: data.keys.auth },
+          },
+        },
+      },
+      createdAt: { stringValue: data.createdAt },
+    },
+  }
+}
+
+async function subscriptionDocExists(docId) {
+  const res = await fetch(subscriptionDocUrl(docId))
+  return res.ok
+}
+
+async function writeSubscriptionDoc(docId, data) {
+  await fetch(subscriptionDocUrl(docId), {
+    method:  'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(toFirestoreFields(data)),
+  })
+}
+
+async function deleteSubscriptionDoc(docId) {
+  await fetch(subscriptionDocUrl(docId), { method: 'DELETE' })
 }
 
 async function getOrCreateSubscription() {
@@ -90,10 +123,7 @@ export async function subscribeToNotifications() {
   const subscription = await getOrCreateSubscription()
   if (!subscription) return 'error'
 
-  await setDoc(
-    doc(db, 'subscriptions', subscriptionDocId(subscription)),
-    serializeSubscription(subscription)
-  )
+  await writeSubscriptionDoc(subscriptionDocId(subscription), serializeSubscription(subscription))
 
   localStorage.removeItem('notifUnsubscribed')
   return 'granted'
@@ -104,7 +134,7 @@ export async function unsubscribeFromNotifications() {
   const subscription = await sw.pushManager.getSubscription()
   if (subscription) {
     try {
-      await deleteDoc(doc(db, 'subscriptions', subscriptionDocId(subscription)))
+      await deleteSubscriptionDoc(subscriptionDocId(subscription))
     } catch { /* doc già rimosso o errore di rete, procedi comunque */ }
     await subscription.unsubscribe()
   }
@@ -114,7 +144,7 @@ export async function unsubscribeFromNotifications() {
 // Notification.permission is the only signal that survives Android Chrome's
 // storage eviction. When permission is granted, we treat the user as subscribed
 // unless they have explicitly clicked unsubscribe (tracked in localStorage as
-// 'notifUnsubscribed'). After eviction, autoRecover saves the (still-valid)
+// 'notifUnsubscribed'). After eviction, this auto-saves the (still-valid)
 // push subscription to Firestore — same endpoint, so the same doc ID, no churn.
 // Returns 'unsupported' | 'denied' | 'subscribed' | 'idle', or null on
 // transient errors (caller keeps the current optimistic state).
@@ -128,9 +158,6 @@ export async function detectNotificationState() {
     let subscription = await sw.pushManager.getSubscription()
 
     if (!subscription) {
-      // No push subscription yet (e.g., eviction also dropped the SW push
-      // registration, or first visit after permission was granted elsewhere).
-      // Auto-create one unless the user explicitly opted out.
       if (localStorage.getItem('notifUnsubscribed') === 'true') return 'idle'
       subscription = await sw.pushManager.subscribe({
         userVisibleOnly: true,
@@ -138,13 +165,12 @@ export async function detectNotificationState() {
       })
     }
 
-    const ref  = doc(db, 'subscriptions', subscriptionDocId(subscription))
-    const snap = await getDoc(ref)
-    if (snap.exists()) return 'subscribed'
+    const docId = subscriptionDocId(subscription)
+    if (await subscriptionDocExists(docId)) return 'subscribed'
 
     if (localStorage.getItem('notifUnsubscribed') === 'true') return 'idle'
 
-    await setDoc(ref, serializeSubscription(subscription))
+    await writeSubscriptionDoc(docId, serializeSubscription(subscription))
     return 'subscribed'
   } catch {
     return null
