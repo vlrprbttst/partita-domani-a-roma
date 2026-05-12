@@ -153,13 +153,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <button
-    class="menu"
-    :aria-label="state.menuOpen ? 'Chiudi menu' : 'Apri menu'"
-    :aria-expanded="state.menuOpen.toString()"
-    aria-controls="main-menu"
-    @click="state.menuOpen = !state.menuOpen; trackEvent('menu_opened')"
-  ></button>
+  <div class="menu-wrap">
+    <button
+      class="menu"
+      :aria-label="state.menuOpen ? 'Chiudi menu' : 'Apri menu'"
+      :aria-expanded="state.menuOpen.toString()"
+      aria-controls="main-menu"
+      @click="state.menuOpen = !state.menuOpen; trackEvent('menu_opened')"
+    ></button>
+    <span class="menu-label">menu</span>
+  </div>
   <div class="controls-wrap">
     <div v-if="canShare" class="share-wrap">
       <button class="share-btn" @click="share" aria-label="Condividi questa pagina">

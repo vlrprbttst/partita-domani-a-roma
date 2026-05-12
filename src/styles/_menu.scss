@@ -1,20 +1,37 @@
 @use 'vars' as *;
 
+.menu-wrap {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  @include respond-to(375) { left: 10px; top: 10px; }
+}
+
 .menu {
   width: 50px;
   height: 50px;
-  left: 20px;
-  top: 20px;
   border: 1px solid white;
   border-radius: 4px;
   background: url(/images/menu-ico.png) center center no-repeat rgba(0, 0, 0, 0.5);
-  position: absolute;
   display: inline-block;
-  z-index: 3;
   cursor: pointer;
   background-size: 25px;
   padding: 0;
-  @include respond-to(375) { left: 10px; top: 10px; }
+}
+
+.menu-label {
+  font-family: $font2;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: white;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
 }
 
 .menu-cont {
