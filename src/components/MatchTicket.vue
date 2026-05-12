@@ -84,7 +84,7 @@ const matchTitle = computed(() => {
   display: inline-block;
   filter: drop-shadow(0 14px 40px rgba(0, 0, 0, 0.55));
   margin-top: 12px;
-  animation: ticket-slide-up 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  animation: ticket-slide-up 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
 }
 
 .match-ticket {

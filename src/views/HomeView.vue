@@ -224,7 +224,7 @@ onMounted(() => {
     <div class="center" aria-live="polite" aria-atomic="true">
       <h1>C'è la partita<br>{{ location }} a Roma?</h1>
       <h2>{{ match ? 'SI' : 'No' }}</h2>
-      <MatchTicket v-if="!match && nextMatch" :match="nextMatch" />
+      <MatchTicket v-if="!match && nextMatch && state.loaded" :match="nextMatch" />
       <h3 v-if="match">
         <template v-if="isDerby(match)">È il <span class="derby-pill">derby</span>!</template>
         <template v-else>Gioca {{ match.homeTeam.article }} <span :class="match.homeTeam.name">{{ match.homeTeam.name }}</span></template>
