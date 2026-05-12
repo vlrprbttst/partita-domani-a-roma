@@ -17,7 +17,9 @@
       "Bash(npx vite *)",
       "Bash(git checkout *)",
       "Bash(git merge *)",
-      "Bash(curl -s \"https://vlrprbttst.github.io/partita-domani-a-roma/data/matches.json\")"
+      "Bash(curl -s \"https://vlrprbttst.github.io/partita-domani-a-roma/data/matches.json\")",
+      "Bash(xargs wc -l)",
+      "Bash(npm install *)"
     ],
     "additionalDirectories": [
       "c:\\c\\Users\\Valerio\\Desktop\\claude workspace\\partita-domani-a-roma\\public\\icons"
