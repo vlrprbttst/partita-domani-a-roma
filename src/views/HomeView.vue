@@ -2,7 +2,10 @@
 import { ref, inject, onMounted, nextTick } from 'vue'
 import { getMatchForDate, getNextMatch } from '../api/football.js'
 import { trackEvent } from '../utils/analytics.js'
-import { notificationsSupported, subscribeToNotifications, unsubscribeFromNotifications, detectNotificationState, requestPersistentStorage } from '../api/firebase.js'
+import { requestPersistentStorage } from '../api/firebase.js'
+import { useConfetti } from '../composables/useConfetti.js'
+import { useNotifications } from '../composables/useNotifications.js'
+import { usePullToRefresh } from '../composables/usePullToRefresh.js'
 
 const props = defineProps({
   dayOffset: { type: Number, default: 1 },
@@ -16,112 +19,21 @@ const nextMatch  = ref(null)
 const background = ref('')
 const location   = props.dayOffset === 0 ? 'oggi' : 'domani'
 
-const notifSupported  = notificationsSupported()
-const bellBtnRef      = ref(null)
+const bellBtnRef = ref(null)
+const { fire: fireConfetti } = useConfetti(bellBtnRef)
 
-const CONFETTI_COLORS = ['#8C1A2E', '#fcff00', '#88D8F1', '#ffffff']
-const CONFETTI_DEFS   = [
-  [  0,-95, 1],[ 28,-90,-1],[ 55,-78, 1],[ 75,-55,-1],[ 90,-20, 1],[ 88, 20,-1],
-  [ 75, 52, 1],[ 52, 76,-1],[ 20, 92, 1],[-20, 90,-1],[-52, 74, 1],[-76, 50,-1],
-  [-92,  8, 1],[-88,-20,-1],[-75,-52, 1],[-52,-78,-1],[-18,-93, 1],[ 22,-90,-1],
-  [ 50,-76, 1],[ 76,-50,-1],[ 93, -5, 1],[ 82, 38,-1],[ 55, 72, 1],[ 25, 91,-1],
-]
-const CONFETTI_SHAPES = [
-  [10,5],[6,6],[14,5],[5,5],[9,4],[7,7],[12,4],[4,8],
-  [8,4],[13,5],[6,6],[10,4],[7,7],[9,3],[5,5],[11,4],
-  [9,9],[6,3],[13,5],[4,4],[11,4],[7,3],[8,8],[5,10],
-]
-
-function fireConfetti() {
-  if (!bellBtnRef.value) return
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-  const { left, top, width, height } = bellBtnRef.value.getBoundingClientRect()
-  const cx = left + width / 2
-  const cy = top  + height / 2
-  CONFETTI_DEFS.forEach(([tx, ty, rotSign], i) => {
-    const [w, h] = CONFETTI_SHAPES[i]
-    const el = document.createElement('div')
-    Object.assign(el.style, {
-      position: 'fixed', zIndex: '9999', pointerEvents: 'none',
-      left: (cx - w / 2) + 'px', top: (cy - h / 2) + 'px',
-      width: w + 'px', height: h + 'px',
-      background: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
-      borderRadius: '2px',
-    })
-    document.body.appendChild(el)
-    el.animate(
-      [
-        { transform: 'translate(0,0) rotate(0deg) scale(0.5)',                                                      opacity: 1, offset: 0    },
-        { transform: `translate(${tx * 0.18}px,${ty * 0.18}px) rotate(${rotSign * 80}deg) scale(1.5)`,             opacity: 1, offset: 0.12 },
-        { transform: `translate(${tx}px,${ty}px) rotate(${rotSign * 540}deg) scale(0.1)`,                          opacity: 0, offset: 1    },
-      ],
-      { duration: 1500, easing: 'ease-out', fill: 'forwards' }
-    ).onfinish = () => el.remove()
-  })
-}
-
-
-// Optimistic init based on Notification.permission (durable across storage eviction).
-// The real state is verified asynchronously in onMounted via detectNotificationState().
-const notifState     = ref(
-  !notificationsSupported()                                                                  ? 'unsupported' :
-  Notification.permission === 'denied'                                                       ? 'denied'      :
-  Notification.permission === 'granted' && localStorage.getItem('notifUnsubscribed') !== 'true' ? 'subscribed' : 'idle'
-)
-
-// Guard against the (rare) race where syncNotifState resolves after the user
-// has tapped the bell: once the user has acted, their action is the truth.
-let userActed = false
-
-async function syncNotifState() {
-  const real = await detectNotificationState()
-  if (real === null || userActed) return
-  notifState.value = real
-}
-
-async function avvisami() {
-  userActed = true
-  state.loaded = false
-  let succeeded = false
-  try {
-    const result = await subscribeToNotifications()
-    notifState.value = result === 'granted' ? 'subscribed' : result
-    if (result === 'granted') succeeded = true
-    trackEvent('notify_subscribe', { result })
-  } catch {
-    notifState.value = 'idle'
-  } finally {
-    state.loaded = true
-    if (succeeded) {
-      await nextTick()
-      setTimeout(fireConfetti, 300)
-    }
-  }
-}
-
-async function disattiva() {
-  userActed = true
-  state.loaded = false
-  try {
-    await unsubscribeFromNotifications()
-    notifState.value = 'idle'
-    trackEvent('notify_unsubscribe')
-  } catch {
-    notifState.value = 'subscribed'
-  } finally {
-    state.loaded = true
-  }
-}
-
-function explainDenied() {
-  alert("Le notifiche di questo sito sono bloccate dal browser.\n\nPer riattivarle:\n• Tocca l'icona del lucchetto nella barra degli indirizzi\n• Vai su \"Notifiche\" e abilitale\n• Ricarica la pagina")
-}
-
-function onBellClick() {
-  if (notifState.value === 'denied')     return explainDenied()
-  if (notifState.value === 'subscribed') return disattiva()
-  return avvisami()
-}
+const {
+  supported: notifSupported,
+  notifState,
+  syncState: syncNotifState,
+  onBellClick,
+} = useNotifications({
+  state,
+  onSubscribeSuccess: async () => {
+    await nextTick()
+    setTimeout(fireConfetti, 300)
+  },
+})
 
 function formatNextDate(dateStr) {
   const d = new Date(dateStr + 'T12:00:00')
@@ -196,8 +108,14 @@ async function load() {
   }
 }
 
-// Pull-to-refresh
-// Share
+const { onTouchStart, onTouchMove, onTouchEnd } = usePullToRefresh({
+  state,
+  onRefresh: async () => {
+    trackEvent('pull_to_refresh')
+    await load()
+  },
+})
+
 const canShare = !!navigator.share
 
 async function share() {
@@ -213,42 +131,6 @@ async function share() {
     })
     trackEvent('share_completed')
   } catch { /* utente ha annullato */ }
-}
-
-// Pull-to-refresh
-const THRESHOLD = 80
-let startY      = 0
-let pullY       = 0
-let pullReady   = false
-
-function onTouchStart(e) {
-  if (state.menuOpen) return
-  startY = e.touches[0].clientY
-}
-
-function onTouchMove(e) {
-  if (state.menuOpen) return
-  const delta = e.touches[0].clientY - startY
-  if (delta > 0) {
-    pullY = Math.min(delta, THRESHOLD * 1.5)
-    if (!pullReady && pullY >= THRESHOLD) {
-      pullReady = true
-      state.loaded = false
-    } else if (pullReady && pullY < THRESHOLD) {
-      pullReady = false
-      state.loaded = true
-    }
-  }
-}
-
-async function onTouchEnd() {
-  const wasReady = pullReady
-  pullY     = 0
-  pullReady = false
-  if (wasReady) {
-    trackEvent('pull_to_refresh')
-    await load()
-  }
 }
 
 onMounted(() => {
