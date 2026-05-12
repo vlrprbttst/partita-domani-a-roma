@@ -75,11 +75,12 @@ async function subscriptionDocExists(docId) {
 }
 
 async function writeSubscriptionDoc(docId, data) {
-  await fetch(subscriptionDocUrl(docId), {
+  const res = await fetch(subscriptionDocUrl(docId), {
     method:  'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify(toFirestoreFields(data)),
   })
+  if (!res.ok) throw new Error(`Firestore write failed: ${res.status}`)
 }
 
 async function deleteSubscriptionDoc(docId) {
