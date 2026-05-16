@@ -1,12 +1,21 @@
 {
-  "nextMatch": {
-    "date": "2026-05-17",
+  "2026-05-17": {
     "timestamp": "2026-05-17T10:00:00Z",
     "homeTeam": {
       "name": "roma",
       "article": "la"
     },
     "awayTeamName": "SS Lazio",
+    "competition": "Serie A"
+  },
+  "nextMatch": {
+    "date": "2026-05-24",
+    "timestamp": "2026-05-24T13:00:00Z",
+    "homeTeam": {
+      "name": "lazio",
+      "article": "la"
+    },
+    "awayTeamName": "AC Pisa 1909",
     "competition": "Serie A"
   }
 }
