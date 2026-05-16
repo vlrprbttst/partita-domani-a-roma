@@ -30,6 +30,11 @@ function hasKnownTime(date) {
   return date.getUTCHours() !== 0 || date.getUTCMinutes() !== 0
 }
 
+function isDerby(match) {
+  const away = (match.awayTeamName ?? '').toLowerCase()
+  return away.includes('roma') || away.includes('lazio')
+}
+
 async function fetchMatchesJson() {
   const res = await fetch('https://vlrprbttst.github.io/partita-domani-a-roma/data/matches.json')
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -83,10 +88,14 @@ if (forceSend) {
   }
 
   const { homeTeam } = todayMatch
-  const name        = homeTeam.name.charAt(0).toUpperCase() + homeTeam.name.slice(1)
   const kickoffTime = kickoff.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Rome' })
   title = 'Partita oggi a Roma!'
-  body  = `${name} gioca alle ${kickoffTime}. Mancano circa 4 ore!`
+  if (isDerby(todayMatch)) {
+    body = `C'è il derby Roma-Lazio alle ${kickoffTime}. Mancano circa 4 ore!`
+  } else {
+    const name = homeTeam.name.charAt(0).toUpperCase() + homeTeam.name.slice(1)
+    body = `${name} gioca alle ${kickoffTime}. Mancano circa 4 ore!`
+  }
 } else {
   const tomorrow    = new Date()
   tomorrow.setDate(tomorrow.getDate() + 1)
@@ -115,9 +124,13 @@ if (forceSend) {
   }
 
   const { homeTeam } = tomorrowMatch
-  const name = homeTeam.name.charAt(0).toUpperCase() + homeTeam.name.slice(1)
   title = 'Partita domani a Roma!'
-  body  = `Gioca ${homeTeam.article} ${name}. Apri l'app per l'orario.`
+  if (isDerby(tomorrowMatch)) {
+    body = "C'è il derby Roma-Lazio! Apri l'app per l'orario."
+  } else {
+    const name = homeTeam.name.charAt(0).toUpperCase() + homeTeam.name.slice(1)
+    body = `Gioca ${homeTeam.article} ${name}. Apri l'app per l'orario.`
+  }
 }
 
 const snap = await db.collection('subscriptions').get()
