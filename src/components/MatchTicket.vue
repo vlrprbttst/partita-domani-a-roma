@@ -3,6 +3,7 @@ import { computed } from 'vue'
 
 const props = defineProps({
   match: { type: Object, required: true },
+  label: { type: String, default: 'PROSSIMA PARTITA' },
 })
 
 const MESI = ['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC']
@@ -62,7 +63,7 @@ const matchTitle = computed(() => {
       </div>
       <div class="match-ticket__perf"></div>
       <div class="match-ticket__body">
-        <div class="match-ticket__label">PROSSIMA PARTITA</div>
+        <div class="match-ticket__label">{{ label }}</div>
         <div class="match-ticket__match">
           <template v-if="variant === 'derby'">Roma<span class="match-ticket__vs">·</span>Lazio</template>
           <template v-else>{{ matchTitle }}</template>

@@ -59,7 +59,7 @@ export async function getMatchForDate(date) {
     const data = await fetchStatic()
     const m    = data[dateStr]
     if (!m) return null
-    return { timestamp: new Date(m.timestamp), homeTeam: m.homeTeam, awayTeamName: m.awayTeamName, competition: m.competition ?? null }
+    return { date: dateStr, timestamp: new Date(m.timestamp), homeTeam: m.homeTeam, awayTeamName: m.awayTeamName, competition: m.competition ?? null }
   } catch {
     return null
   }

@@ -8,6 +8,7 @@ export default createRouter({
     { path: '/',              component: HomeView,    props: { dayOffset: 1 } },
     { path: '/oggi',          component: HomeView,    props: { dayOffset: 0 } },
     { path: '/si',            component: HomeView,    props: { testMode: 'si' } },
+    { path: '/si-lazio',      component: HomeView,    props: { testMode: 'si-lazio' } },
     { path: '/no',            component: HomeView,    props: { testMode: 'no' } },
     { path: '/derby',         component: HomeView,    props: { testMode: 'derby' } },
     { path: '/next-roma',     component: HomeView,    props: { testMode: 'next-roma' } },

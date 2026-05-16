@@ -73,16 +73,31 @@ async function load() {
   let redirected = false
   try {
     if (props.testMode === 'si') {
+      const ts = new Date()
       match.value = {
-        timestamp: new Date(),
+        date: ts.toLocaleDateString('sv', { timeZone: 'Europe/Rome' }),
+        timestamp: ts,
         homeTeam: { name: 'roma', article: 'la' },
         awayTeamName: 'Test FC',
+        competition: 'Serie A',
+      }
+    } else if (props.testMode === 'si-lazio') {
+      const ts = new Date()
+      match.value = {
+        date: ts.toLocaleDateString('sv', { timeZone: 'Europe/Rome' }),
+        timestamp: ts,
+        homeTeam: { name: 'lazio', article: 'la' },
+        awayTeamName: 'Test FC',
+        competition: 'Serie A',
       }
     } else if (props.testMode === 'derby') {
+      const ts = new Date()
       match.value = {
-        timestamp: new Date(),
+        date: ts.toLocaleDateString('sv', { timeZone: 'Europe/Rome' }),
+        timestamp: ts,
         homeTeam: { name: 'roma', article: 'la' },
         awayTeamName: 'SS Lazio',
+        competition: 'Serie A',
       }
     } else if (props.testMode?.startsWith('next-')) {
       const future = new Date()
@@ -224,12 +239,12 @@ onMounted(() => {
     <div class="center" aria-live="polite" aria-atomic="true">
       <h1>C'è la partita<br>{{ location }} a Roma?</h1>
       <h2>{{ match ? 'SI' : 'No' }}</h2>
+      <MatchTicket
+        v-if="match && state.loaded"
+        :match="match"
+        :label="location === 'domani' ? 'PARTITA DOMANI' : 'PARTITA OGGI'"
+      />
       <MatchTicket v-if="!match && nextMatch && state.loaded" :match="nextMatch" />
-      <h3 v-if="match">
-        <template v-if="isDerby(match)">È il <span class="derby-pill">derby</span>!</template>
-        <template v-else>Gioca {{ match.homeTeam.article }} <span :class="match.homeTeam.name">{{ match.homeTeam.name }}</span></template>
-        <template v-if="hasKnownTime(match.timestamp)"><br>alle <span class="orario">{{ formatTime(match.timestamp) }}</span></template>
-      </h3>
 
     </div>
 
