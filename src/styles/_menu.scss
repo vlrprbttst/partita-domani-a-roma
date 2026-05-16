@@ -90,6 +90,34 @@
   padding: 0;
 }
 
+.menu-policy-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+.menu-policy-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px;
+  @include respond-to(414) { padding: 20px; }
+}
+
+.menu-policy-bar {
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 // Shared heading + paragraph styles between menu and cookie-policy contexts
 .menu-cont h1, .policy-page h1,
 .menu-cont h2, .policy-page h2,
@@ -102,13 +130,22 @@
   color: #fcff00;
   margin-bottom: 20px;
   clear: both;
-  display: inline-block;
-  border-bottom: 3px solid #fcff00;
+  display: block;
+  width: fit-content;
+  text-decoration: underline;
+  text-decoration-color: #fcff00;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
 }
 
 .policy-page h3 {
   font-size: 18px;
   line-height: 26px;
+}
+
+.menu-cont h3 {
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .menu-cont p, .policy-page p {
