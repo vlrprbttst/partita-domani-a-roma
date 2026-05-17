@@ -21,9 +21,14 @@ L'app **non chiama l'API direttamente dal browser in produzione**.
 - `00:00:00Z` da football-data.org = orario TBD → `hasKnownTime()` lo nasconde (in `MatchTicket.vue` mostra `TBD`)
 - `matches.json` include `competition` (es. `"Serie A"`, `"UEFA Champions League"`) usato come subtitle da `MatchTicket.vue`
 
-## Route alternative (oltre `/` e `/oggi`)
+## Route (complete)
 
-`/si`, `/no`, `/derby` sono test mode (forzano il risultato senza chiamare l'API). `/next-roma`, `/next-lazio`, `/next-derby`, `/next-tbd` forzano lo stato "nessuna partita oggi/domani + prossima futura" per testare le varianti di `MatchTicket.vue` (data +10gg, 18:30 o 00:00Z per TBD).
+- `/` e `/domani`: partita di domani (`dayOffset: 1`). `/domani` ha `preventRedirect: true` — non rimbalza su `/oggi` se domani è vuoto
+- `/oggi`: partita di oggi (`dayOffset: 0`)
+- `/si`, `/si-lazio`, `/no`, `/derby`: test mode (forzano il risultato senza chiamare l'API)
+- `/next-roma`, `/next-lazio`, `/next-derby`, `/next-tbd`: forzano lo stato "nessuna partita oggi/domani + prossima futura" per testare le varianti di `MatchTicket.vue` (data +10gg, 18:30 o 00:00Z per TBD)
+- `/cookie-policy`: pagina policy
+- Tutto il resto → redirect a `/`
 
 ## Notifiche push — punti non-ovvi
 
@@ -31,11 +36,15 @@ Usiamo **raw Web Push** (PushManager + libreria `web-push`), **non `firebase/mes
 
 Per Firestore lato client usiamo **REST API diretta** (`firestore.googleapis.com/v1/...?key=APIKEY`), **non l'SDK `firebase/firestore`**. Motivo: bundle — l'SDK pesa ~100KB per fare 3 operazioni (get/patch/delete) sulla collection `subscriptions`. La security profile è identica: è governata da `firestore.rules`, l'API key è pubblica per design (Firebase la tratta come project identifier). `scripts/send-notifications.js` continua a usare `firebase-admin` lato server (necessario per bypassare le rules per `sentNotifications`).
 
-- Doc ID Firestore = `btoa(endpoint)` → stabile attraverso eviction, no churn
+- Doc ID Firestore = `btoa(endpoint).replace(/[^A-Za-z0-9]/g, '_').slice(0, 200)` → stabile attraverso eviction, no churn
 - `Notification.permission` è la fonte di verità (sopravvive eviction). `localStorage.notifUnsubscribed='true'` traccia opt-out esplicito; può essere evicted (trade-off: utente ri-iscritto automaticamente, preferibile a disiscritto silenziosamente)
-- Dedup invii server: doc `sentNotifications/{YYYY-MM-DD}` — skip se esiste
+- **Auto-resubscription post-eviction** in `detectNotificationState()`: se `permission=granted` ma la push subscription è sparita (e `notifUnsubscribed` non è settato), il client la ricrea e riscrive il doc Firestore — stesso endpoint → stesso doc ID → nessun churn
+- Se esiste una subscription con `applicationServerKey` diverso (residui della migrazione FCM), `getOrCreateSubscription()` cattura `InvalidStateError`, fa `unsubscribe()` e crea una nuova subscription VAPID
+- Dedup invii server: `sentNotifications/{YYYY-MM-DD}` per "domani", `sentNotifications/{YYYY-MM-DD}-4h` per "oggi". Due chiavi distinte → un utente riceve sia la notifica serale che quella 4h prima
 - Dedup client: SW mostra notifica con `tag: 'partita-domani-a-roma'` + `renotify: true` → se browser+PWA hanno due subscription distinte, la seconda push sostituisce la prima a livello OS (una sola notifica visibile)
-- Cron `notify.yml`: `0 10 * * *` UTC = **12:00 estate / 11:00 inverno** ora di Roma
+- Subscription stantie (HTTP 404/410 dal push service) rimosse in batch da 30 in `send-notifications.js`
+- Cron `notify.yml`: `0 10 * * *` UTC = **12:00 estate / 11:00 inverno** ora di Roma. Invia "partita domani" se esiste match il giorno dopo
+- Cron `notify-oggi.yml`: `0 6-16 * * *` (ogni ora 06–16 UTC = 08–18 Roma CEST). Invia "partita oggi, mancano ~Xh" solo se il kickoff è tra **60 e 330 minuti** (`[60, 330]`). La finestra larga assorbe i ritardi/skip del cron di GitHub Actions (domeniche routinariamente in ritardo di 35+ min). Dedup key: `{date}-4h` (distinto dal dedup di `notify.yml` → un utente può ricevere sia "domani" che "oggi 4h prima")
 - Test E2E: `notify.yml` accetta input `force_send` (workflow_dispatch) → bypassa check partita + dedup, manda notifica generica a tutti
 - iOS: notifiche push solo se PWA installata (iOS 16.4+)
 - **Origin condivisa**: tutte le PWA su `vlrprbttst.github.io` (es. `kcalTracker`) condividono il permesso notifiche OS. Se una è disattivata, tutte sono silenziate. Se l'utente è `subscribed` ma non arriva niente → controllare toggle Chrome/Android per `vlrprbttst.github.io`
@@ -43,8 +52,8 @@ Per Firestore lato client usiamo **REST API diretta** (`firestore.googleapis.com
 **Segreti GitHub**: `FIREBASE_SERVICE_ACCOUNT` (Admin SDK legge `subscriptions`), `VAPID_PUBLIC_KEY` (build + sign), `VAPID_PRIVATE_KEY` (solo `notify.yml` per firmare push). Locale: `VITE_VAPID_PUBLIC_KEY` in `.env`. Generate una tantum con `npx web-push generate-vapid-keys`.
 
 **Firestore collections**:
-- `subscriptions` — `{ endpoint, keys: { p256dh, auth }, createdAt }`, doc ID = base64 dell'endpoint
-- `sentNotifications/{YYYY-MM-DD}` — `{ sentAt, recipientCount }` (server-only, regole bloccano il client)
+- `subscriptions` — `{ endpoint, keys: { p256dh, auth }, createdAt }`, doc ID = `btoa(endpoint).replace(/[^A-Za-z0-9]/g, '_').slice(0, 200)`
+- `sentNotifications/{YYYY-MM-DD}` — dedup per notifiche "domani"; `sentNotifications/{YYYY-MM-DD}-4h` — dedup per notifiche "oggi 4h prima". Shape: `{ sentAt, recipientCount }` (server-only, regole bloccano il client)
 
 ## Gotcha CSS
 
