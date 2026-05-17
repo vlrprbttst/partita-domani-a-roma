@@ -71,11 +71,12 @@ if (forceSend) {
     process.exit(0)
   }
 
-  // Check if current time is within ±35min of (kickoff - 4h)
-  const target  = new Date(kickoff.getTime() - 4 * 60 * 60 * 1000)
-  const diffMin = Math.abs(Date.now() - target.getTime()) / 60000
-  if (diffMin > 35) {
-    console.log(`${diffMin.toFixed(0)}min from target ${target.toISOString()}, outside 35min window`)
+  // Send if kickoff is 1h–5h30 away — wide enough to absorb GitHub Actions
+  // cron drift/skips (a ±35min window around kickoff-4h misses runs delayed
+  // by more than half an hour, which on Sundays happens routinely).
+  const minToKickoff = (kickoff.getTime() - Date.now()) / 60000
+  if (minToKickoff < 60 || minToKickoff > 330) {
+    console.log(`${minToKickoff.toFixed(0)}min to kickoff, outside [60,330] window`)
     process.exit(0)
   }
 
@@ -83,18 +84,20 @@ if (forceSend) {
   dedupRef = db.collection('sentNotifications').doc(dedupKey)
   const sentDoc = await dedupRef.get()
   if (sentDoc.exists) {
-    console.log(`Oggi-4h notification already sent for ${todayStr}`)
+    console.log(`Oggi notification already sent for ${todayStr}`)
     process.exit(0)
   }
 
   const { homeTeam } = todayMatch
   const kickoffTime = kickoff.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Rome' })
+  const hours = Math.max(1, Math.round(minToKickoff / 60))
+  const countdown = hours === 1 ? 'Manca circa 1 ora' : `Mancano circa ${hours} ore`
   title = 'Partita oggi a Roma!'
   if (isDerby(todayMatch)) {
-    body = `C'è il derby Roma-Lazio alle ${kickoffTime}. Mancano circa 4 ore!`
+    body = `C'è il derby Roma-Lazio alle ${kickoffTime}. ${countdown}!`
   } else {
     const name = homeTeam.name.charAt(0).toUpperCase() + homeTeam.name.slice(1)
-    body = `${name} gioca alle ${kickoffTime}. Mancano circa 4 ore!`
+    body = `${name} gioca alle ${kickoffTime}. ${countdown}!`
   }
 } else {
   const tomorrow    = new Date()
