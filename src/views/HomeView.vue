@@ -10,8 +10,9 @@ import { usePullToRefresh } from '../composables/usePullToRefresh.js'
 import MatchTicket from '../components/MatchTicket.vue'
 
 const props = defineProps({
-  dayOffset: { type: Number, default: 1 },
-  testMode:  { type: String, default: null },
+  dayOffset:       { type: Number,  default: 1 },
+  testMode:        { type: String,  default: null },
+  preventRedirect: { type: Boolean, default: false },
 })
 
 const router = useRouter()
@@ -117,8 +118,8 @@ async function load() {
       target.setDate(target.getDate() + props.dayOffset)
       match.value = await getMatchForDate(target)
     }
-    // If checking domani and it's empty, check if there's a match today instead
-    if (props.dayOffset === 1 && !props.testMode && !match.value) {
+    // If checking domani and it's empty, redirect to oggi — unless user navigated here explicitly
+    if (props.dayOffset === 1 && !props.testMode && !match.value && !props.preventRedirect) {
       const todayMatch = await getMatchForDate(new Date())
       if (todayMatch) {
         router.replace('/oggi')
@@ -250,7 +251,7 @@ onMounted(() => {
 
     <RouterLink
       class="switch"
-      :to="location === 'domani' ? '/oggi' : '/'"
+      :to="location === 'domani' ? '/oggi' : '/domani'"
       :aria-label="location === 'domani' ? 'Controlla se c\'è la partita oggi' : 'Controlla se c\'è la partita domani'"
       @click="trackEvent('switch_day', { to: location === 'domani' ? 'oggi' : 'domani' })"
     >

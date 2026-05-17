@@ -6,6 +6,7 @@ export default createRouter({
   history: createWebHistory('/partita-domani-a-roma/'),
   routes: [
     { path: '/',              component: HomeView,    props: { dayOffset: 1 } },
+    { path: '/domani',        component: HomeView,    props: { dayOffset: 1, preventRedirect: true } },
     { path: '/oggi',          component: HomeView,    props: { dayOffset: 0 } },
     { path: '/si',            component: HomeView,    props: { testMode: 'si' } },
     { path: '/si-lazio',      component: HomeView,    props: { testMode: 'si-lazio' } },
