@@ -135,7 +135,9 @@ async function load() {
         const tomorrowMatch = await getMatchForDate(tomorrow)
         if (!tomorrowMatch) nextMatch.value = await getNextMatch()
       } else {
-        nextMatch.value = await getNextMatch()
+        // On "domani" page, don't show next match if there's already one today
+        const todayMatch = await getMatchForDate(new Date())
+        if (!todayMatch) nextMatch.value = await getNextMatch()
       }
     }
     await preloadBackground(!!match.value, isDerby(match.value))
