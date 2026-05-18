@@ -112,7 +112,7 @@ async function load() {
         'next-derby': { homeTeam: { name: 'roma',  article: 'la' }, awayTeamName: 'SS Lazio' },
         'next-tbd':   { homeTeam: { name: 'roma',  article: 'la' }, awayTeamName: 'Test FC' },
       }[props.testMode]
-      nextMatch.value = { date: dateStr, timestamp: ts, ...teams, competition: 'Serie A' }
+      if (props.dayOffset !== 0) nextMatch.value = { date: dateStr, timestamp: ts, ...teams, competition: 'Serie A' }
     } else if (props.testMode !== 'no') {
       const target = new Date()
       target.setDate(target.getDate() + props.dayOffset)
@@ -127,18 +127,10 @@ async function load() {
         return
       }
     }
-    if (!match.value && props.testMode === null) {
-      // On "oggi" page, don't show next match if tomorrow already has one
-      if (props.dayOffset === 0) {
-        const tomorrow = new Date()
-        tomorrow.setDate(tomorrow.getDate() + 1)
-        const tomorrowMatch = await getMatchForDate(tomorrow)
-        if (!tomorrowMatch) nextMatch.value = await getNextMatch()
-      } else {
-        // On "domani" page, don't show next match if there's already one today
-        const todayMatch = await getMatchForDate(new Date())
-        if (!todayMatch) nextMatch.value = await getNextMatch()
-      }
+    if (!match.value && props.testMode === null && props.dayOffset !== 0) {
+      // On "domani" page, don't show next match if there's already one today
+      const todayMatch = await getMatchForDate(new Date())
+      if (!todayMatch) nextMatch.value = await getNextMatch()
     }
     await preloadBackground(!!match.value, isDerby(match.value))
     trackEvent('result_viewed', { result: match.value ? 'si' : 'no', day: location })
