@@ -59,6 +59,7 @@ Per Firestore lato client usiamo **REST API diretta** (`firestore.googleapis.com
 
 - Cookie policy usa classi `.policy-page` / `.policy-content`, **non** `.cookie-*`: i filtri ad blocker (EasyPrivacy/uBlock) nascondono qualsiasi elemento con "cookie" in classe → pagina invisibile su desktop con adblock
 - Share + campanella sono in un unico `.controls-wrap` (top: 20px, right: 20px) con flex **row**. I figli `.share-wrap` e `.notify-wrap` non devono avere `position: absolute` — il posizionamento è solo sul wrapper esterno
+- `.center` (HomeView) è posizionato con `top: 100px; bottom: 80px; left: 0; right: 0` invece di `top:50%; transform: translate(-50%, -50%)`. Motivo: con Page Zoom Safari o caratteri di sistema grandi (accessibilità), un blocco centrato via transform cresce in altezza e si sovrappone ai bottoni agli angoli (menu, share, campanella, switch "e oggi?"). L'absolute con top/bottom espliciti confina il contenuto a una zona sicura — se il testo trabocca viene tagliato dentro questa zona, mai sopra i controlli
 
 ## Comportamenti speciali
 
