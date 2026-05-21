@@ -155,6 +155,11 @@ export async function detectNotificationState() {
   if (Notification.permission !== 'granted')  return 'idle'
 
   try {
+    // Re-request persistent storage on every open, not just at first subscribe:
+    // without it Android Chrome evicts the whole SW registration and the push
+    // subscription dies with it. The call is idempotent and cheap.
+    await requestPersistentStorage()
+
     const sw = await navigator.serviceWorker.ready
     let subscription = await sw.pushManager.getSubscription()
 
