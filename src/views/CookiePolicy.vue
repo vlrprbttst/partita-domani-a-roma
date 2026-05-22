@@ -54,15 +54,6 @@ function resetConsent() {
             — Terze parti: nessuna
           </p>
         </li>
-        <li>
-          <p>
-            <strong>notifUnsubscribed</strong> — localStorage — Scopo: ricordare la
-            scelta dell'utente di NON ricevere notifiche, per evitare la riattivazione
-            automatica al caricamento della pagina; lo stato effettivo dell'iscrizione è
-            memorizzato su Firebase Firestore — Durata: persistente fino alla riattivazione
-            delle notifiche o alla cancellazione manuale — Terze parti: nessuna
-          </p>
-        </li>
       </ul>
 
       <h3>2. Cookie analitici (solo con consenso)</h3>
@@ -92,32 +83,6 @@ function resetConsent() {
         (nome, email, IP completo) viene raccolto o trasmesso.
         Per maggiori informazioni: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy di Google</a>
         e <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">opt-out da Google Analytics</a>.
-      </p>
-
-      <h3>3. Notifiche push (solo su consenso esplicito)</h3>
-      <p>
-        Se l'utente sceglie di attivare le notifiche push tramite l'apposito bottone, il sito utilizza
-        la <strong>Web Push API</strong> del browser (standard W3C) per inviare notifiche il giorno
-        prima di una partita a Roma. L'attivazione richiede il consenso esplicito del browser e può
-        essere revocata in qualsiasi momento tramite l'icona campanella presente nell'app.
-      </p>
-      <ul>
-        <li>
-          <p>
-            <strong>Push subscription</strong> — Endpoint URL anonimo generato dal browser —
-            Scopo: recapitare le notifiche push al dispositivo — Conservato su: Firebase Firestore
-            (Google LLC, USA) — Durata: fino alla disattivazione da parte dell'utente —
-            Terze parti: Google LLC (Firestore), provider push del browser (es. Google per Chrome,
-            Mozilla per Firefox)
-          </p>
-        </li>
-      </ul>
-      <p>
-        La push subscription non contiene dati personali identificativi (nome, email, IP). È composta
-        da un endpoint URL opaco generato dal browser e da chiavi crittografiche utilizzate per cifrare
-        i messaggi. Viene eliminata da Firestore non appena l'utente disattiva le notifiche. Per
-        maggiori informazioni:
-        <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener noreferrer">Privacy e sicurezza in Firebase</a>.
       </p>
 
       <h2>Cookie di terze parti</h2>
@@ -156,7 +121,7 @@ function resetConsent() {
       <ul>
         <li><p><strong>Accesso</strong> (art. 15) — ottenere conferma che siano o meno in corso trattamenti di dati personali che lo riguardano e, in tal caso, ricevere una copia degli stessi.</p></li>
         <li><p><strong>Rettifica</strong> (art. 16) — ottenere la correzione di dati personali inesatti.</p></li>
-        <li><p><strong>Cancellazione</strong> (art. 17) — ottenere la cancellazione dei dati personali nei casi previsti dalla norma. Per le notifiche push, è sufficiente disattivare le notifiche tramite l'app: la push subscription viene rimossa immediatamente da Firestore.</p></li>
+        <li><p><strong>Cancellazione</strong> (art. 17) — ottenere la cancellazione dei dati personali nei casi previsti dalla norma.</p></li>
         <li><p><strong>Limitazione del trattamento</strong> (art. 18) — ottenere la limitazione del trattamento nei casi previsti dalla norma.</p></li>
         <li><p><strong>Portabilità</strong> (art. 20) — ricevere in formato strutturato i dati forniti consapevolmente e attivamente.</p></li>
         <li><p><strong>Opposizione</strong> (art. 21) — opporsi in qualsiasi momento al trattamento dei dati personali, anche per finalità di marketing diretto.</p></li>
@@ -171,7 +136,7 @@ function resetConsent() {
       <p>
         Il Titolare si riserva di modificare la presente Cookie Policy in qualsiasi momento.
         Le modifiche hanno efficacia dal momento della pubblicazione sul sito.
-        <br><strong>Ultimo aggiornamento: 6 maggio 2026</strong>
+        <br><strong>Ultimo aggiornamento: 22 maggio 2026</strong>
       </p>
 
     </div>

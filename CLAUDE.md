@@ -30,39 +30,11 @@ L'app **non chiama l'API direttamente dal browser in produzione**.
 - `/cookie-policy`: pagina policy
 - Tutto il resto → redirect a `/`
 
-## Notifiche push — punti non-ovvi
-
-Usiamo **raw Web Push** (PushManager + libreria `web-push`), **non `firebase/messaging`/FCM SDK**. Motivo: Android Chrome evicta IndexedDB/localStorage dei PWA ogni 4-6h → il token FCM si rigenera, l'utente appare disiscritto, Firestore accumula token orfani. Le push subscription raw vivono sulla SW registration → sopravvivono all'eviction.
-
-Per Firestore lato client usiamo **REST API diretta** (`firestore.googleapis.com/v1/...?key=APIKEY`), **non l'SDK `firebase/firestore`**. Motivo: bundle — l'SDK pesa ~100KB per fare 3 operazioni (get/patch/delete) sulla collection `subscriptions`. La security profile è identica: è governata da `firestore.rules`, l'API key è pubblica per design (Firebase la tratta come project identifier). `scripts/send-notifications.js` continua a usare `firebase-admin` lato server (necessario per bypassare le rules per `sentNotifications`).
-
-- Doc ID Firestore = `btoa(endpoint).replace(/[^A-Za-z0-9]/g, '_').slice(0, 200)` → stabile attraverso eviction, no churn
-- `Notification.permission` è la fonte di verità (sopravvive eviction). `localStorage.notifUnsubscribed='true'` traccia opt-out esplicito; può essere evicted (trade-off: utente ri-iscritto automaticamente, preferibile a disiscritto silenziosamente)
-- **Auto-resubscription post-eviction** in `detectNotificationState()`: se `permission=granted` ma la push subscription è sparita (e `notifUnsubscribed` non è settato), il client la ricrea e riscrive il doc Firestore — stesso endpoint → stesso doc ID → nessun churn
-- **`pushsubscriptionchange`** in `public/sw.js`: quando il push service ruota/invalida la subscription, il SW si ri-iscrive e riscrive il doc Firestore **da solo, senza che l'utente apra l'app** (l'auto-resubscription del punto sopra scatta solo all'apertura — finestra di morte lunga per un'app che si apre di rado). Usa `event.newSubscription` se presente, altrimenti la `applicationServerKey` di `event.oldSubscription`, altrimenti la VAPID hardcoded. Il SW duplica gli helper Firestore REST di `firebase.js` (runtime separato, no import ESM): `VAPID_PUBLIC` e `API_KEY` hardcoded nel SW vanno tenuti in sync con `.env` / `firebase.js`
-- `detectNotificationState()` chiama `requestPersistentStorage()` **ad ogni apertura**, non solo alla prima iscrizione: senza persistent storage concesso Android evicta l'intera SW registration e la push subscription muore con lei. Chiamata idempotente
-- **Limite non aggirabile**: Chrome auto-revoca i permessi (notifiche incluse) dei siti inattivi dopo qualche giorno. Un'app che per design non si apre mai è vista come inattiva → permesso revocato. Nessun fix lato codice
-- Se esiste una subscription con `applicationServerKey` diverso (residui della migrazione FCM), `getOrCreateSubscription()` cattura `InvalidStateError`, fa `unsubscribe()` e crea una nuova subscription VAPID
-- Dedup invii server: `sentNotifications/{YYYY-MM-DD}` per "domani", `sentNotifications/{YYYY-MM-DD}-4h` per "oggi". Due chiavi distinte → un utente riceve sia la notifica serale che quella 4h prima
-- Dedup client: SW mostra notifica con `tag: 'partita-domani-a-roma'` + `renotify: true` → se browser+PWA hanno due subscription distinte, la seconda push sostituisce la prima a livello OS (una sola notifica visibile)
-- Subscription stantie (HTTP 404/410 dal push service) rimosse in batch da 30 in `send-notifications.js`
-- Cron `notify.yml`: `0 10 * * *` UTC = **12:00 estate / 11:00 inverno** ora di Roma. Invia "partita domani" se esiste match il giorno dopo
-- Cron `notify-oggi.yml`: `0 6-16 * * *` (ogni ora 06–16 UTC = 08–18 Roma CEST). Invia "partita oggi, mancano ~Xh" solo se il kickoff è tra **60 e 330 minuti** (`[60, 330]`). La finestra larga assorbe i ritardi/skip del cron di GitHub Actions (domeniche routinariamente in ritardo di 35+ min). Dedup key: `{date}-4h` (distinto dal dedup di `notify.yml` → un utente può ricevere sia "domani" che "oggi 4h prima")
-- Test E2E: `notify.yml` accetta input `force_send` (workflow_dispatch) → bypassa check partita + dedup, manda notifica generica a tutti
-- iOS: notifiche push solo se PWA installata (iOS 16.4+)
-- **Origin condivisa**: tutte le PWA su `vlrprbttst.github.io` (es. `kcalTracker`) condividono il permesso notifiche OS. Se una è disattivata, tutte sono silenziate. Se l'utente è `subscribed` ma non arriva niente → controllare toggle Chrome/Android per `vlrprbttst.github.io`
-
-**Segreti GitHub**: `FIREBASE_SERVICE_ACCOUNT` (Admin SDK legge `subscriptions`), `VAPID_PUBLIC_KEY` (build + sign), `VAPID_PRIVATE_KEY` (solo `notify.yml` per firmare push). Locale: `VITE_VAPID_PUBLIC_KEY` in `.env`. Generate una tantum con `npx web-push generate-vapid-keys`.
-
-**Firestore collections**:
-- `subscriptions` — `{ endpoint, keys: { p256dh, auth }, createdAt }`, doc ID = `btoa(endpoint).replace(/[^A-Za-z0-9]/g, '_').slice(0, 200)`
-- `sentNotifications/{YYYY-MM-DD}` — dedup per notifiche "domani"; `sentNotifications/{YYYY-MM-DD}-4h` — dedup per notifiche "oggi 4h prima". Shape: `{ sentAt, recipientCount }` (server-only, regole bloccano il client)
-
 ## Gotcha CSS
 
 - Cookie policy usa classi `.policy-page` / `.policy-content`, **non** `.cookie-*`: i filtri ad blocker (EasyPrivacy/uBlock) nascondono qualsiasi elemento con "cookie" in classe → pagina invisibile su desktop con adblock
-- Share + campanella sono in un unico `.controls-wrap` (top: 20px, right: 20px) con flex **row**. I figli `.share-wrap` e `.notify-wrap` non devono avere `position: absolute` — il posizionamento è solo sul wrapper esterno
-- `.center` (HomeView) è posizionato con `top: 100px; bottom: 80px; left: 0; right: 0` invece di `top:50%; transform: translate(-50%, -50%)`. Motivo: con Page Zoom Safari o caratteri di sistema grandi (accessibilità), un blocco centrato via transform cresce in altezza e si sovrappone ai bottoni agli angoli (menu, share, campanella, switch "e oggi?"). L'absolute con top/bottom espliciti confina il contenuto a una zona sicura — se il testo trabocca viene tagliato dentro questa zona, mai sopra i controlli
+- `.share-wrap` è dentro `.controls-wrap` (top: 20px, right: 20px); il posizionamento è solo sul wrapper esterno, non sul figlio
+- `.center` (HomeView) è posizionato con `top: 100px; bottom: 80px; left: 0; right: 0` invece di `top:50%; transform: translate(-50%, -50%)`. Motivo: con Page Zoom Safari o caratteri di sistema grandi (accessibilità), un blocco centrato via transform cresce in altezza e si sovrappone ai bottoni agli angoli (menu, share, switch "e oggi?"). L'absolute con top/bottom espliciti confina il contenuto a una zona sicura — se il testo trabocca viene tagliato dentro questa zona, mai sopra i controlli
 
 ## Comportamenti speciali
 
@@ -73,9 +45,7 @@ Per Firestore lato client usiamo **REST API diretta** (`firestore.googleapis.com
 
 ## Sicurezza
 
-- Token API e VAPID privata: solo in `.env` e GitHub Secret, mai nel bundle
-- Firebase API key ristretta al dominio `https://vlrprbttst.github.io/*` in Google Cloud Console
-- Firestore Security Rules in `firestore.rules` (versionate, deploy con `npx firebase-tools deploy --only firestore:rules`): `subscriptions` aperto in scrittura ma con validazione schema (`hasAll`/`hasOnly`, type check, length limits su tutti i campi), nessun `list`; `sentNotifications` inaccessibile al client
+- Token API: solo in `.env` e GitHub Secret, mai nel bundle
 - CSP via `<meta http-equiv>` in `index.html`: `script-src 'self'` + GA4/GTM, niente `unsafe-inline` per script (per questo `analytics-init.js` e `spa-redirect.js` sono file in `public/` invece che inline). `style-src` con `unsafe-inline` resta perché Vue usa `:style` binding
 
 ## Google Analytics 4

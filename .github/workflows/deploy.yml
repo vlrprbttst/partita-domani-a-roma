@@ -28,8 +28,6 @@ jobs:
       - run: npm ci
 
       - run: npm run build
-        env:
-          VITE_VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
 
       - run: echo "// build $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> dist/sw.js
 

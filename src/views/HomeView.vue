@@ -1,11 +1,8 @@
 <script setup>
-import { ref, inject, onMounted, nextTick } from 'vue'
+import { ref, inject, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getMatchForDate, getNextMatch } from '../api/football.js'
 import { trackEvent } from '../utils/analytics.js'
-import { requestPersistentStorage } from '../api/firebase.js'
-import { useConfetti } from '../composables/useConfetti.js'
-import { useNotifications } from '../composables/useNotifications.js'
 import { usePullToRefresh } from '../composables/usePullToRefresh.js'
 import MatchTicket from '../components/MatchTicket.vue'
 
@@ -22,22 +19,6 @@ const match      = ref(null)
 const nextMatch  = ref(null)
 const background = ref('')
 const location   = props.dayOffset === 0 ? 'oggi' : 'domani'
-
-const bellBtnRef = ref(null)
-const { fire: fireConfetti } = useConfetti(bellBtnRef)
-
-const {
-  supported: notifSupported,
-  notifState,
-  syncState: syncNotifState,
-  onBellClick,
-} = useNotifications({
-  state,
-  onSubscribeSuccess: async () => {
-    await nextTick()
-    setTimeout(fireConfetti, 300)
-  },
-})
 
 function formatTime(date) {
   return date.toLocaleTimeString('it-IT', {
@@ -166,8 +147,6 @@ async function share() {
 
 onMounted(() => {
   load()
-  syncNotifState()
-  requestPersistentStorage()
 })
 </script>
 
@@ -192,34 +171,6 @@ onMounted(() => {
         </svg>
       </button>
       <span class="share-label">condividi</span>
-    </div>
-
-    <div
-      v-if="notifSupported && notifState !== 'unsupported'"
-      class="notify-wrap"
-    >
-      <button
-        ref="bellBtnRef"
-        class="notify-btn"
-        :class="{ 'notify-btn--denied': notifState === 'denied' }"
-        :aria-label="notifState === 'subscribed' ? 'Disattiva notifiche' : notifState === 'denied' ? 'Notifiche bloccate dal browser, clicca per istruzioni' : 'Attiva notifiche'"
-        @click="onBellClick"
-      >
-        <!-- bell: idle only -->
-        <svg v-if="notifState === 'idle'" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-          <path d="M11 3C8.79086 3 7 4.79086 7 7V9.2C7 10.1 6.7 10.97 6.15 11.65L5.2 12.8C4.64 13.48 5.12 14.5 6 14.5H16C16.88 14.5 17.36 13.48 16.8 12.8L15.85 11.65C15.3 10.97 15 10.1 15 9.2V7C15 4.79086 13.2091 3 11 3Z" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M9 17C9.4 17.6 10.1 18 11 18C11.9 18 12.6 17.6 13 17" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <!-- bell-slash: subscribed / denied -->
-        <svg v-else width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-          <path d="M11 3C8.79086 3 7 4.79086 7 7V9.2C7 10.1 6.7 10.97 6.15 11.65L5.2 12.8C4.64 13.48 5.12 14.5 6 14.5H16C16.88 14.5 17.36 13.48 16.8 12.8L15.85 11.65C15.3 10.97 15 10.1 15 9.2V7C15 4.79086 13.2091 3 11 3Z" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M9 17C9.4 17.6 10.1 18 11 18C11.9 18 12.6 17.6 13 17" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M5 5L17 17" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <span class="notify-label">
-        {{ notifState === 'subscribed' ? 'disattiva' : notifState === 'denied' ? 'bloccate' : 'attiva' }}
-      </span>
     </div>
   </div>
 
