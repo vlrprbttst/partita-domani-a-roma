@@ -7,4 +7,4 @@ self.addEventListener('activate', e => e.waitUntil(clients.claim()))
 self.addEventListener('fetch', e => {
   e.respondWith(fetch(e.request, { cache: 'no-store' }).catch(() => caches.match(e.request).then(r => r ?? Response.error())))
 })
-// build 2026-06-14T19:17:29Z
+// build 2026-06-15T03:38:04Z
