@@ -1,12 +1,21 @@
 {
-  "nextMatch": {
-    "date": "2026-08-24",
+  "2026-08-24": {
     "timestamp": "2026-08-24T18:45:00Z",
     "homeTeam": {
       "name": "roma",
       "article": "la"
     },
     "awayTeamName": "ACF Fiorentina",
+    "competition": "Serie A"
+  },
+  "nextMatch": {
+    "date": "2026-08-30",
+    "timestamp": "2026-08-30T18:45:00Z",
+    "homeTeam": {
+      "name": "lazio",
+      "article": "la"
+    },
+    "awayTeamName": "Genoa CFC",
     "competition": "Serie A"
   }
 }
