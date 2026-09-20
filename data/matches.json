@@ -1,13 +1,4 @@
 {
-  "2026-09-19": {
-    "timestamp": "2026-09-19T16:00:00Z",
-    "homeTeam": {
-      "name": "roma",
-      "article": "la"
-    },
-    "awayTeamName": "FC Internazionale Milano",
-    "competition": "Serie A"
-  },
   "nextMatch": {
     "date": "2026-10-11",
     "timestamp": "2026-10-11T13:00:00Z",
