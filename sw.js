@@ -1,10 +1,15 @@
 // Minimal service worker — keeps the app installable as a PWA. No push or
-// notification handling. Network-first fetch with a cache fallback.
+// notification handling, no offline cache.
+// Only page navigations bypass the HTTP cache (so a new deploy shows up on the
+// next open); everything else (hashed assets, fonts, analytics) goes straight
+// to the network with normal browser caching.
 
 self.addEventListener('install', () => self.skipWaiting())
 self.addEventListener('activate', e => e.waitUntil(clients.claim()))
 
 self.addEventListener('fetch', e => {
-  e.respondWith(fetch(e.request, { cache: 'no-store' }).catch(() => caches.match(e.request).then(r => r ?? Response.error())))
+  if (e.request.mode === 'navigate') {
+    e.respondWith(fetch(e.request, { cache: 'no-store' }))
+  }
 })
-// build 2026-09-30T11:46:42Z
+// build 2026-09-30T12:56:20Z
