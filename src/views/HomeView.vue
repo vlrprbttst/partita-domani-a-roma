@@ -1,7 +1,8 @@
 <script setup>
-import { ref, inject, onMounted } from 'vue'
+import { ref, inject, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { getMatchForDate, getNextMatch } from '../api/football.js'
+import { getMatches } from '../api/football.js'
+import { dateRome, formatTime, isDerby } from '../utils/matches.js'
 import { trackEvent } from '../utils/analytics.js'
 import { usePullToRefresh } from '../composables/usePullToRefresh.js'
 import MatchTicket from '../components/MatchTicket.vue'
@@ -20,24 +21,6 @@ const nextMatch  = ref(null)
 const background = ref('')
 const location   = props.dayOffset === 0 ? 'oggi' : 'domani'
 
-function formatTime(date) {
-  return date.toLocaleTimeString('it-IT', {
-    hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Rome',
-  })
-}
-
-// football-data.org uses 00:00:00Z when kickoff time is TBD
-function hasKnownTime(date) {
-  return date.getUTCHours() !== 0 || date.getUTCMinutes() !== 0
-}
-
-function isDerby(m) {
-  if (!m) return false
-  const away = m.awayTeamName.toLowerCase()
-  return (m.homeTeam.name === 'roma'  && away.includes('lazio')) ||
-         (m.homeTeam.name === 'lazio' && away.includes('roma'))
-}
-
 function preloadBackground(hasMatch, derby = false) {
   const url = derby
     ? `${import.meta.env.BASE_URL}images/derby-sfondo.png`
@@ -50,73 +33,74 @@ function preloadBackground(hasMatch, derby = false) {
   })
 }
 
-async function load() {
+function testMatch(awayTeamName, homeName = 'roma', ts = new Date()) {
+  return {
+    date: dateRome(ts),
+    timestamp: ts,
+    homeTeam: { name: homeName, article: 'la' },
+    awayTeamName,
+    competition: 'Serie A',
+  }
+}
+
+function applyTestMode() {
+  const mode = props.testMode
+  if (mode === 'si')       match.value = testMatch('Test FC')
+  if (mode === 'si-lazio') match.value = testMatch('Test FC', 'lazio')
+  if (mode === 'derby')    match.value = testMatch('SS Lazio')
+  if (mode.startsWith('next-')) {
+    const future = new Date()
+    future.setDate(future.getDate() + 10)
+    const ts = new Date(`${dateRome(future)}T${mode === 'next-tbd' ? '00:00:00' : '18:30:00'}Z`)
+    nextMatch.value = mode === 'next-lazio' ? testMatch('Test FC', 'lazio', ts)
+      : testMatch(mode === 'next-derby' ? 'SS Lazio' : 'Test FC', 'roma', ts)
+  }
+}
+
+let loadedDay = null
+
+async function load({ track = true } = {}) {
   state.loaded = false
+  match.value = null
+  nextMatch.value = null
   let redirected = false
   try {
-    if (props.testMode === 'si') {
-      const ts = new Date()
-      match.value = {
-        date: ts.toLocaleDateString('sv', { timeZone: 'Europe/Rome' }),
-        timestamp: ts,
-        homeTeam: { name: 'roma', article: 'la' },
-        awayTeamName: 'Test FC',
-        competition: 'Serie A',
-      }
-    } else if (props.testMode === 'si-lazio') {
-      const ts = new Date()
-      match.value = {
-        date: ts.toLocaleDateString('sv', { timeZone: 'Europe/Rome' }),
-        timestamp: ts,
-        homeTeam: { name: 'lazio', article: 'la' },
-        awayTeamName: 'Test FC',
-        competition: 'Serie A',
-      }
-    } else if (props.testMode === 'derby') {
-      const ts = new Date()
-      match.value = {
-        date: ts.toLocaleDateString('sv', { timeZone: 'Europe/Rome' }),
-        timestamp: ts,
-        homeTeam: { name: 'roma', article: 'la' },
-        awayTeamName: 'SS Lazio',
-        competition: 'Serie A',
-      }
-    } else if (props.testMode?.startsWith('next-')) {
-      const future = new Date()
-      future.setDate(future.getDate() + 10)
-      const dateStr = future.toLocaleDateString('sv', { timeZone: 'Europe/Rome' })
-      const tbd = props.testMode === 'next-tbd'
-      const ts  = new Date(`${dateStr}T${tbd ? '00:00:00' : '18:30:00'}Z`)
-      const teams = {
-        'next-roma':  { homeTeam: { name: 'roma',  article: 'la' }, awayTeamName: 'Test FC' },
-        'next-lazio': { homeTeam: { name: 'lazio', article: 'la' }, awayTeamName: 'Test FC' },
-        'next-derby': { homeTeam: { name: 'roma',  article: 'la' }, awayTeamName: 'SS Lazio' },
-        'next-tbd':   { homeTeam: { name: 'roma',  article: 'la' }, awayTeamName: 'Test FC' },
-      }[props.testMode]
-      if (props.dayOffset !== 0) nextMatch.value = { date: dateStr, timestamp: ts, ...teams, competition: 'Serie A' }
-    } else if (props.testMode !== 'no') {
-      const target = new Date()
-      target.setDate(target.getDate() + props.dayOffset)
-      match.value = await getMatchForDate(target)
-    }
-    // If checking domani and it's empty, redirect to oggi — unless user navigated here explicitly
-    if (props.dayOffset === 1 && !props.testMode && !match.value && !props.preventRedirect) {
-      const todayMatch = await getMatchForDate(new Date())
-      if (todayMatch) {
-        router.replace('/oggi')
-        redirected = true
-        return
+    if (props.testMode) {
+      applyTestMode()
+    } else {
+      const { today, tomorrow, next } = await getMatches()
+      match.value = props.dayOffset === 0 ? today : tomorrow
+      if (props.dayOffset === 1 && !match.value) {
+        if (today) {
+          // Domani empty but match today: redirect to oggi — unless user navigated here explicitly.
+          // With preventRedirect, next match stays hidden (there's already one today)
+          if (!props.preventRedirect) {
+            router.replace('/oggi')
+            redirected = true
+            return
+          }
+        } else {
+          nextMatch.value = next
+        }
       }
     }
-    if (!match.value && props.testMode === null && props.dayOffset !== 0) {
-      // On "domani" page, don't show next match if there's already one today
-      const todayMatch = await getMatchForDate(new Date())
-      if (!todayMatch) nextMatch.value = await getNextMatch()
-    }
+    loadedDay = dateRome(new Date())
     await preloadBackground(!!match.value, isDerby(match.value))
-    trackEvent('result_viewed', { result: match.value ? 'si' : 'no', day: location })
+    if (track) trackEvent('result_viewed', { result: match.value ? 'si' : 'no', day: location })
   } finally {
     if (!redirected) state.loaded = true
+  }
+}
+
+// PWA / tab resumed after a while (or on another day): refresh data
+const STALE_AFTER = 10 * 60 * 1000
+let hiddenAt = Date.now()
+
+function onVisibilityChange() {
+  if (document.visibilityState === 'hidden') {
+    hiddenAt = Date.now()
+  } else if (dateRome(new Date()) !== loadedDay || Date.now() - hiddenAt > STALE_AFTER) {
+    load({ track: false })
   }
 }
 
@@ -147,6 +131,11 @@ async function share() {
 
 onMounted(() => {
   load()
+  document.addEventListener('visibilitychange', onVisibilityChange)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('visibilitychange', onVisibilityChange)
 })
 </script>
 

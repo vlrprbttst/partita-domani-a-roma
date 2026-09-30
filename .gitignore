@@ -56,3 +56,7 @@ pnpm-debug.log*
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Local AI tooling (not published)
+CLAUDE.md
+.claude/

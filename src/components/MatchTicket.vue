@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { formatTime, hasKnownTime, isDerby } from '../utils/matches.js'
 
 const props = defineProps({
   match: { type: Object, required: true },
@@ -8,21 +9,13 @@ const props = defineProps({
 
 const MESI = ['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC']
 
-function hasKnownTime(date) {
-  return date.getUTCHours() !== 0 || date.getUTCMinutes() !== 0
-}
-
 function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
 const variant = computed(() => {
-  const m = props.match
-  const away = (m.awayTeamName || '').toLowerCase()
-  const home = m.homeTeam?.name
-  if ((home === 'roma'  && away.includes('lazio')) ||
-      (home === 'lazio' && away.includes('roma'))) return 'derby'
-  return home === 'lazio' ? 'lazio' : 'roma'
+  if (isDerby(props.match)) return 'derby'
+  return props.match.homeTeam?.name === 'lazio' ? 'lazio' : 'roma'
 })
 
 const dateParts = computed(() => {
@@ -37,9 +30,7 @@ const dateParts = computed(() => {
 const time = computed(() => {
   const ts = props.match.timestamp
   if (!ts || !hasKnownTime(ts)) return 'TBD'
-  return ts.toLocaleTimeString('it-IT', {
-    hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Rome',
-  })
+  return formatTime(ts)
 })
 
 const subtitle = computed(() => {

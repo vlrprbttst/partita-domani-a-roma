@@ -50,4 +50,4 @@ Deployment to GitHub Pages is handled automatically via GitHub Actions on every 
 
 ## Credits
 
-Made by [Valerio Pierbattista](http://valeriopierbattista.com) and [Claude.ai](https://claude.ai).
+Made by [Valerio Pierbattista](http://valeriopierbattista.com).
