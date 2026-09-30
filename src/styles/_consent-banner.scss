@@ -51,13 +51,10 @@
       border-radius: 3px;
       font-size: 12px;
       font-family: $font2;
-      background: none;
+      // Accetta e Rifiuta identici: il Garante richiede comandi di pari evidenza
+      background: rgba(255, 255, 255, 0.15);
+      border-color: white;
       flex: 1;
-
-      &:last-child {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: white;
-      }
     }
   }
 }

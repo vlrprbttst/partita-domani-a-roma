@@ -1,43 +1,29 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { trackEvent } from '../utils/analytics.js'
+import { getConsent, initAnalytics, setConsent } from '../utils/analytics.js'
 
 const visible = ref(false)
 
-function grantConsent() {
-  if (typeof window.gtag === 'function') {
-    window.gtag('consent', 'update', { analytics_storage: 'granted' })
-  }
-}
-
 onMounted(() => {
-  const saved = localStorage.getItem('cookiesChoice')
-  if (saved === 'accepted') {
-    grantConsent()
-  } else if (!saved) {
-    visible.value = true
-  }
+  initAnalytics()
+  if (!getConsent()) visible.value = true
 })
 
-function accept() {
-  localStorage.setItem('cookiesChoice', 'accepted')
+function choose(accepted) {
   visible.value = false
-  grantConsent()
-  trackEvent('consent_accepted')
-}
-
-function refuse() {
-  localStorage.setItem('cookiesChoice', 'refused')
-  visible.value = false
+  setConsent(accepted)
 }
 </script>
 
 <template>
-  <div v-if="visible" class="analytics-notice">
-    <p>Questo sito usa cookie di Google Analytics per statistiche sull'utilizzo. <RouterLink to="/cookie-policy">Maggiori info</RouterLink></p>
+  <div v-if="visible" class="analytics-notice" role="region" aria-label="Consenso cookie">
+    <p>
+      Con il tuo consenso usiamo i cookie di Google Analytics per statistiche aggregate sull'utilizzo.
+      Puoi cambiare idea in qualsiasi momento dal menu. <RouterLink to="/cookie-policy">Cookie Policy</RouterLink>
+    </p>
     <div class="analytics-notice__actions">
-      <button @click="refuse" aria-label="Rifiuta i cookie analitici">Rifiuta</button>
-      <button @click="accept" aria-label="Accetta i cookie analitici">Accetta</button>
+      <button @click="choose(false)" aria-label="Rifiuta i cookie analitici">Rifiuta</button>
+      <button @click="choose(true)" aria-label="Accetta i cookie analitici">Accetta</button>
     </div>
   </div>
 </template>
