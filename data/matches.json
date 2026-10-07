@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-07T12:29:35.317Z",
+  "generatedAt": "2026-10-07T22:32:24.825Z",
   "matches": [
     {
       "date": "2026-10-11",
@@ -69,6 +69,16 @@
         "article": "la"
       },
       "awayTeamName": "Cagliari Calcio",
+      "competition": "Serie A"
+    },
+    {
+      "date": "2026-11-07",
+      "timestamp": "2026-11-07T19:45:00Z",
+      "homeTeam": {
+        "name": "roma",
+        "article": "la"
+      },
+      "awayTeamName": "US Sassuolo Calcio",
       "competition": "Serie A"
     }
   ]
