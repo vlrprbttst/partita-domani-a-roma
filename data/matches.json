@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-29T22:19:53.846Z",
+  "generatedAt": "2026-10-30T03:58:57.790Z",
   "matches": [
     {
       "date": "2026-11-01",
@@ -29,6 +29,16 @@
         "article": "la"
       },
       "awayTeamName": "US Lecce",
+      "competition": "Serie A"
+    },
+    {
+      "date": "2026-11-29",
+      "timestamp": "2026-11-29T17:00:00Z",
+      "homeTeam": {
+        "name": "roma",
+        "article": "la"
+      },
+      "awayTeamName": "AC Monza",
       "competition": "Serie A"
     }
   ]
