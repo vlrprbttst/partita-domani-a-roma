@@ -12,4 +12,4 @@ self.addEventListener('fetch', e => {
     e.respondWith(fetch(e.request, { cache: 'no-store' }))
   }
 })
-// build 2026-11-04T13:39:17Z
+// build 2026-11-04T23:05:18Z
