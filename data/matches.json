@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-05T13:51:32.589Z",
+  "generatedAt": "2026-11-05T23:09:41.894Z",
   "matches": [
     {
       "date": "2026-11-07",
@@ -29,6 +29,16 @@
         "article": "la"
       },
       "awayTeamName": "AC Monza",
+      "competition": "Serie A"
+    },
+    {
+      "date": "2026-12-06",
+      "timestamp": "2026-12-06T14:00:00Z",
+      "homeTeam": {
+        "name": "lazio",
+        "article": "la"
+      },
+      "awayTeamName": "Atalanta BC",
       "competition": "Serie A"
     }
   ]
