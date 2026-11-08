@@ -1,16 +1,6 @@
 {
-  "generatedAt": "2026-11-07T21:20:04.898Z",
+  "generatedAt": "2026-11-08T03:55:37.826Z",
   "matches": [
-    {
-      "date": "2026-11-07",
-      "timestamp": "2026-11-07T19:45:00Z",
-      "homeTeam": {
-        "name": "roma",
-        "article": "la"
-      },
-      "awayTeamName": "US Sassuolo Calcio",
-      "competition": "Serie A"
-    },
     {
       "date": "2026-11-21",
       "timestamp": "2026-11-21T14:00:00Z",
@@ -40,6 +30,16 @@
       },
       "awayTeamName": "Atalanta BC",
       "competition": "Serie A"
+    },
+    {
+      "date": "2026-12-08",
+      "timestamp": "2026-12-08T20:00:00Z",
+      "homeTeam": {
+        "name": "roma",
+        "article": "la"
+      },
+      "awayTeamName": "Sporting Clube de Portugal",
+      "competition": "UEFA Champions League"
     }
   ]
 }
