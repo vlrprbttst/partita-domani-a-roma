@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-18T14:57:20.409Z",
+  "generatedAt": "2026-11-18T23:47:38.762Z",
   "matches": [
     {
       "date": "2026-11-21",
@@ -49,6 +49,16 @@
         "article": "la"
       },
       "awayTeamName": "AS Roma",
+      "competition": "Serie A"
+    },
+    {
+      "date": "2026-12-19",
+      "timestamp": "2026-12-19T19:45:00Z",
+      "homeTeam": {
+        "name": "roma",
+        "article": "la"
+      },
+      "awayTeamName": "Juventus FC",
       "competition": "Serie A"
     }
   ]
